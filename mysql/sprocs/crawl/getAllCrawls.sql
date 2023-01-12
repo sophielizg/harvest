@@ -1,0 +1,12 @@
+use harvest;
+
+DROP PROCEDURE IF EXISTS getAllCrawls;
+
+DELIMITER $$
+
+CREATE PROCEDURE getAllCrawls()
+BEGIN
+    SELECT * FROM Crawl;
+END $$
+
+DELIMITER ;

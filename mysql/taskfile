@@ -38,7 +38,11 @@ build () {
 	_build_folder tables
 	_build_folder utils
 	_build_folder constraints
-	_build_folder sprocs
+
+	for entry in sprocs/*
+	do
+		_build_folder $entry
+	done
 }
 
 $@
