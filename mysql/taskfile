@@ -1,0 +1,44 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+_set_config () {
+	export $(grep -v '^#' dev.env | xargs -0)
+}
+
+_build_file () {
+	echo "Building $1..."
+	cat $1 | docker exec -i mysql mysql -p$MYSQL_ROOT_PASSWORD && echo -e
+
+	if [ $? -ne 0 ]
+	then
+		echo -e "Build $1: ${RED}FAILURE${NC}"
+		exit 1
+	fi
+
+	echo -e "Build $1: ${GREEN}SUCCESS${NC}"
+}
+
+_build_folder () {
+	for entry in $1/*.sql
+	do
+		_build_file $entry
+	done
+}
+
+mysql () {
+	_set_config
+	docker exec -it mysql mysql -p$MYSQL_ROOT_PASSWORD $@
+}
+
+build () {
+	_set_config
+	_build_folder tables
+	_build_folder utils
+	_build_folder constraints
+	_build_folder sprocs
+}
+
+$@

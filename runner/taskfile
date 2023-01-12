@@ -1,0 +1,48 @@
+#!/bin/bash
+
+
+app_location="cmd/harvest/main.go"
+
+install () {
+	go mod download && go mod verify
+}
+
+generate () {
+	swag init -g ./$app_location $@
+}
+
+build () {
+	server () {
+		generate
+		go build -o server $app_location $@
+	}
+	
+	docker () {
+		docker build . $@
+	}
+
+	$@
+}
+
+run () {
+	generate
+	go run $app_location $@
+}
+
+dev () {
+	reflex -c ./reflex.conf $@
+}
+
+test () {
+	go test -v $(go list ./tests/... | grep -v /mocks) -coverpkg $(go list ./pkg/... | grep -v /app) $@
+}
+
+lint () {
+	golangci-lint run --issues-exit-code 0 $@
+}
+
+format () {
+	lint --fix $@
+}
+
+$@

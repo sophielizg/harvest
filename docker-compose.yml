@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8
+    restart: always
+    env_file:
+      - ./mysql/dev.env
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - mysql:/var/lib/mysql
+volumes:
+  mysql:
