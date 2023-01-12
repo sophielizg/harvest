@@ -14,14 +14,7 @@ CALL addForeignKeyIfNotExists(
     'Request(requestId)',
     'ON DELETE RESTRICT ON UPDATE CASCADE');
 
-CALL addForeignKeyIfNotExists(
-    'Request', 
-    'FK_Request_Crawl_crawlId',
-    'crawlId',
-    'Crawl(crawlId)',
-    'ON DELETE CASCADE ON UPDATE CASCADE');
-
 CALL addIndexIfNotExists(
     'Request',
-    'IX_Request_crawlId_requestHash_visitedTimestamp', 
-    'crawlId, requestHash, visitedTimestamp');
+    'IX_Request_requestHash_visitedTimestamp', 
+    'requestHash, visitedTimestamp');

@@ -7,8 +7,25 @@ DELIMITER $$
 CREATE PROCEDURE startCrawl(
     IN crawlIdIn INT
 ) BEGIN
-    UPDATE Crawl SET currentRunStartTimestamp = NOW()
-    WHERE crawlId = crawlIdIn AND currentRunStartTimestamp = NULL;
+    DECLARE `_rollback` BOOL DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+    START TRANSACTION;
+
+    INSERT INTO CrawlRun
+        (crawlId, startTimestamp)
+    VALUES
+        (crawlIdIn, NOW());
+
+    UPDATE Crawl SET
+        running = 1
+    WHERE crawlId = crawlIdIn;
+
+    IF `_rollback` THEN
+        ROLLBACK;
+    ELSE
+        COMMIT;
+    END IF;
 END $$
 
 DELIMITER ;

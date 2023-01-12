@@ -2,6 +2,7 @@ USE harvest;
 
 CREATE TABLE IF NOT EXISTS RequestQueue (
     requestQueueId INT AUTO_INCREMENT NOT NULL,
+    crawlId INT NOT NULL,
     scrapeId INT,
     createdTimestamp DATETIME,
     request BLOB NOT NULL,
