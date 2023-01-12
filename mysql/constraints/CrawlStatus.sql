@@ -13,3 +13,8 @@ CALL addForeignKeyIfNotExists(
     'scrapeId',
     'Scrape(scrapeId)',
     'ON DELETE SET NULL ON UPDATE CASCADE');
+
+CALL addIndexIfNotExists(
+    'CrawlStatus',
+    'IX_CrawlStatus_lastUpdatedTimestamp',
+    'lastUpdatedTimestamp');
