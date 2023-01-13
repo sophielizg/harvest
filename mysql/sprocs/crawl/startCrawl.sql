@@ -12,6 +12,8 @@ CREATE PROCEDURE startCrawl(
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO startCrawl;
         END IF;
         RESIGNAL;
     END;
@@ -30,6 +32,13 @@ CREATE PROCEDURE startCrawl(
     UPDATE Crawl SET
         running = 1
     WHERE crawlId = crawlIdIn;
+
+    UPDATE RequestQueue SET
+        scrapeId = NULL
+    WHERE isInitialRequest = 1;
+
+    SET @numQueued := ROW_COUNT();
+    CALL updateCrawlStatus(crawlIdIn, NULL, @numQueued, 0, 0, 0);
 
     IF createTransaction THEN
         COMMIT;

@@ -12,6 +12,8 @@ CREATE PROCEDURE deleteCrawl(
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO deleteCrawl;
         END IF;
         RESIGNAL;
     END;
@@ -22,9 +24,10 @@ CREATE PROCEDURE deleteCrawl(
         SAVEPOINT deleteCrawl;
     END IF;
 
-    UPDATE Request SET
-        createdByRequestId = NULL
-    WHERE crawlId = crawlIdIn;
+    UPDATE Request r
+    INNER JOIN Scrape s ON r.scrapeId = s.scrapeId
+    SET r.createdByRequestId = NULL
+    WHERE s.crawlId = crawlIdIn;
 
     DELETE FROM Crawl WHERE crawlId = crawlIdIn;
 

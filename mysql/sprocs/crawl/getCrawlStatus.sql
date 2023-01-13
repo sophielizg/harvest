@@ -5,14 +5,19 @@ DROP PROCEDURE IF EXISTS getCrawlStatus;
 DELIMITER $$
 
 CREATE PROCEDURE getCrawlStatus(
-    IN crawlIdIn INT
+    IN crawlIdIn INT,
+    IN crawlRunIdIn INT
 ) BEGIN
-    DECLARE currentCrawlRunId INT;
+    DECLARE crawlRunIdForStatus INT;
 
-    SELECT crawlRunId INTO currentCrawlRunId FROM CrawlRun
-    WHERE crawlId = crawlIdIn 
-    ORDER BY startTimestamp DESC
-    LIMIT 1;
+    IF crawlRunIdIn IS NULL THEN
+        SELECT crawlRunId INTO crawlRunIdForStatus FROM CrawlRun
+        WHERE crawlId = crawlIdIn 
+        ORDER BY startTimestamp DESC
+        LIMIT 1;
+    ELSE
+        SET crawlRunIdForStatus := crawlRunIdIn;
+    END IF;
 
     SELECT
         SUM(cs.queued) AS queued,
@@ -21,10 +26,9 @@ CREATE PROCEDURE getCrawlStatus(
         SUM(cs.missing) AS missing,
         MAX(cs.lastUpdatedTimestamp) AS lastUpdatedTimestamp
     FROM CrawlStatus cs
-    INNER JOIN Crawl c ON c.crawlId = cs.crawlId
     LEFT JOIN Scrape s ON s.scrapeId = cs.scrapeId
-    WHERE cs.crawlId = crawlIdIn 
-    AND (s.crawlRunId = currentCrawlRunId OR cs.scrapeId IS NULL);
+    WHERE s.crawlRunId = crawlRunIdForStatus
+    OR (crawlRunIdIn IS NULL AND cs.scrapeId IS NULL AND cs.crawlId = crawlIdIn);
 END $$
 
 DELIMITER ;

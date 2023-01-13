@@ -14,6 +14,8 @@ CREATE PROCEDURE stopCrawl(
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO stopCrawl;
         END IF;
         RESIGNAL;
     END;

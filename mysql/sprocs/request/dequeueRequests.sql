@@ -5,8 +5,8 @@ DROP PROCEDURE IF EXISTS dequeueRequests;
 DELIMITER $$
 
 CREATE PROCEDURE dequeueRequests(
-    IN scrapeIdIn INT,
     IN crawlIdIn INT,
+    IN scrapeIdIn INT,
     IN numToDequeue INT,
     IN createTransaction BOOL
 )
@@ -17,6 +17,8 @@ BEGIN
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO dequeueRequests;
         END IF;
         RESIGNAL;
     END;

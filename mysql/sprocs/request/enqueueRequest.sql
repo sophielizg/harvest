@@ -16,6 +16,8 @@ CREATE PROCEDURE enqueueRequest(
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO enqueueRequest;
         END IF;
         RESIGNAL;
     END;

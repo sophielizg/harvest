@@ -12,7 +12,7 @@ CALL addForeignKeyIfNotExists(
     'FK_CrawlStatus_Scrape_scrapeId',
     'scrapeId',
     'Scrape(scrapeId)',
-    'ON DELETE SET NULL ON UPDATE CASCADE');
+    'ON DELETE RESTRICT ON UPDATE CASCADE');
 
 CALL addIndexIfNotExists(
     'CrawlStatus',

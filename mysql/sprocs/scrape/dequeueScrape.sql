@@ -15,6 +15,8 @@ BEGIN
     BEGIN
         IF createTransaction THEN
             ROLLBACK;
+        ELSE
+            ROLLBACK TO dequeueScrape;
         END IF;
         RESIGNAL;
     END;
