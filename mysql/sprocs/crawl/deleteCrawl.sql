@@ -1,26 +1,34 @@
 use harvest;
 
-DROP PROCEDURE IF EXISTS updateCrawl;
+DROP PROCEDURE IF EXISTS deleteCrawl;
 
 DELIMITER $$
 
-CREATE PROCEDURE updateCrawl(
-    IN crawlIdIn INT
+CREATE PROCEDURE deleteCrawl(
+    IN crawlIdIn INT,
+    IN createTransaction BOOL
 ) BEGIN
-    DECLARE `_rollback` BOOL DEFAULT 0;
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        IF createTransaction THEN
+            ROLLBACK;
+        END IF;
+        RESIGNAL;
+    END;
 
-    START TRANSACTION;
+    IF createTransaction THEN
+        START TRANSACTION;
+    ELSE
+        SAVEPOINT deleteCrawl;
+    END IF;
 
     UPDATE Request SET
         createdByRequestId = NULL
     WHERE crawlId = crawlIdIn;
 
-    DELETE FROM Crawl WHERE rawlId = crawlIdIn;
+    DELETE FROM Crawl WHERE crawlId = crawlIdIn;
 
-    IF `_rollback` THEN
-        ROLLBACK;
-    ELSE
+    IF createTransaction THEN
         COMMIT;
     END IF;
 END $$

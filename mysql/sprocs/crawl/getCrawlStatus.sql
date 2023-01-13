@@ -7,7 +7,9 @@ DELIMITER $$
 CREATE PROCEDURE getCrawlStatus(
     IN crawlIdIn INT
 ) BEGIN
-    SELECT @crawlRunId := crawlRunId FROM CrawlRun
+    DECLARE currentCrawlRunId INT;
+
+    SELECT crawlRunId INTO currentCrawlRunId FROM CrawlRun
     WHERE crawlId = crawlIdIn 
     ORDER BY startTimestamp DESC
     LIMIT 1;
@@ -22,7 +24,7 @@ CREATE PROCEDURE getCrawlStatus(
     INNER JOIN Crawl c ON c.crawlId = cs.crawlId
     LEFT JOIN Scrape s ON s.scrapeId = cs.scrapeId
     WHERE cs.crawlId = crawlIdIn 
-    AND (s.crawlRunId = @crawlRunId OR cs.scrapeId IS NULL);
+    AND (s.crawlRunId = currentCrawlRunId OR cs.scrapeId IS NULL);
 END $$
 
 DELIMITER ;

@@ -5,12 +5,22 @@ DROP PROCEDURE IF EXISTS startCrawl;
 DELIMITER $$
 
 CREATE PROCEDURE startCrawl(
-    IN crawlIdIn INT
+    IN crawlIdIn INT,
+    IN createTransaction BOOL
 ) BEGIN
-    DECLARE `_rollback` BOOL DEFAULT 0;
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        IF createTransaction THEN
+            ROLLBACK;
+        END IF;
+        RESIGNAL;
+    END;
 
-    START TRANSACTION;
+    IF createTransaction THEN
+        START TRANSACTION;
+    ELSE
+        SAVEPOINT startCrawl;
+    END IF;
 
     INSERT INTO CrawlRun
         (crawlId, startTimestamp)
@@ -21,9 +31,7 @@ CREATE PROCEDURE startCrawl(
         running = 1
     WHERE crawlId = crawlIdIn;
 
-    IF `_rollback` THEN
-        ROLLBACK;
-    ELSE
+    IF createTransaction THEN
         COMMIT;
     END IF;
 END $$

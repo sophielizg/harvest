@@ -4,17 +4,31 @@ DROP PROCEDURE IF EXISTS dequeueScrape;
 
 DELIMITER $$
 
-CREATE PROCEDURE dequeueScrape()
+CREATE PROCEDURE dequeueScrape(
+    IN createTransaction BOOL
+)
 BEGIN
-    DECLARE `_rollback` BOOL DEFAULT 0;
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+    DECLARE dequeueScrapeId INT;
+    DECLARE dequeueCrawlRunId INT;
 
-    START TRANSACTION;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        IF createTransaction THEN
+            ROLLBACK;
+        END IF;
+        RESIGNAL;
+    END;
+
+    IF createTransaction THEN
+        START TRANSACTION;
+    ELSE
+        SAVEPOINT dequeueScrape;
+    END IF;
 
     SELECT 
-        @dequeueScrapeId := scrapeId, 
-        @dequeueCrawlId := crawlId,
-        @dequeueCrawlRunId := crawlRunId
+        scrapeId, crawlRunId  
+        INTO
+        dequeueScrapeId, dequeueCrawlRunId
     FROM Scrape
     WHERE startTimestamp IS NULL
     LIMIT 1
@@ -22,16 +36,16 @@ BEGIN
 
     UPDATE Scrape SET
         startTimestamp = NOW()
-    WHERE scrapeId = @dequeueScrapeId;
+    WHERE scrapeId = dequeueScrapeId;
 
     SELECT 
-        @dequeueScrapeId AS scrapeId, 
-        @dequeueCrawlId AS crawlId,
-        @dequeueCrawlRunId AS crawlRunId;
+        dequeueScrapeId AS scrapeId,
+        dequeueCrawlRunId AS crawlRunId,
+        crawlId
+    FROM CrawlRun
+    WHERE crawlRunId = dequeueCrawlRunId;
 
-    IF `_rollback` THEN
-        ROLLBACK;
-    ELSE
+    IF createTransaction THEN
         COMMIT;
     END IF;
 END $$
