@@ -3,11 +3,11 @@ package harvest
 import "time"
 
 type Error struct {
-	parserId            int
-	scrapedTimestamp    time.Time
-	statusCode          int
-	isMissngParseResult bool
-	response            string
+	ParserId            int       `json:"parserId"`
+	ScrapedTimestamp    time.Time `json:"scrapedTimestamp"`
+	StatusCode          int       `json:"statusCode"`
+	IsMissngParseResult bool      `json:"isMissngParseResult"`
+	Response            string    `json:"response"`
 }
 
 type ErrorService interface {

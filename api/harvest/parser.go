@@ -5,30 +5,30 @@ import (
 )
 
 type ParserAutoIncrementRules struct {
-	bodyPath []string
-	urlRegex string
+	BodyPath []string `json:"bodyPath"`
+	UrlRegex string   `json:"urlRegex"`
 }
 
 type ParserTag struct {
-	parserTagId      int
-	createdTimestamp time.Time
-	name             string
+	ParserTagId      int       `json:"parserTagId"`
+	CreatedTimestamp time.Time `json:"createdTimestamp"`
+	Name             string    `json:"name"`
 }
 
 type ParserFields struct {
-	pageType           string
-	selector           string
-	attr               string
-	xpath              string
-	jsonPath           []string
-	enqueueCrawlId     int
-	autoIncrementRules ParserAutoIncrementRules
+	PageType           string                   `json:"pageType"`
+	Selector           string                   `json:"selector"`
+	Attr               string                   `json:"attr"`
+	Xpath              string                   `json:"xpath"`
+	JsonPath           []string                 `json:"jsonPath"`
+	EnqueueCrawlId     int                      `json:"enqueueCrawlId"`
+	AutoIncrementRules ParserAutoIncrementRules `json:"autoIncrementRules"`
 }
 
 type Parser struct {
-	parserId         int
-	createdTimestamp time.Time
-	tags             []ParserTag
+	ParserId         int         `json:"parserId"`
+	CreatedTimestamp time.Time   `json:"createdTimestamp"`
+	Tags             []ParserTag `json:"tags"`
 	ParserFields
 }
 

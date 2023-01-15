@@ -3,9 +3,9 @@ package harvest
 import "time"
 
 type Result struct {
-	parserId         int
-	scrapedTimestamp time.Time
-	value            string
+	ParserId         int       `json:"parserId"`
+	ScrapedTimestamp time.Time `json:"scrapedTimestamp"`
+	Value            string    `json:"value"`
 }
 
 type ResultService interface {

@@ -1,13 +1,13 @@
 package harvest
 
 type App struct {
-	configService       ConfigService
-	crawlService        CrawlService
-	errorService        ErrorService
-	parserService       ParserService
-	requestQueueService RequestQueueService
-	resultService       ResultService
-	runService          RunService
-	scraperService      ScraperService
-	statusService       StatusService
+	ConfigService       ConfigService
+	CrawlService        CrawlService
+	ErrorService        ErrorService
+	ParserService       ParserService
+	RequestQueueService RequestQueueService
+	ResultService       ResultService
+	RunService          RunService
+	ScraperService      ScraperService
+	StatusService       StatusService
 }

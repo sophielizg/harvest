@@ -32,8 +32,8 @@ func (crawlConfig *CrawlConfig) Value() (driver.Value, error) {
 func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
 	var crawl harvest.Crawl
 
-	err := rows.Scan(&crawl.crawlId, &crawl.name, &crawl.createdTimestamp,
-		&crawl.running, &crawl.config)
+	err := rows.Scan(&crawl.CrawlId, &crawl.Name, &crawl.CreatedTimestamp,
+		&crawl.Running, &crawl.Config)
 
 	return &crawl, err
 }

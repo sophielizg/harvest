@@ -3,11 +3,11 @@ package harvest
 import "time"
 
 type Status struct {
-	queued               int
-	successes            int
-	errors               int
-	missing              int
-	lastUpdatedTimestamp time.Time
+	Queued               int       `json:"queued"`
+	Successes            int       `json:"successes"`
+	Errors               int       `json:"errors"`
+	Missing              int       `json:"missing"`
+	LastUpdatedTimestamp time.Time `json:"lastUpdatedTimestamp"`
 }
 
 type StatusService interface {

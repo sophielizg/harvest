@@ -1,9 +1,9 @@
 package routes
 
 type SuccessResponse struct {
-	message string
+	Message string `json:"message"`
 }
 
 type ErrorResponse struct {
-	reason string
+	Reason string `json:"reason"`
 }

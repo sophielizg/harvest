@@ -25,9 +25,9 @@ func main() {
 	}
 
 	// Create app
-	app := harvest.App{
-		configService: config.ConfigService{},
-		crawlService:  mysql.CrawlService{},
+	app := &harvest.App{
+		ConfigService: &config.ConfigService{},
+		CrawlService:  &mysql.CrawlService{},
 	}
 
 	// Connect db

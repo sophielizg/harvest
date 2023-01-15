@@ -3,19 +3,19 @@ package harvest
 import "time"
 
 type RequestToScrape struct {
-	url     string
-	method  string
-	headers string
-	body    string
+	Url     string `json:"url"`
+	Method  string `json:"method"`
+	Headers string `json:"headers"`
+	Body    string `json:"body"`
 }
 
 type QueuedRequestFields struct {
-	request RequestToScrape
+	Request RequestToScrape `json:"request"`
 }
 
 type QueuedRequest struct {
-	requestId        int
-	createdTimestamp time.Time
+	RequestId        int       `json:"requestId"`
+	CreatedTimestamp time.Time `json:"createdTimestamp"`
 	QueuedRequestFields
 }
 

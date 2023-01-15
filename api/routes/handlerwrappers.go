@@ -13,7 +13,7 @@ func WriteErrorResponse(handler HandlerFunc) http.HandlerFunc {
 		response, err := handler(r)
 		if err != nil {
 			response = ErrorResponse{
-				reason: err.Error(),
+				Reason: err.Error(),
 			}
 			render.Status(r, 400)
 		}

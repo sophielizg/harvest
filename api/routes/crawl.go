@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 )
@@ -51,8 +52,12 @@ func CrawlRoutes() *chi.Mux {
 // @Param crawlId path string true "Id of crawl"
 // @Success 200 {object} harvest.Crawl
 // @Failure 400 {object} ErrorResponse
-// @Router /{crawlId} [get]
+// @Router /crawls/{crawlId} [get]
 func GetCrawlById(r *http.Request) (interface{}, error) {
-	crawlId := r.URL.Query().Get("crawlId")
-	return *app.crawlService.Crawl(crawlId)
+	crawlIdStr := chi.URLParam(r, "crawlId")
+	crawlId, err := strconv.Atoi(crawlIdStr)
+	if err != nil {
+		return nil, err
+	}
+	return app.CrawlService.Crawl(crawlId)
 }

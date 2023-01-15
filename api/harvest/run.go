@@ -3,9 +3,9 @@ package harvest
 import "time"
 
 type Run struct {
-	runId          int
-	startTimestamp time.Time
-	endTimestamp   time.Time
+	RunId          int       `json:"runId"`
+	StartTimestamp time.Time `json:"startTimestamp"`
+	EndTimestamp   time.Time `json:"endTimestamp"`
 }
 
 type RunService interface {

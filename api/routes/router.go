@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
+	_ "github.com/sophielizg/harvest/api/docs"
 	"github.com/sophielizg/harvest/api/harvest"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -27,7 +28,7 @@ func CreateRouter(newApp *harvest.App, port string) (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/crawlers", CrawlRoutes())
+		r.Mount("/crawls", CrawlRoutes())
 		// Add parser types route
 	})
 

@@ -13,21 +13,21 @@ import (
 var db *sql.DB
 
 type MysqlConfig struct {
-	user     string
-	password string
-	protocol string
-	host     string
-	port     int
-	dbname   string
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Protocol string `json:"protocol"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Dbname   string `json:"dbname"`
 }
 
 func (c *MysqlConfig) DSNString() string {
 	return fmt.Sprintf("%s:%s@%s(%s:%d)/%s",
-		c.user, c.password, c.protocol, c.host, c.port, c.dbname)
+		c.User, c.Password, c.Protocol, c.Host, c.Port, c.Dbname)
 }
 
-func Open(configService *harvest.ConfigService) error {
-	mysqlConfigString, err := (*configService).Value("mysql")
+func Open(app *harvest.App) error {
+	mysqlConfigString, err := app.ConfigService.Value("mysql")
 	if err != nil {
 		return err
 	}
