@@ -10,8 +10,6 @@ import (
 	"github.com/sophielizg/harvest/api/harvest"
 )
 
-var db *sql.DB
-
 type MysqlConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
@@ -22,34 +20,34 @@ type MysqlConfig struct {
 }
 
 func (c *MysqlConfig) DSNString() string {
-	return fmt.Sprintf("%s:%s@%s(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@%s(%s:%d)/%s?parseTime=true",
 		c.User, c.Password, c.Protocol, c.Host, c.Port, c.Dbname)
 }
 
-func Open(app *harvest.App) error {
-	mysqlConfigString, err := app.ConfigService.Value("mysql")
+func OpenDb(configService harvest.ConfigService) (*sql.DB, error) {
+	mysqlConfigString, err := configService.Value("mysql")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	mysqlConfig := MysqlConfig{}
 	err = json.Unmarshal([]byte(mysqlConfigString), &mysqlConfig)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	db, err := sql.Open("mysql", mysqlConfig.DSNString())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
-	return db.Ping()
+	return db, db.Ping()
 }
 
-func Close() {
+func CloseDb(db *sql.DB) {
 	db.Close()
 }

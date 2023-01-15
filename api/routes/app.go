@@ -11,10 +11,11 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-var app *harvest.App
+type App struct {
+	CrawlService harvest.CrawlService
+}
 
-func CreateRouter(newApp *harvest.App, port string) (*chi.Mux, error) {
-	app = newApp
+func (app *App) Router(port string) (*chi.Mux, error) {
 	router := chi.NewRouter()
 
 	// Add middlewares for all routes
@@ -28,7 +29,7 @@ func CreateRouter(newApp *harvest.App, port string) (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/crawls", CrawlRoutes())
+		r.Mount("/crawls", app.CrawlRouter())
 		// Add parser types route
 	})
 

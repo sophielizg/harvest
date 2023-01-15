@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/sophielizg/harvest/api/config"
-	"github.com/sophielizg/harvest/api/harvest"
 	"github.com/sophielizg/harvest/api/mysql"
 	"github.com/sophielizg/harvest/api/routes"
 )
@@ -24,21 +23,23 @@ func main() {
 		port = ":8080"
 	}
 
-	// Create app
-	app := &harvest.App{
-		ConfigService: &config.ConfigService{},
-		CrawlService:  &mysql.CrawlService{},
-	}
+	// Create config service
+	configService := &config.ConfigService{}
 
-	// Connect db
-	err := mysql.Open(app)
+	// Connect to db
+	db, err := mysql.OpenDb(configService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer mysql.Close()
+	defer mysql.CloseDb(db)
+
+	crawlService := &mysql.CrawlService{Db: db}
 
 	// Initialize server
-	router, err := routes.CreateRouter(app, port)
+	app := routes.App{
+		CrawlService: crawlService,
+	}
+	router, err := app.Router(port)
 	if err != nil {
 		log.Fatal(err)
 	}

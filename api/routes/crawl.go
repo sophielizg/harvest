@@ -7,9 +7,9 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func CrawlRoutes() *chi.Mux {
+func (app *App) CrawlRouter() *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/{crawlId}", WriteErrorResponse(GetCrawlById))
+	router.Get("/{crawlId}", WriteErrorResponse(app.getCrawlById))
 	// router.Get("/all", ...)
 	// router.Get("/name/{name}", HelloWorldGet)
 	// router.Post("/add", ...)
@@ -44,7 +44,7 @@ func CrawlRoutes() *chi.Mux {
 	return router
 }
 
-// GetCrawlById godoc
+// getCrawlById godoc
 // @Summary Get crawl endpoint
 // @Description Get crawl details using its crawlId
 // @Accept  json
@@ -53,7 +53,7 @@ func CrawlRoutes() *chi.Mux {
 // @Success 200 {object} harvest.Crawl
 // @Failure 400 {object} ErrorResponse
 // @Router /crawls/{crawlId} [get]
-func GetCrawlById(r *http.Request) (interface{}, error) {
+func (app *App) getCrawlById(r *http.Request) (interface{}, error) {
 	crawlIdStr := chi.URLParam(r, "crawlId")
 	crawlId, err := strconv.Atoi(crawlIdStr)
 	if err != nil {

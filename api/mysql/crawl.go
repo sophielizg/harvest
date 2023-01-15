@@ -9,11 +9,17 @@ import (
 	"github.com/sophielizg/harvest/api/harvest"
 )
 
-type CrawlService struct{}
+type CrawlService struct {
+	Db *sql.DB
+}
 
 type CrawlConfig harvest.CrawlConfig
 
 func (crawlConfig *CrawlConfig) Scan(value interface{}) error {
+	if value == nil {
+		return nil
+	}
+
 	b, ok := value.([]byte)
 	if !ok {
 		return errors.New("incompatible type for CrawlConfig")
@@ -30,16 +36,19 @@ func (crawlConfig *CrawlConfig) Value() (driver.Value, error) {
 }
 
 func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
+	var crawlConfig CrawlConfig
 	var crawl harvest.Crawl
 
 	err := rows.Scan(&crawl.CrawlId, &crawl.Name, &crawl.CreatedTimestamp,
-		&crawl.Running, &crawl.Config)
+		&crawl.Running, &crawlConfig)
+
+	crawl.Config = harvest.CrawlConfig(crawlConfig)
 
 	return &crawl, err
 }
 
 func (c *CrawlService) Crawl(crawlId int) (*harvest.Crawl, error) {
-	row, err := db.Query("CALL getCrawlByCrawlId(?);", crawlId)
+	row, err := c.Db.Query("CALL getCrawlByCrawlId(?);", crawlId)
 	if err != nil {
 		return nil, err
 	}
