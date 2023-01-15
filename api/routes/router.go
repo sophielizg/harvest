@@ -1,25 +1,19 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
-	"github.com/sophielizg/harvest/api/pkg/app"
+	"github.com/sophielizg/harvest/api/harvest"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-var (
-	currentApp app.App
-)
+var app *harvest.App
 
-func Init() (*chi.Mux, error) {
-	// Initialize app
-	var err error
-	currentApp, err = app.Init()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create router
+func CreateRouter(newApp *harvest.App, port string) (*chi.Mux, error) {
+	app = newApp
 	router := chi.NewRouter()
 
 	// Add middlewares for all routes
@@ -33,8 +27,14 @@ func Init() (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/hello", HelloWorld())
+		r.Mount("/crawlers", CrawlRoutes())
+		// Add parser types route
 	})
+
+	// Create swagger UI
+	router.Get("/api/doc/*", httpSwagger.Handler(
+		httpSwagger.URL(fmt.Sprint("http://localhost", port, "/api/doc/doc.json")),
+	))
 
 	return router, nil
 }

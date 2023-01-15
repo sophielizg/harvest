@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/sophielizg/harvest/api/docs"
+	"github.com/sophielizg/harvest/api/config"
+	"github.com/sophielizg/harvest/api/harvest"
+	"github.com/sophielizg/harvest/api/mysql"
 	"github.com/sophielizg/harvest/api/routes"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title harvest
@@ -23,16 +24,24 @@ func main() {
 		port = ":8080"
 	}
 
-	// Initialize server
-	router, err := routes.Init()
+	// Create app
+	app := harvest.App{
+		configService: config.ConfigService{},
+		crawlService:  mysql.CrawlService{},
+	}
+
+	// Connect db
+	err := mysql.Open(app)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer mysql.Close()
 
-	// Create swagger UI
-	router.Get("/api/doc/*", httpSwagger.Handler(
-		httpSwagger.URL(fmt.Sprint("http://localhost", port, "/api/doc/doc.json")),
-	))
+	// Initialize server
+	router, err := routes.CreateRouter(app, port)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Start server
 	log.Println(fmt.Sprint("Server running on http://localhost", port))
