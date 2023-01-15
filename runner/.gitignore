@@ -17,8 +17,8 @@
 # Auto generated swagger
 docs/
 
-# Compiled server
-server
+# Compiled runner
+runner
 
 # VSCode settings
 .vscode

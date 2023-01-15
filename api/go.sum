@@ -54,12 +54,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
-github.com/sophielizg/harvest/common/config v0.0.0-20230115173816-48993f698041 h1:6A45lxm+9JxlVt04xZ2ygMz87HZwOchjrrUetszj49I=
-github.com/sophielizg/harvest/common/config v0.0.0-20230115173816-48993f698041/go.mod h1:H395927jmtjHzmm0qSlu9P/MGel74FSGV658HtV2b8Q=
-github.com/sophielizg/harvest/common/harvest v0.0.0-20230115173816-48993f698041 h1:sHb9yYp+1RlVxwFfGy6vCORwUpDSKy/JbJE/we5xvcE=
-github.com/sophielizg/harvest/common/harvest v0.0.0-20230115173816-48993f698041/go.mod h1:xVnlxA5wTPq0iQPh4YxKfXzjmAmL80yMZHaxAsTo5mQ=
-github.com/sophielizg/harvest/common/mysql v0.0.0-20230115173816-48993f698041 h1:9G0e3mhA8fEZeDPjtF7cRYr2/DzsZBt/muKX/9IXGH8=
-github.com/sophielizg/harvest/common/mysql v0.0.0-20230115173816-48993f698041/go.mod h1:1xlKAeQtlmzfNplvpFz25DtKAF8UiDipGfZP20TKBGs=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

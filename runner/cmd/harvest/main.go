@@ -1,40 +1,31 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-	"os"
 
-	_ "github.com/sophielizg/harvest/docs"
-	"github.com/sophielizg/harvest/routes"
-	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/sophielizg/harvest/common/config"
+	"github.com/sophielizg/harvest/common/mysql"
+	"github.com/sophielizg/harvest/runner/colly"
 )
 
-// @title harvest
-// @version 1.0
-// @description Configureable web scraper to crawl and collect data from any website
-
-// @BasePath /api/v1
 func main() {
-	// Grab PORT env variable
-	port := fmt.Sprint(":", os.Getenv("PORT"))
-	if port == ":" {
-		port = ":8080"
-	}
+	// Create config service
+	configService := &config.ConfigService{}
 
-	// Initialize server
-	router, err := routes.Init()
+	// Connect to db
+	db, err := mysql.OpenDb(configService)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer mysql.CloseDb(db)
 
-	// Create swagger UI
-	router.Get("/api/doc/*", httpSwagger.Handler(
-		httpSwagger.URL(fmt.Sprint("http://localhost", port, "/api/doc/doc.json")),
-	))
+	crawlService := &mysql.CrawlService{Db: db}
+	scrapeService := &mysql.ScrapeService{Db: db}
 
-	// Start server
-	log.Println(fmt.Sprint("Server running on http://localhost", port))
-	log.Fatal(http.ListenAndServe(port, router))
+	// Initialize runner
+	app := colly.App{
+		CrawlService:  crawlService,
+		ScrapeService: scrapeService,
+	}
+
 }

@@ -17,8 +17,6 @@ RUN adduser \
 
 WORKDIR /usr/src/app
 
-RUN go install github.com/swaggo/swag/cmd/swag@v1.8.9
-
 COPY ./go.mod .
 COPY ./go.sum .
 RUN go mod download
@@ -28,7 +26,7 @@ COPY . .
 ENV GOOS=linux 
 ENV GOARCH=amd64 
 ENV CGO_ENABLED=0
-RUN ./taskfile build server
+RUN ./taskfile build runner
 
 
 # FINAL
@@ -41,6 +39,4 @@ COPY --from=builder /usr/src/app /
 
 USER app:app
 
-ENV PORT=8080
-
-CMD ["/server"]
+ENTRYPOINT ["/runner"]

@@ -7,14 +7,10 @@ install () {
 	go mod download && go mod verify
 }
 
-generate () {
-	swag init -g ./$app_location $@
-}
-
 build () {
-	server () {
+	runner () {
 		generate
-		go build -o server $app_location $@
+		go build -o runner $app_location $@
 	}
 	
 	docker () {
@@ -25,16 +21,12 @@ build () {
 }
 
 run () {
-	generate
 	go run $app_location $@
 }
 
 dev () {
+	reflex -s -g reflex.conf -- reflex -c reflex.conf
 	reflex -c ./reflex.conf $@
-}
-
-test () {
-	go test -v $(go list ./tests/... | grep -v /mocks) -coverpkg $(go list ./pkg/... | grep -v /app) $@
 }
 
 lint () {
