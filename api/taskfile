@@ -8,7 +8,7 @@ install () {
 }
 
 generate () {
-	swag init -g ./$app_location $@
+	swag init --parseDependency -g ./$app_location $@
 }
 
 build () {
@@ -30,6 +30,7 @@ run () {
 }
 
 dev () {
+	reflex -s -g reflex.conf -- reflex -c reflex.conf
 	reflex -c ./reflex.conf $@
 }
 

@@ -6,9 +6,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sophielizg/harvest/api/config"
-	"github.com/sophielizg/harvest/api/mysql"
+	// Import any external types used by swag
+	_ "github.com/sophielizg/harvest/common/harvest"
+
 	"github.com/sophielizg/harvest/api/routes"
+	"github.com/sophielizg/harvest/common/config"
+	"github.com/sophielizg/harvest/common/mysql"
 )
 
 // @title harvest
