@@ -26,8 +26,9 @@ CREATE PROCEDURE deleteCrawl(
 
     UPDATE Request r
     INNER JOIN Scrape s ON r.scrapeId = s.scrapeId
+    INNER JOIN CrawlRun cr ON s.crawlRunId = cr.crawlRunId
     SET r.createdByRequestId = NULL
-    WHERE s.crawlId = crawlIdIn;
+    WHERE cr.crawlId = crawlIdIn;
 
     DELETE FROM Crawl WHERE crawlId = crawlIdIn;
 

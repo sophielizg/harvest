@@ -28,11 +28,15 @@ func (crawlConfig *CrawlConfig) Scan(value interface{}) error {
 }
 
 func (crawlConfig *CrawlConfig) Value() (driver.Value, error) {
-	j, err := json.Marshal(crawlConfig)
+	if crawlConfig == nil {
+		return nil, nil
+	}
+
+	b, err := json.Marshal(crawlConfig)
 	if err != nil {
 		return nil, err
 	}
-	return driver.Value([]byte(j)), nil
+	return string(b), nil
 }
 
 func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
@@ -42,18 +46,143 @@ func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
 	err := rows.Scan(&crawl.CrawlId, &crawl.Name, &crawl.CreatedTimestamp,
 		&crawl.Running, &crawlConfig)
 
-	crawl.Config = harvest.CrawlConfig(crawlConfig)
+	convertedConfig := harvest.CrawlConfig(crawlConfig)
+	crawl.Config = &convertedConfig
 
 	return &crawl, err
 }
 
 func (c *CrawlService) Crawl(crawlId int) (*harvest.Crawl, error) {
-	row, err := c.Db.Query("CALL getCrawlByCrawlId(?);", crawlId)
+	rows, err := c.Db.Query("CALL getCrawlByCrawlId(?);", crawlId)
 	if err != nil {
 		return nil, err
 	}
-	defer row.Close()
+	defer rows.Close()
 
-	row.Next()
-	return scanCrawl(row)
+	for rows.Next() {
+		return scanCrawl(rows)
+	}
+	return nil, errors.New("No crawls with specified crawlId found")
+}
+
+func (c *CrawlService) CrawlByName(name string) (*harvest.Crawl, error) {
+	rows, err := c.Db.Query("CALL getCrawlByName(?);", name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		return scanCrawl(rows)
+	}
+	return nil, errors.New("No crawls with specified name found")
+}
+
+func (c *CrawlService) Crawls() ([]harvest.Crawl, error) {
+	rows, err := c.Db.Query("CALL getAllCrawls();")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var crawls []harvest.Crawl
+	for rows.Next() {
+		crawl, err := scanCrawl(rows)
+		if err != nil {
+			return nil, err
+		}
+		crawls = append(crawls, *crawl)
+	}
+
+	return crawls, nil
+}
+
+func (c *CrawlService) AddCrawl(crawl harvest.CrawlFields) (int, error) {
+	var crawlConfig *CrawlConfig
+	if crawl.Config != nil {
+		convertedConfig := CrawlConfig(*crawl.Config)
+		crawlConfig = &convertedConfig
+	}
+
+	rows, err := c.Db.Query("CALL addCrawl(?, ?);", crawl.Name, &crawlConfig)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var crawlId int
+		err = rows.Scan(&crawlId)
+		if err != nil {
+			return 0, err
+		}
+		return crawlId, nil
+	}
+	return 0, errors.New("Record created but no crawlId returned")
+}
+
+func (c *CrawlService) UpdateCrawl(crawlId int, crawl harvest.CrawlFields) error {
+	var crawlConfig *CrawlConfig
+	if crawl.Config != nil {
+		convertedConfig := CrawlConfig(*crawl.Config)
+		crawlConfig = &convertedConfig
+	}
+
+	stmt, err := c.Db.Prepare("CALL updateCrawl(?, ?, ?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId, crawl.Name, &crawlConfig)
+	return err
+}
+
+func (c *CrawlService) DeleteCrawl(crawlId int) error {
+	stmt, err := c.Db.Prepare("CALL deleteCrawl(?, 1);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId)
+	return err
+}
+
+func (c *CrawlService) StartCrawl(crawlId int) error {
+	stmt, err := c.Db.Prepare("CALL startCrawl(?, 1);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId)
+	return err
+}
+
+func (c *CrawlService) StopCrawl(crawlId int) error {
+	stmt, err := c.Db.Prepare("CALL stopCrawl(?, 1);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId)
+	return err
+}
+
+func (c *CrawlService) PauseCrawl(crawlId int) error {
+	stmt, err := c.Db.Prepare("CALL pauseCrawl(?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId)
+	return err
+}
+
+func (c *CrawlService) UnpauseCrawl(crawlId int) error {
+	stmt, err := c.Db.Prepare("CALL unpauseCrawl(?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(crawlId)
+	return err
 }
