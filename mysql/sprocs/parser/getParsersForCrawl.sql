@@ -12,9 +12,10 @@ CREATE PROCEDURE getParsersForCrawl(
         ty.name AS type,
         GROUP_CONCAT(tg.name) AS tags
     FROM Parser p
-    INNER JOIN ParserType ty ON p.typeId = ty.typeId
+    INNER JOIN ParserType ty ON p.typeId = ty.parserTypeId
     LEFT JOIN ParserTag tg ON p.parserId = tg.parserId
-    WHERE p.crawlId = crawlIdIn;
+    WHERE p.crawlId = crawlIdIn
+    GROUP BY p.parserId;
 END $$
 
 DELIMITER ;
