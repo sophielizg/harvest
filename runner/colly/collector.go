@@ -8,13 +8,8 @@ import (
 	"github.com/gocolly/colly/proxy"
 )
 
-func (app *App) Crawler() (*colly.Collector, error) {
-	scrape, err := app.ScrapeService.DequeueScrape()
-	if err != nil {
-		return nil, err
-	}
-
-	crawl, err := app.CrawlService.Crawl(scrape.CrawlId)
+func (app *App) Collector() (*colly.Collector, error) {
+	crawl, err := app.CrawlService.Crawl(app.CrawlId)
 	if err != nil {
 		return nil, err
 	}

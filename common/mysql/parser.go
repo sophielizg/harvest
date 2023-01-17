@@ -113,3 +113,78 @@ func (p *ParserService) Parsers(crawlId int) ([]harvest.Parser, error) {
 	}
 	return parsers, nil
 }
+
+func (p *ParserService) AddParser(crawlId int, parser harvest.ParserFields) (int, error) {
+	if parser.PageType == nil {
+		return 0, errors.New("No parser type provided")
+	}
+
+	parserTypes, err := p.getParserTypes()
+	if err != nil {
+		return 0, err
+	}
+
+	parserTypeId, ok := parserTypes[*parser.PageType]
+	if !ok {
+		return 0, errors.New("Invalid parser type provided")
+	}
+
+	var autoIncrementRules *ParserAutoIncrementRules
+	if parser.AutoIncrementRules != nil {
+		convertedRules := ParserAutoIncrementRules(*parser.AutoIncrementRules)
+		autoIncrementRules = &convertedRules
+	}
+
+	var jsonPathStr string
+	if parser.JsonPath != nil {
+		jsonPathStr = strings.Join(parser.JsonPath, ",")
+	}
+
+	rows, err := p.Db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?, ?);",
+		crawlId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath, jsonPathStr,
+		parser.EnqueueCrawlId, autoIncrementRules)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var parserId int
+		err = rows.Scan(&parserId)
+		if err != nil {
+			return 0, err
+		}
+		return parserId, nil
+	}
+	return 0, errors.New("Record created but no parserId returned")
+}
+
+func (p *ParserService) DeleteParser(parserId int) error {
+	stmt, err := p.Db.Prepare("CALL deleteParser(?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(parserId)
+	return err
+}
+
+func (p *ParserService) AddParserTag(parserId int, tag string) error {
+	stmt, err := p.Db.Prepare("CALL addParserTag(?, ?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(parserId, tag)
+	return err
+}
+
+func (p *ParserService) DeleteParserTag(parserId int, tag string) error {
+	stmt, err := p.Db.Prepare("CALL deleteParserTag(?, ?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(parserId, tag)
+	return err
+}

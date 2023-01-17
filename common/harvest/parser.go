@@ -29,8 +29,8 @@ type Parser struct {
 type ParserService interface {
 	ParserTypes() ([]string, error)
 	Parsers(crawlId int) ([]Parser, error)
-	// AddParser(parser ParserFields) (int, error)
-	// DeleteParser(parserId int) error
-	// AddParserTag(parserId int, tag string) (int, error)
-	// DeleteParserTag(parserTagId int) error
+	AddParser(crawlId int, parser ParserFields) (int, error)
+	DeleteParser(parserId int) error
+	AddParserTag(parserId int, tag string) error
+	DeleteParserTag(parserId int, tag string) error
 }

@@ -54,6 +54,7 @@ func (app *App) CrawlRouter() *chi.Mux {
 // getCrawlById godoc
 // @Summary Get crawl endpoint
 // @Description Get crawl details using its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -72,6 +73,7 @@ func (app *App) getCrawlById(r *http.Request) (interface{}, error) {
 // getCrawlById godoc
 // @Summary Get crawl endpoint
 // @Description Get crawl details using its name
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param name path string true "Name of crawl"
@@ -86,6 +88,7 @@ func (app *App) getCrawlByName(r *http.Request) (interface{}, error) {
 // getCrawls godoc
 // @Summary Get crawl endpoint
 // @Description Get details of all crawls
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []harvest.Crawl
@@ -98,6 +101,7 @@ func (app *App) getCrawls(r *http.Request) (interface{}, error) {
 // addCrawl godoc
 // @Summary Add crawl endpoint
 // @Description Add a new crawl
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param request body harvest.CrawlFields true "Fields for crawl"
@@ -122,6 +126,7 @@ func (app *App) addCrawl(r *http.Request) (interface{}, error) {
 // updateCrawl godoc
 // @Summary Update crawl endpoint
 // @Description Update an existing crawl
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -153,6 +158,7 @@ func (app *App) updateCrawl(r *http.Request) (interface{}, error) {
 // deleteCrawl godoc
 // @Summary Delete crawl endpoint
 // @Description Delete crawl by its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -177,6 +183,7 @@ func (app *App) deleteCrawl(r *http.Request) (interface{}, error) {
 // stopCrawl godoc
 // @Summary Stop crawl endpoint
 // @Description Stop crawl by its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -201,6 +208,7 @@ func (app *App) stopCrawl(r *http.Request) (interface{}, error) {
 // startCrawl godoc
 // @Summary Start crawl endpoint
 // @Description Start crawl by its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -225,6 +233,7 @@ func (app *App) startCrawl(r *http.Request) (interface{}, error) {
 // pauseCrawl godoc
 // @Summary Pause crawl endpoint
 // @Description Pause crawl by its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
@@ -249,6 +258,7 @@ func (app *App) pauseCrawl(r *http.Request) (interface{}, error) {
 // unpauseCrawl godoc
 // @Summary Unpause crawl endpoint
 // @Description Unpause crawl by its crawlId
+// @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param crawlId path string true "Id of crawl"
