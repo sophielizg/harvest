@@ -6,14 +6,15 @@ import (
 )
 
 type App struct {
-	CrawlId       int
-	CrawlRunId    int
-	ScrapeId      int
-	CrawlService  harvest.CrawlService
-	ScrapeService harvest.ScrapeService
-	ParserService harvest.ParserService
-	ResultService harvest.ResultService
-	ErrorService  harvest.ErrorService
+	CrawlId             int
+	CrawlRunId          int
+	ScrapeId            int
+	CrawlService        harvest.CrawlService
+	ScrapeService       harvest.ScrapeService
+	ParserService       harvest.ParserService
+	ResultService       harvest.ResultService
+	ErrorService        harvest.ErrorService
+	RequestQueueService harvest.RequestQueueService
 }
 
 func (app *App) Crawler() (*colly.Collector, error) {

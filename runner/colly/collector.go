@@ -54,8 +54,10 @@ func (app *App) Collector() (*colly.Collector, error) {
 
 	if config.Cookies != nil {
 		collector.OnRequest(func(request *colly.Request) {
-			for key, value := range config.Cookies {
-				request.Headers.Set(key, value)
+			for key, values := range config.Cookies {
+				for _, value := range values {
+					request.Headers.Add(key, value)
+				}
 			}
 		})
 	}

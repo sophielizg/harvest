@@ -14,16 +14,26 @@ type parserFunc func(*colly.Collector, harvest.Parser) error
 
 func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Parser,
 	parsedValue string) error {
+	requestIdStr := parentRequest.Ctx.Get("requestId")
+	requestId, err := strconv.Atoi(requestIdStr)
+	if err != nil {
+		return err
+	}
+
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(parentRequest.Body)
 	body := buf.Bytes()
 	url := parentRequest.URL.String()
 
-	var err error
+	var headers map[string][]string
+	method := "GET"
+
 	newUrl := url
 	newBody := body
 
 	if parser.AutoIncrementRules != nil {
+		method = parentRequest.Method
+		headers = *parentRequest.Headers
 		if parser.AutoIncrementRules.UrlRegex != nil {
 			newUrl, err = utils.IncrementUrl(url, *parser.AutoIncrementRules.UrlRegex)
 		}
@@ -38,7 +48,19 @@ func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Pars
 		newBody = nil
 	}
 
-	// TODO Enqueue request with newUrl and newBody
+	newRequest := harvest.RequestToScrape{
+		Url:     newUrl,
+		Method:  method,
+		Headers: headers,
+		Body:    newBody,
+	}
+	_, err = app.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
+		CrawlId:            app.CrawlId,
+		Request:            newRequest,
+		IsInitialRequest:   false,
+		CreatedByRequestId: requestId,
+	})
+	return err
 }
 
 func (app *App) saveResult(response *colly.Response, parserId int, parsedValue string) error {

@@ -33,6 +33,8 @@ CREATE PROCEDURE enqueueRequest(
     VALUES
         (crawlIdIn, NOW(), requestIn, createdByRequestIdIn, isInitialRequestIn);
 
+    SELECT LAST_INSERT_ID() AS requestQueueId;
+
     CALL updateCrawlStatus(crawlIdIn, scrapeIdIn, 1, 0, 0, 0);
 
     IF createTransaction THEN
