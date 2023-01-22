@@ -44,7 +44,7 @@ func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
 	var crawl harvest.Crawl
 
 	err := rows.Scan(&crawl.CrawlId, &crawl.Name, &crawl.CreatedTimestamp,
-		&crawl.Running, &crawlConfig)
+		&crawlConfig)
 
 	if crawlConfig != nil {
 		convertedConfig := harvest.CrawlConfig(*crawlConfig)

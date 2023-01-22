@@ -9,9 +9,9 @@ CREATE PROCEDURE addCrawl(
     IN configIn JSON
 ) BEGIN
     INSERT INTO Crawl
-        (name, createdTimestamp, running, config)
+        (name, createdTimestamp, config)
     VALUES
-        (nameIn, NOW(), 0, configIn);
+        (nameIn, NOW(), configIn);
     SELECT LAST_INSERT_ID() AS crawlId;
 END $$
 

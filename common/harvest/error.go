@@ -7,7 +7,8 @@ type Error struct {
 	ScrapedTimestamp    time.Time `json:"scrapedTimestamp"`
 	StatusCode          int       `json:"statusCode"`
 	IsMissngParseResult bool      `json:"isMissngParseResult"`
-	Response            string    `json:"response"`
+	ErrorMessage        string    `json:"errorMessage"`
+	Response            []byte    `json:"response"`
 }
 
 type ErrorService interface {

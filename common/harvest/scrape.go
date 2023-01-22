@@ -1,8 +1,9 @@
 package harvest
 
 type Scrape struct {
-	ScrapeId int `json:"scrapeId"`
-	CrawlId  int `json:"crawlId"`
+	ScrapeId   int `json:"scrapeId"`
+	CrawlRunId int `json:"crawlRunId"`
+	CrawlId    int `json:"crawlId"`
 }
 
 type ScrapeService interface {

@@ -11,7 +11,8 @@ CREATE PROCEDURE addError(
     IN parserIdIn INT,
     IN statusCodeIn INT,
     IN isMissngParseResultIn BOOL,
-    IN responseIn TEXT,
+    IN errorMessageIn VARCHAR(4096),
+    IN responseIn BLOB,
     IN createTransaction BOOL
 ) BEGIN
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
@@ -32,10 +33,12 @@ CREATE PROCEDURE addError(
 
     INSERT INTO Error
         (requestId, parserId, scrapedTimestamp,
-         statusCode, isMissngParseResult, response)
+         statusCode, isMissngParseResult, errorMessage,
+         response)
     VALUES
         (requestIdIn, parserIdIn, NOW(),
-         statusCodeIn, isMissngParseResultIn, responseIn);
+         statusCodeIn, isMissngParseResultIn, errorMessageIn,
+         responseIn);
 
     CALL updateCrawlStatus(
         crawlIdIn, scrapeIdIn, 0, 0, 

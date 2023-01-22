@@ -7,9 +7,16 @@ DELIMITER $$
 CREATE PROCEDURE pauseCrawl(
     IN crawlIdIn INT
 ) BEGIN
-    UPDATE Crawl SET
+    DECLARE currentCrawlRunId INT;
+
+    SELECT crawlRunId INTO currentCrawlRunId FROM CrawlRun
+    WHERE crawlId = crawlIdIn 
+    ORDER BY startTimestamp DESC
+    LIMIT 1;
+
+    UPDATE CrawlRun SET
         running = 0
-    WHERE crawlId = crawlIdIn;
+    WHERE crawlRunId = currentCrawlRunId;
 END $$
 
 DELIMITER ;

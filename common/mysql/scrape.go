@@ -38,7 +38,7 @@ func (s *ScrapeService) DequeueScrape() (*harvest.Scrape, error) {
 
 	for rows.Next() {
 		var scrape harvest.Scrape
-		err = rows.Scan(&scrape.ScrapeId, &scrape.CrawlId)
+		err = rows.Scan(&scrape.ScrapeId, &scrape.CrawlRunId, &scrape.CrawlId)
 		if err != nil {
 			return nil, err
 		}

@@ -3,18 +3,19 @@ package harvest
 import "time"
 
 type CrawlConfig struct {
-	AllowedDomains     []string `json:"allowedDomains"`
-	MaxDepth           int      `json:"maxDepth"`
-	UserAgent          string   `json:"userAgent"`
-	AllowRevisit       bool     `json:"allowRevisit"`
-	Proxies            []string `json:"proxies"`
-	RandomDelaySeconds float32  `json:"randomDelaySeconds"`
+	AllowedDomains     []string          `json:"allowedDomains"`
+	MaxDepth           int               `json:"maxDepth"`
+	UserAgent          string            `json:"userAgent"`
+	AllowRevisit       bool              `json:"allowRevisit"`
+	Proxies            []string          `json:"proxies"`
+	RandomDelaySeconds float32           `json:"randomDelaySeconds"`
+	RequestTimeout     float32           `json:"requestTimeout"`
+	Cookies            map[string]string `json:"cookies"`
 }
 
 type CrawlFields struct {
-	Name    *string      `json:"name"`
-	Running *bool        `json:"running"`
-	Config  *CrawlConfig `json:"config"`
+	Name   *string      `json:"name"`
+	Config *CrawlConfig `json:"config"`
 }
 
 type Crawl struct {

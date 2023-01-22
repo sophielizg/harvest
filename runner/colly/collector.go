@@ -44,8 +44,19 @@ func (app *App) Collector() (*colly.Collector, error) {
 	if config.RandomDelaySeconds != 0 {
 		collector.Limit(&colly.LimitRule{
 			DomainGlob:  "*",
-			Parallelism: 2,
 			RandomDelay: time.Duration(config.RandomDelaySeconds) * time.Second,
+		})
+	}
+
+	if config.RequestTimeout != 0 {
+		collector.SetRequestTimeout(time.Duration(config.RequestTimeout) * time.Second)
+	}
+
+	if config.Cookies != nil {
+		collector.OnRequest(func(request *colly.Request) {
+			for key, value := range config.Cookies {
+				request.Headers.Set(key, value)
+			}
 		})
 	}
 

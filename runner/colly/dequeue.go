@@ -7,6 +7,7 @@ func (app *App) Dequeue() error {
 	}
 
 	app.CrawlId = scrape.CrawlId
+	app.CrawlRunId = scrape.CrawlRunId
 	app.ScrapeId = scrape.ScrapeId
 	return nil
 }

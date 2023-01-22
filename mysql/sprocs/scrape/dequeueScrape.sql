@@ -42,6 +42,7 @@ BEGIN
 
     SELECT 
         dequeueScrapeId AS scrapeId,
+        dequeueCrawlRunId AS crawlRunId,
         crawlId
     FROM CrawlRun
     WHERE crawlRunId = dequeueCrawlRunId;

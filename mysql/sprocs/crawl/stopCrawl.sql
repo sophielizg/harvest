@@ -41,9 +41,9 @@ CREATE PROCEDURE stopCrawl(
     SET @numDequeued := ROW_COUNT();
     CALL updateCrawlStatus(crawlIdIn, NULL, -1 * @numDequeued, 0, 0, 0);
 
-    UPDATE Crawl SET
+    UPDATE CrawlRun SET
         running = 0
-    WHERE crawlId = crawlIdIn;
+    WHERE crawlRunId = currentCrawlRunId;
 
     IF createTransaction THEN
         COMMIT;

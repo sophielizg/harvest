@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS Error (
     scrapedTimestamp DATETIME,
     statusCode INT,
     isMissngParseResult BOOL,
-    response TEXT,
+    errorMessage VARCHAR(4096),
+    response BLOB,
     PRIMARY KEY (requestId, parserId)
 ) ENGINE=InnoDB;

@@ -25,13 +25,9 @@ CREATE PROCEDURE startCrawl(
     END IF;
 
     INSERT INTO CrawlRun
-        (crawlId, startTimestamp)
+        (crawlId, running, startTimestamp)
     VALUES
-        (crawlIdIn, NOW());
-
-    UPDATE Crawl SET
-        running = 1
-    WHERE crawlId = crawlIdIn;
+        (crawlIdIn, 1, NOW());
 
     UPDATE RequestQueue SET
         scrapeId = NULL
