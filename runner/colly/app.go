@@ -12,6 +12,8 @@ type App struct {
 	CrawlService  harvest.CrawlService
 	ScrapeService harvest.ScrapeService
 	ParserService harvest.ParserService
+	ResultService harvest.ResultService
+	ErrorService  harvest.ErrorService
 }
 
 func (app *App) Crawler() (*colly.Collector, error) {

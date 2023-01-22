@@ -7,6 +7,5 @@ CREATE TABLE IF NOT EXISTS Error (
     statusCode INT,
     isMissngParseResult BOOL,
     errorMessage VARCHAR(4096),
-    response BLOB,
     PRIMARY KEY (requestId, parserId)
 ) ENGINE=InnoDB;

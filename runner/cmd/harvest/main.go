@@ -22,12 +22,16 @@ func main() {
 	crawlService := &mysql.CrawlService{Db: db}
 	scrapeService := &mysql.ScrapeService{Db: db}
 	parserService := &mysql.ParserService{Db: db}
+	resultService := &mysql.ResultService{Db: db}
+	errorService := &mysql.ErrorService{Db: db}
 
 	// Initialize runner
 	app := colly.App{
 		CrawlService:  crawlService,
 		ScrapeService: scrapeService,
 		ParserService: parserService,
+		ResultService: resultService,
+		ErrorService:  errorService,
 	}
 
 }

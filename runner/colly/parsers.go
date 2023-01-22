@@ -3,6 +3,7 @@ package colly
 import (
 	"bytes"
 	"errors"
+	"strconv"
 
 	"github.com/gocolly/colly"
 	"github.com/sophielizg/harvest/common/harvest"
@@ -41,18 +42,38 @@ func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Pars
 }
 
 func (app *App) saveResult(response *colly.Response, parserId int, parsedValue string) error {
-	// TODO: implement this
-	// get app.CrawlId, app.ScrapeId, ctx.Get("requestId")
+	requestIdStr := response.Ctx.Get("requestId")
+	requestId, err := strconv.Atoi(requestIdStr)
+	if err != nil {
+		return err
+	}
 
-	// add result in result service
+	resultFields := harvest.ResultFields{
+		RequestId: requestId,
+		ParserId:  parserId,
+		Value:     parsedValue,
+	}
+
+	return app.ResultService.AddResult(app.CrawlId, app.ScrapeId, resultFields)
 }
 
-func (app *App) saveError(response *colly.Response, parserId int, err error,
-	isMissingResult bool) error {
-	// TODO: implement this
-	// get app.CrawlId, app.ScrapeId, ctx.Get("requestId")
+func (app *App) saveError(response *colly.Response, parserId int, parseError error,
+	isMissingParseResult bool) error {
+	requestIdStr := response.Ctx.Get("requestId")
+	requestId, err := strconv.Atoi(requestIdStr)
+	if err != nil {
+		return err
+	}
 
-	// add error in error service
+	errorFields := harvest.ErrorFields{
+		RequestId:           requestId,
+		ParserId:            parserId,
+		StatusCode:          response.StatusCode,
+		IsMissngParseResult: isMissingParseResult,
+		ErrorMessage:        parseError.Error(),
+	}
+
+	return app.ErrorService.AddError(app.CrawlId, app.ScrapeId, errorFields)
 }
 
 func (app *App) saveAndEnqueue(response *colly.Response, parser harvest.Parser,

@@ -14,13 +14,15 @@ type QueuedRequestFields struct {
 }
 
 type QueuedRequest struct {
-	RequestId        int       `json:"requestId"`
+	RequestQueueId   int       `json:"requestQueueId"`
 	CreatedTimestamp time.Time `json:"createdTimestamp"`
 	QueuedRequestFields
 }
 
 type RequestQueueService interface {
-	Requests(crawlId int) ([]QueuedRequest, error)
-	AddRequest(request QueuedRequestFields) (int, error)
-	DeleteRequest(requestId int) error
+	InitialRequests(crawlId int) ([]QueuedRequest, error)
+	AddInitialRequest(crawlId int, request QueuedRequestFields) (int, error)
+	DeleteInitialRequest(requestQueueId int) error
+	EnqueueRequest(crawlId int, request QueuedRequestFields) (int, error)
+	DequeueRequest(crawlId int) (QueuedRequest, error)
 }
