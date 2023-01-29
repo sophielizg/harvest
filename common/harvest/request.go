@@ -3,10 +3,9 @@ package harvest
 import "time"
 
 type RequestFields struct {
-	RequestId          int    `json:"requestId"`
 	ScrapeId           int    `json:"scrapeId"`
-	RequestHash        string `json:"requestHash"`
-	Request            []byte `json:"request"`
+	Id                 uint64 `json:"id"`
+	Blob               []byte `json:"blob"`
 	CreatedByRequestId int    `json:"createdByRequestId"`
 }
 
@@ -15,7 +14,7 @@ type Request struct {
 	RequestFields
 }
 
-type RequestQueueService interface {
-	IsRequestVisited(requestHash string) (bool, error)
+type RequestService interface {
+	IsRequestVisited(crawlRunId int, requestId uint64) (bool, error)
 	AddRequestIsVisited(request RequestFields) (int, error)
 }
