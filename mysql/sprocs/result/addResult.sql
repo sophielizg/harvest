@@ -5,8 +5,8 @@ DROP PROCEDURE IF EXISTS addResult;
 DELIMITER $$
 
 CREATE PROCEDURE addResult(
-    IN crawlIdIn INT,
-    IN scrapeIdIn INT,
+    IN runIdIn INT,
+    IN runnerIdIn INT,
     IN requestIdIn INT,
     IN parserIdIn INT,
     IN valueIn TEXT,
@@ -29,11 +29,11 @@ CREATE PROCEDURE addResult(
     END IF;
 
     INSERT INTO Result
-        (requestId, parserId, scrapedTimestamp, value)
+        (runId, requestId, parserId, scrapedTimestamp, value)
     VALUES
-        (requestIdIn, parserIdIn, NOW(), valueIn);
+        (runIdIn, requestIdIn, parserIdIn, NOW(), valueIn);
 
-    CALL updateCrawlStatus(crawlIdIn, scrapeIdIn, 0, 1, 0, 0);
+    CALL updateStatus(runIdIn, runnerIdIn, 0, 1, 0, 0);
     
     IF createTransaction THEN
         COMMIT;

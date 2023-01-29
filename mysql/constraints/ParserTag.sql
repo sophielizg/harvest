@@ -2,7 +2,7 @@ use harvest;
 
 CALL addForeignKeyIfNotExists(
     'ParserTag', 
-    'FK_Result_Parser_parserId',
+    'FK_ParserTag_Parser_parserId',
     'parserId',
     'Parser(parserId)',
     'ON DELETE CASCADE ON UPDATE CASCADE');

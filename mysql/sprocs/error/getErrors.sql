@@ -5,16 +5,15 @@ DROP PROCEDURE IF EXISTS getErrors;
 DELIMITER $$
 
 CREATE PROCEDURE getErrors(
-    IN crawlIdIn INT,
-    IN crawlRunIdIn INT,
+    IN scraperIdIn INT,
+    IN runIdIn INT,
     IN tagsIn VARCHAR(1024)
 ) BEGIN
     SELECT e.* FROM Result e
-    INNER JOIN Request rq ON e.requestId = rq.requestId
-    INNER JOIN Scrape s ON rq.scrapeId = s.scrapeId
+    INNER JOIN Runs r ON e.runId = r.runId
     LEFT JOIN ParserTag pt ON e.parserId = pt.parserId
-    WHERE (crawlIdIn IS NULL OR s.crawlId = crawlIdIn)
-    AND (crawlRunIdIn IS NULL OR s.crawlRunId = crawlRunIdIn)
+    WHERE (scraperIdIn IS NULL OR r.scraperId = scraperIdIn)
+    AND (runIdIn IS NULL OR e.runId = runIdIn)
     AND (tagsIn IS NULL OR FIND_IN_SET(pt.name, tagsIn));
 END $$
 

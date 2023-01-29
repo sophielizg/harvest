@@ -1,11 +1,13 @@
 USE harvest;
 
 CREATE TABLE IF NOT EXISTS Error (
-    requestId INT NOT NULL,
+    runId INT NOT NULL,
+    requestId INT UNSIGNED NOT NULL,
     parserId INT NOT NULL,
     scrapedTimestamp DATETIME,
     statusCode INT,
+    response BLOB,
     isMissngParseResult BOOL,
     errorMessage VARCHAR(4096),
-    PRIMARY KEY (requestId, parserId)
+    PRIMARY KEY (runId, requestId, parserId)
 ) ENGINE=InnoDB;

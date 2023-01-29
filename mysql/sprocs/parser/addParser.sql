@@ -5,23 +5,23 @@ DROP PROCEDURE IF EXISTS addParser;
 DELIMITER $$
 
 CREATE PROCEDURE addParser(
-    IN crawlIdIn INT,
-    IN typeIdIn INT,
+    IN scraperIdIn INT,
+    IN parserTypeIdIn INT,
     IN selectorIn VARCHAR(255),
     IN attrIn VARCHAR(255),
     IN xpathIn VARCHAR(255),
     IN jsonPathIn VARCHAR(255),
-    IN enqueueCrawlIdIn INT,
+    IN enqueueScraperIdIn INT,
     IN autoIncrementRulesIn JSON
 ) BEGIN
     INSERT INTO Parser
-        (crawlId, createdTimestamp, typeId, 
+        (scraperId, createdTimestamp, parserTypeId, 
         selector, attr, xpath, jsonPath, 
-        enqueueCrawlId, autoIncrementRules)
+        enqueueScraperId, autoIncrementRules)
     VALUES
-        (crawlIdIn, NOW(), typeIdIn, 
+        (scraperIdIn, NOW(), parserTypeIdIn, 
         selectorIn, attrIn, xpathIn, jsonPathIn, 
-        enqueueCrawlIdIn, autoIncrementRulesIn);
+        enqueueScraperIdIn, autoIncrementRulesIn);
     SELECT LAST_INSERT_ID() AS parserId;
 END $$
 

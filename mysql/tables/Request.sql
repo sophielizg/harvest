@@ -1,10 +1,11 @@
 USE harvest;
 
 CREATE TABLE IF NOT EXISTS Request (
-    requestId UNSIGNED INT NOT NULL,
-    crawlRunId INT NOT NULL,
+    requestId INT UNSIGNED NOT NULL,
+    runId INT NOT NULL,
     visitedTimestamp DATETIME,
-    request BLOB NOT NULL,
-    createdByRequestId INT,
-    PRIMARY KEY (requestId, crawlRunId)
+    requestBlob BLOB NOT NULL,
+    parentRequestId INT UNSIGNED,
+    originatorRequestId INT UNSIGNED,
+    PRIMARY KEY (requestId, runId)
 ) ENGINE=InnoDB;

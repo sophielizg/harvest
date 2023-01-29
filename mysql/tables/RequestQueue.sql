@@ -2,11 +2,11 @@ USE harvest;
 
 CREATE TABLE IF NOT EXISTS RequestQueue (
     requestQueueId INT AUTO_INCREMENT NOT NULL,
-    crawlId INT NOT NULL,
-    scrapeId INT,
+    scraperId INT NOT NULL,
+    runId INT,
+    runnerId INT,
     createdTimestamp DATETIME,
-    request BLOB NOT NULL,
-    createdByRequestId INT,
+    requestBlob BLOB NOT NULL,
     isInitialRequest BOOL,
     PRIMARY KEY (requestQueueId)
 ) ENGINE=InnoDB;
