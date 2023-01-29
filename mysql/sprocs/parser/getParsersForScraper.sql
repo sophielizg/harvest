@@ -1,11 +1,11 @@
 use harvest;
 
-DROP PROCEDURE IF EXISTS getParsersForCrawl;
+DROP PROCEDURE IF EXISTS getParsersForScraper;
 
 DELIMITER $$
 
-CREATE PROCEDURE getParsersForCrawl(
-    IN crawlIdIn INT
+CREATE PROCEDURE getParsersForScraper(
+    IN scraperIdIn INT
 ) BEGIN
     SELECT 
         p.*,
@@ -14,7 +14,7 @@ CREATE PROCEDURE getParsersForCrawl(
     FROM Parser p
     INNER JOIN ParserType ty ON p.typeId = ty.parserTypeId
     LEFT JOIN ParserTag tg ON p.parserId = tg.parserId
-    WHERE p.crawlId = crawlIdIn
+    WHERE p.scraperId = scraperIdIn
     GROUP BY p.parserId;
 END $$
 
