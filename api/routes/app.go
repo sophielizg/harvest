@@ -12,8 +12,8 @@ import (
 )
 
 type App struct {
-	CrawlService  harvest.CrawlService
-	ParserService harvest.ParserService
+	ScraperService harvest.ScraperService
+	ParserService  harvest.ParserService
 }
 
 func (app *App) Router(port string) (*chi.Mux, error) {
@@ -30,8 +30,8 @@ func (app *App) Router(port string) (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/crawls", app.CrawlRouter())
-		r.Mount("/crawls/{crawlId}/parsers", app.ParserRouter())
+		r.Mount("/crawls", app.ScraperRouter())
+		r.Mount("/crawls/{scraperId}/parsers", app.ParserRouter())
 	})
 
 	// Create swagger UI

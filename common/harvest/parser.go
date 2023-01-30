@@ -15,7 +15,7 @@ type ParserFields struct {
 	Attr               *string                   `json:"attr"`
 	Xpath              *string                   `json:"xpath"`
 	JsonPath           []string                  `json:"jsonPath"`
-	EnqueueCrawlId     *int                      `json:"enqueueCrawlId"`
+	EnqueueScraperId   *int                      `json:"enqueueScraperId"`
 	AutoIncrementRules *ParserAutoIncrementRules `json:"autoIncrementRules"`
 }
 
@@ -28,8 +28,8 @@ type Parser struct {
 
 type ParserService interface {
 	ParserTypes() ([]string, error)
-	Parsers(crawlId int) ([]Parser, error)
-	AddParser(crawlId int, parser ParserFields) (int, error)
+	Parsers(scraperId int) ([]Parser, error)
+	AddParser(scraperId int, parser ParserFields) (int, error)
 	DeleteParser(parserId int) error
 	AddParserTag(parserId int, tag string) error
 	DeleteParserTag(parserId int, tag string) error

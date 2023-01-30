@@ -9,25 +9,25 @@ import (
 	"github.com/sophielizg/harvest/common/harvest"
 )
 
-type CrawlService struct {
+type ScraperService struct {
 	Db *sql.DB
 }
 
-type CrawlConfig harvest.CrawlConfig
+type ScraperConfig harvest.ScraperConfig
 
-func (crawlConfig *CrawlConfig) Scan(value interface{}) error {
+func (crawlConfig *ScraperConfig) Scan(value interface{}) error {
 	if value == nil {
 		return nil
 	}
 
 	b, ok := value.([]byte)
 	if !ok {
-		return errors.New("incompatible type for CrawlConfig")
+		return errors.New("incompatible type for ScraperConfig")
 	}
 	return json.Unmarshal(b, &crawlConfig)
 }
 
-func (crawlConfig *CrawlConfig) Value() (driver.Value, error) {
+func (crawlConfig *ScraperConfig) Value() (driver.Value, error) {
 	if crawlConfig == nil {
 		return nil, nil
 	}
@@ -39,57 +39,57 @@ func (crawlConfig *CrawlConfig) Value() (driver.Value, error) {
 	return string(b), nil
 }
 
-func scanCrawl(rows *sql.Rows) (*harvest.Crawl, error) {
-	var crawlConfig *CrawlConfig
-	var crawl harvest.Crawl
+func scanScraper(rows *sql.Rows) (*harvest.Scraper, error) {
+	var crawlConfig *ScraperConfig
+	var crawl harvest.Scraper
 
-	err := rows.Scan(&crawl.CrawlId, &crawl.Name, &crawl.CreatedTimestamp,
+	err := rows.Scan(&crawl.ScraperId, &crawl.Name, &crawl.CreatedTimestamp,
 		&crawlConfig)
 
 	if crawlConfig != nil {
-		convertedConfig := harvest.CrawlConfig(*crawlConfig)
+		convertedConfig := harvest.ScraperConfig(*crawlConfig)
 		crawl.Config = &convertedConfig
 	}
 
 	return &crawl, err
 }
 
-func (c *CrawlService) Crawl(crawlId int) (*harvest.Crawl, error) {
-	rows, err := c.Db.Query("CALL getCrawlByCrawlId(?);", crawlId)
+func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
+	rows, err := c.Db.Query("CALL getScraperByScraperId(?);", scraperId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		return scanCrawl(rows)
+		return scanScraper(rows)
 	}
-	return nil, errors.New("No crawls with specified crawlId found")
+	return nil, errors.New("No crawls with specified scraperId found")
 }
 
-func (c *CrawlService) CrawlByName(name string) (*harvest.Crawl, error) {
-	rows, err := c.Db.Query("CALL getCrawlByName(?);", name)
+func (c *ScraperService) ScraperByName(name string) (*harvest.Scraper, error) {
+	rows, err := c.Db.Query("CALL getScraperByName(?);", name)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		return scanCrawl(rows)
+		return scanScraper(rows)
 	}
 	return nil, errors.New("No crawls with specified name found")
 }
 
-func (c *CrawlService) Crawls() ([]harvest.Crawl, error) {
-	rows, err := c.Db.Query("CALL getAllCrawls();")
+func (c *ScraperService) Scrapers() ([]harvest.Scraper, error) {
+	rows, err := c.Db.Query("CALL getAllScrapers();")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var crawls []harvest.Crawl
+	var crawls []harvest.Scraper
 	for rows.Next() {
-		crawl, err := scanCrawl(rows)
+		crawl, err := scanScraper(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -99,92 +99,92 @@ func (c *CrawlService) Crawls() ([]harvest.Crawl, error) {
 	return crawls, nil
 }
 
-func (c *CrawlService) AddCrawl(crawl harvest.CrawlFields) (int, error) {
-	var crawlConfig *CrawlConfig
+func (c *ScraperService) AddScraper(crawl harvest.ScraperFields) (int, error) {
+	var crawlConfig *ScraperConfig
 	if crawl.Config != nil {
-		convertedConfig := CrawlConfig(*crawl.Config)
+		convertedConfig := ScraperConfig(*crawl.Config)
 		crawlConfig = &convertedConfig
 	}
 
-	rows, err := c.Db.Query("CALL addCrawl(?, ?);", crawl.Name, &crawlConfig)
+	rows, err := c.Db.Query("CALL addScraper(?, ?);", crawl.Name, &crawlConfig)
 	if err != nil {
 		return 0, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var crawlId int
-		err = rows.Scan(&crawlId)
+		var scraperId int
+		err = rows.Scan(&scraperId)
 		if err != nil {
 			return 0, err
 		}
-		return crawlId, nil
+		return scraperId, nil
 	}
-	return 0, errors.New("Record created but no crawlId returned")
+	return 0, errors.New("Record created but no scraperId returned")
 }
 
-func (c *CrawlService) UpdateCrawl(crawlId int, crawl harvest.CrawlFields) error {
-	var crawlConfig *CrawlConfig
+func (c *ScraperService) UpdateScraper(scraperId int, crawl harvest.ScraperFields) error {
+	var crawlConfig *ScraperConfig
 	if crawl.Config != nil {
-		convertedConfig := CrawlConfig(*crawl.Config)
+		convertedConfig := ScraperConfig(*crawl.Config)
 		crawlConfig = &convertedConfig
 	}
 
-	stmt, err := c.Db.Prepare("CALL updateCrawl(?, ?, ?);")
+	stmt, err := c.Db.Prepare("CALL updateScraper(?, ?, ?);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId, crawl.Name, &crawlConfig)
+	_, err = stmt.Exec(scraperId, crawl.Name, &crawlConfig)
 	return err
 }
 
-func (c *CrawlService) DeleteCrawl(crawlId int) error {
-	stmt, err := c.Db.Prepare("CALL deleteCrawl(?, 1);")
+func (c *ScraperService) DeleteScraper(scraperId int) error {
+	stmt, err := c.Db.Prepare("CALL deleteScraper(?, 1);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId)
+	_, err = stmt.Exec(scraperId)
 	return err
 }
 
-func (c *CrawlService) StartCrawl(crawlId int) error {
-	stmt, err := c.Db.Prepare("CALL startCrawl(?, 1);")
+func (c *ScraperService) StartScraper(scraperId int) error {
+	stmt, err := c.Db.Prepare("CALL startScraper(?, 1);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId)
+	_, err = stmt.Exec(scraperId)
 	return err
 }
 
-func (c *CrawlService) StopCrawl(crawlId int) error {
-	stmt, err := c.Db.Prepare("CALL stopCrawl(?, 1);")
+func (c *ScraperService) StopScraper(scraperId int) error {
+	stmt, err := c.Db.Prepare("CALL stopScraper(?, 1);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId)
+	_, err = stmt.Exec(scraperId)
 	return err
 }
 
-func (c *CrawlService) PauseCrawl(crawlId int) error {
-	stmt, err := c.Db.Prepare("CALL pauseCrawl(?);")
+func (c *ScraperService) PauseScraper(scraperId int) error {
+	stmt, err := c.Db.Prepare("CALL pauseScraper(?);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId)
+	_, err = stmt.Exec(scraperId)
 	return err
 }
 
-func (c *CrawlService) UnpauseCrawl(crawlId int) error {
-	stmt, err := c.Db.Prepare("CALL unpauseCrawl(?);")
+func (c *ScraperService) UnpauseScraper(scraperId int) error {
+	stmt, err := c.Db.Prepare("CALL unpauseScraper(?);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId)
+	_, err = stmt.Exec(scraperId)
 	return err
 }

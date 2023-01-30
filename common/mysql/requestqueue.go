@@ -41,8 +41,8 @@ func (requestToScrape *RequestToScrape) Value() (driver.Value, error) {
 
 func (rq *RequestQueueService) EnqueueRequest(request harvest.QueuedRequestFields) (int, error) {
 	requestToScrape := RequestToScrape(request.Request)
-	rows, err := rq.Db.Query("CALL enqueueRequest(?, ?, ?, ?, ?, 1);", request.CrawlId,
-		request.ScrapeId, requestToScrape, request.CreatedByRequestId,
+	rows, err := rq.Db.Query("CALL enqueueRequest(?, ?, ?, ?, ?, 1);", request.ScraperId,
+		request.RunnerId, requestToScrape, request.CreatedByRequestId,
 		request.IsInitialRequest)
 	if err != nil {
 		return 0, err

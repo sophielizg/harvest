@@ -43,6 +43,8 @@ CREATE PROCEDURE createRun(
     SET @numQueued := ROW_COUNT();
     CALL updateStatus(newRunId, NULL, @numQueued, 0, 0, 0);
 
+    SELECT newRunId AS runId;
+
     IF createTransaction THEN
         COMMIT;
     END IF;

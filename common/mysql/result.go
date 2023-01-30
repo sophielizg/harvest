@@ -10,14 +10,14 @@ type ResultService struct {
 	Db *sql.DB
 }
 
-func (r *ResultService) AddResult(crawlId int, scrapeId int,
+func (r *ResultService) AddResult(scraperId int, runnerId int,
 	result harvest.ResultFields) error {
 	stmt, err := r.Db.Prepare("CALL addResult(?, ?, ?, ?, ?, 1);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(crawlId, scrapeId, result.RequestId, result.ParserId,
+	_, err = stmt.Exec(scraperId, runnerId, result.RequestId, result.ParserId,
 		result.Value)
 	return err
 }

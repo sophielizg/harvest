@@ -2,30 +2,23 @@ package harvest
 
 import "time"
 
-type RequestToScrape struct {
-	Url     string              `json:"url"`
-	Method  string              `json:"method"`
-	Headers map[string][]string `json:"headers"`
-	Body    []byte              `json:"body"`
-}
-
 type QueuedRequestFields struct {
-	CrawlId            int             `json:"crawlId"`
-	Request            RequestToScrape `json:"request"`
-	IsInitialRequest   bool            `json:"isInitialRequest"`
-	CreatedByRequestId int             `json:"createdByRequestId"`
+	RunId int    `json:"runId"`
+	Blob  []byte `json:"blob"`
 }
 
 type QueuedRequest struct {
 	RequestQueueId   int       `json:"requestQueueId"`
+	RunnerId         int       `json:"runnerId"`
 	CreatedTimestamp time.Time `json:"createdTimestamp"`
-	ScrapeId         int       `json:"scrapeId"`
+	IsInitialRequest bool      `json:"isInitialRequest"`
 	QueuedRequestFields
 }
 
 type RequestQueueService interface {
-	QueuedRequests(crawlId int) ([]QueuedRequest, error)
-	DeleteQueuedRequest(requestQueueId int) error
-	EnqueueRequest(request QueuedRequestFields) (int, error)
-	DequeueRequest(crawlId int) (QueuedRequest, error)
+	// QueuedRequests(runId int) ([]QueuedRequest, error)
+	AddStartingRequest(scraperId int, requestBlob []byte) (int, error)
+	// DeleteQueuedRequest(requestQueueId int) error
+	EnqueueRequest(scraperId int, request QueuedRequestFields) (int, error)
+	DequeueRequests(runId int, runnerId int, numToDequeue int) ([]QueuedRequest, error)
 }

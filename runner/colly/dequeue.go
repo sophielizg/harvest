@@ -1,13 +1,13 @@
 package colly
 
 func (app *App) Dequeue() error {
-	scrape, err := app.ScrapeService.DequeueScrape()
+	scrape, err := app.RunnerQueueService.DequeueRunner()
 	if err != nil {
 		return err
 	}
 
-	app.CrawlId = scrape.CrawlId
-	app.CrawlRunId = scrape.CrawlRunId
-	app.ScrapeId = scrape.ScrapeId
+	app.ScraperId = scrape.ScraperId
+	app.RunId = scrape.RunId
+	app.RunnerId = scrape.RunnerId
 	return nil
 }

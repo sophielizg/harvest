@@ -19,8 +19,8 @@ func main() {
 	}
 	defer mysql.CloseDb(db)
 
-	crawlService := &mysql.CrawlService{Db: db}
-	scrapeService := &mysql.ScrapeService{Db: db}
+	crawlService := &mysql.ScraperService{Db: db}
+	scrapeService := &mysql.RunnerQueueService{Db: db}
 	parserService := &mysql.ParserService{Db: db}
 	resultService := &mysql.ResultService{Db: db}
 	errorService := &mysql.ErrorService{Db: db}
@@ -28,8 +28,8 @@ func main() {
 
 	// Initialize runner
 	app := colly.App{
-		CrawlService:        crawlService,
-		ScrapeService:       scrapeService,
+		ScraperService:      crawlService,
+		RunnerQueueService:  scrapeService,
 		ParserService:       parserService,
 		ResultService:       resultService,
 		ErrorService:        errorService,

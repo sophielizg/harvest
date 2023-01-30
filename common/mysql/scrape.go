@@ -7,29 +7,29 @@ import (
 	"github.com/sophielizg/harvest/common/harvest"
 )
 
-type ScrapeService struct {
+type RunnerQueueService struct {
 	Db *sql.DB
 }
 
-func (s *ScrapeService) EnqueueScrape(crawlId int) (int, error) {
-	rows, err := s.Db.Query("CALL enqueueScrape(?);", crawlId)
+func (s *RunnerQueueService) EnqueueRunner(scraperId int) (int, error) {
+	rows, err := s.Db.Query("CALL enqueueScrape(?);", scraperId)
 	if err != nil {
 		return 0, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var scrapeId int
-		err = rows.Scan(&scrapeId)
+		var runnerId int
+		err = rows.Scan(&runnerId)
 		if err != nil {
 			return 0, err
 		}
-		return scrapeId, nil
+		return runnerId, nil
 	}
-	return 0, errors.New("Record created but no scrapeId returned")
+	return 0, errors.New("Record created but no runnerId returned")
 }
 
-func (s *ScrapeService) DequeueScrape() (*harvest.Scrape, error) {
+func (s *RunnerQueueService) DequeueRunner() (*harvest.Scrape, error) {
 	rows, err := s.Db.Query("CALL dequeueScrape(1);")
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *ScrapeService) DequeueScrape() (*harvest.Scrape, error) {
 
 	for rows.Next() {
 		var scrape harvest.Scrape
-		err = rows.Scan(&scrape.ScrapeId, &scrape.CrawlRunId, &scrape.CrawlId)
+		err = rows.Scan(&scrape.RunnerId, &scrape.RunId, &scrape.ScraperId)
 		if err != nil {
 			return nil, err
 		}
@@ -47,12 +47,12 @@ func (s *ScrapeService) DequeueScrape() (*harvest.Scrape, error) {
 	return nil, errors.New("No scrapes found to dequeue")
 }
 
-func (s *ScrapeService) EndScrape(scrapeId int) error {
+func (s *RunnerQueueService) EndRunner(runnerId int) error {
 	stmt, err := s.Db.Prepare("CALL endScrape(?);")
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(scrapeId)
+	_, err = stmt.Exec(runnerId)
 	return err
 }

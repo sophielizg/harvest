@@ -27,21 +27,21 @@ func (app *App) ParserRouter() *chi.Mux {
 
 // getParsers godoc
 // @Summary Get parsers endpoint
-// @Description Get parsers for a crawl using its crawlId
+// @Description Get parsers for a crawl using its scraperId
 // @Tags parsers
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} []harvest.Parser
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/parsers/all [get]
+// @Router /crawls/{scraperId}/parsers/all [get]
 func (app *App) getParsers(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
-	return app.ParserService.Parsers(crawlId)
+	return app.ParserService.Parsers(scraperId)
 }
 
 // addParser godoc
@@ -50,14 +50,14 @@ func (app *App) getParsers(r *http.Request) (interface{}, error) {
 // @Tags parsers
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Param request body harvest.ParserFields true "Fields for parser"
 // @Success 200 {object} AddParserResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/parsers/add [post]
+// @Router /crawls/{scraperId}/parsers/add [post]
 func (app *App) addParser(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (app *App) addParser(r *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	parserId, err := app.ParserService.AddParser(crawlId, parser)
+	parserId, err := app.ParserService.AddParser(scraperId, parser)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,11 @@ func (app *App) addParser(r *http.Request) (interface{}, error) {
 // @Tags parsers
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Param parserId path string true "Id of parser"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/parsers/{parserId}/delete [delete]
+// @Router /crawls/{scraperId}/parsers/{parserId}/delete [delete]
 func (app *App) deleteParser(r *http.Request) (interface{}, error) {
 	parserIdStr := chi.URLParam(r, "parserId")
 	parserId, err := strconv.Atoi(parserIdStr)
@@ -108,12 +108,12 @@ func (app *App) deleteParser(r *http.Request) (interface{}, error) {
 // @Tags parsers
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Param parserId path string true "Id of parser"
 // @Param name path string true "Name of tag"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/parsers/{parserId}/tags/add/{name} [post]
+// @Router /crawls/{scraperId}/parsers/{parserId}/tags/add/{name} [post]
 func (app *App) addParserTag(r *http.Request) (interface{}, error) {
 	tagName := chi.URLParam(r, "name")
 	parserIdStr := chi.URLParam(r, "parserId")
@@ -136,12 +136,12 @@ func (app *App) addParserTag(r *http.Request) (interface{}, error) {
 // @Tags parsers
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Param parserId path string true "Id of parser"
 // @Param name path string true "Name of tag"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/parsers/{parserId}/tags/delete/{name} [post]
+// @Router /crawls/{scraperId}/parsers/{parserId}/tags/delete/{name} [post]
 func (app *App) deleteParserTag(r *http.Request) (interface{}, error) {
 	tagName := chi.URLParam(r, "name")
 	parserIdStr := chi.URLParam(r, "parserId")

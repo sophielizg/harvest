@@ -36,13 +36,13 @@ func main() {
 	}
 	defer mysql.CloseDb(db)
 
-	crawlService := &mysql.CrawlService{Db: db}
+	crawlService := &mysql.ScraperService{Db: db}
 	parserService := &mysql.ParserService{Db: db}
 
 	// Initialize server
 	app := routes.App{
-		CrawlService:  crawlService,
-		ParserService: parserService,
+		ScraperService: crawlService,
+		ParserService:  parserService,
 	}
 	router, err := app.Router(port)
 	if err != nil {

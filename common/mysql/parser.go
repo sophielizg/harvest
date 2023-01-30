@@ -74,8 +74,8 @@ func (p *ParserService) ParserTypes() ([]string, error) {
 	return parserTypeNames, nil
 }
 
-func (p *ParserService) Parsers(crawlId int) ([]harvest.Parser, error) {
-	rows, err := p.Db.Query("CALL getParsersForCrawl(?);", crawlId)
+func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
+	rows, err := p.Db.Query("CALL getParsersForScraper(?);", scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (p *ParserService) Parsers(crawlId int) ([]harvest.Parser, error) {
 
 		err = rows.Scan(&parser.ParserId, &dummy, &parser.CreatedTimestamp, &dummy,
 			&parser.Selector, &parser.Attr, &parser.Xpath, &jsonPath,
-			&parser.EnqueueCrawlId, &autoIncrementRules, &parser.PageType, &tagStr)
+			&parser.EnqueueScraperId, &autoIncrementRules, &parser.PageType, &tagStr)
 		if err != nil {
 			return nil, err
 		}
@@ -114,7 +114,7 @@ func (p *ParserService) Parsers(crawlId int) ([]harvest.Parser, error) {
 	return parsers, nil
 }
 
-func (p *ParserService) AddParser(crawlId int, parser harvest.ParserFields) (int, error) {
+func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (int, error) {
 	if parser.PageType == nil {
 		return 0, errors.New("No parser type provided")
 	}
@@ -141,8 +141,8 @@ func (p *ParserService) AddParser(crawlId int, parser harvest.ParserFields) (int
 	}
 
 	rows, err := p.Db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?, ?);",
-		crawlId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath, jsonPathStr,
-		parser.EnqueueCrawlId, autoIncrementRules)
+		scraperId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath, jsonPathStr,
+		parser.EnqueueScraperId, autoIncrementRules)
 	if err != nil {
 		return 0, err
 	}

@@ -9,145 +9,145 @@ import (
 	"github.com/sophielizg/harvest/common/harvest"
 )
 
-type AddCrawlResponse struct {
-	CrawlId int `json:"crawlId"`
+type AddScraperResponse struct {
+	ScraperId int `json:"scraperId"`
 }
 
-func (app *App) CrawlRouter() *chi.Mux {
+func (app *App) ScraperRouter() *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/{crawlId}", WriteErrorResponse(app.getCrawlById))
-	router.Get("/name/{name}", WriteErrorResponse(app.getCrawlByName))
-	router.Get("/all", WriteErrorResponse(app.getCrawls))
-	router.Post("/add", WriteErrorResponse(app.addCrawl))
+	router.Get("/{scraperId}", WriteErrorResponse(app.getScraperById))
+	router.Get("/name/{name}", WriteErrorResponse(app.getScraperByName))
+	router.Get("/all", WriteErrorResponse(app.getScrapers))
+	router.Post("/add", WriteErrorResponse(app.addScraper))
 
-	router.Post("/{crawlId}/update", WriteErrorResponse(app.updateCrawl))
-	router.Delete("/{crawlId}/delete", WriteErrorResponse(app.deleteCrawl))
-	router.Patch("/{crawlId}/start", WriteErrorResponse(app.startCrawl))
-	router.Patch("/{crawlId}/stop", WriteErrorResponse(app.stopCrawl))
-	router.Patch("/{crawlId}/pause", WriteErrorResponse(app.pauseCrawl))
-	router.Patch("/{crawlId}/unpause", WriteErrorResponse(app.unpauseCrawl))
-	// router.Post("/{crawlId}/runners/add", ...)
+	router.Post("/{scraperId}/update", WriteErrorResponse(app.updateScraper))
+	router.Delete("/{scraperId}/delete", WriteErrorResponse(app.deleteScraper))
+	router.Patch("/{scraperId}/start", WriteErrorResponse(app.startScraper))
+	router.Patch("/{scraperId}/stop", WriteErrorResponse(app.stopScraper))
+	router.Patch("/{scraperId}/pause", WriteErrorResponse(app.pauseScraper))
+	router.Patch("/{scraperId}/unpause", WriteErrorResponse(app.unpauseScraper))
+	// router.Post("/{scraperId}/runners/add", ...)
 
-	// router.Get("/{crawlId}/status", ...)
-	// router.Get("/{crawlId}/results", ...)
-	// router.Get("/{crawlId}/errors", ...)
-	// router.Get("/{crawlId}/runs/{crawlRunId}/status", ...)
-	// router.Get("/{crawlId}/runs/{crawlRunId}/results", ...)
-	// router.Get("/{crawlId}/runs/{crawlRunId}/errors", ...)
+	// router.Get("/{scraperId}/status", ...)
+	// router.Get("/{scraperId}/results", ...)
+	// router.Get("/{scraperId}/errors", ...)
+	// router.Get("/{scraperId}/runs/{runId}/status", ...)
+	// router.Get("/{scraperId}/runs/{runId}/results", ...)
+	// router.Get("/{scraperId}/runs/{runId}/errors", ...)
 
-	// router.Get("/{crawlId}/runs/all", ...)
-	// router.Delete("/{crawlId}/runs/{crawlRunId}/delete", ...)
+	// router.Get("/{scraperId}/runs/all", ...)
+	// router.Delete("/{scraperId}/runs/{runId}/delete", ...)
 
-	// router.Get("/{crawlId}/requests/all", ...)
-	// router.Post("/{crawlId}/requests/add", ...)
-	// router.Delete("/{crawlId}/requests/{requestQueueId}/delete", ...)
+	// router.Get("/{scraperId}/requests/all", ...)
+	// router.Post("/{scraperId}/requests/add", ...)
+	// router.Delete("/{scraperId}/requests/{requestQueueId}/delete", ...)
 
-	// router.Post("/{crawlId}/parsers/add", ...)
-	// router.Get("/{crawlId}/parsers/all", ...)
-	// router.Delete("/{crawlId}/parsers/{parserId}/delete", ...)
-	// router.Post("/{crawlId}/parsers/{parserId}/tags/add", ...)
-	// router.Delete("/{crawlId}/parsers/{parserId}/tags/delete", ...)
+	// router.Post("/{scraperId}/parsers/add", ...)
+	// router.Get("/{scraperId}/parsers/all", ...)
+	// router.Delete("/{scraperId}/parsers/{parserId}/delete", ...)
+	// router.Post("/{scraperId}/parsers/{parserId}/tags/add", ...)
+	// router.Delete("/{scraperId}/parsers/{parserId}/tags/delete", ...)
 
 	return router
 }
 
-// getCrawlById godoc
+// getScraperById godoc
 // @Summary Get crawl endpoint
-// @Description Get crawl details using its crawlId
+// @Description Get crawl details using its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
-// @Success 200 {object} harvest.Crawl
+// @Param scraperId path string true "Id of crawl"
+// @Success 200 {object} harvest.Scraper
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId} [get]
-func (app *App) getCrawlById(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId} [get]
+func (app *App) getScraperById(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
-	return app.CrawlService.Crawl(crawlId)
+	return app.ScraperService.Scraper(scraperId)
 }
 
-// getCrawlById godoc
+// getScraperById godoc
 // @Summary Get crawl endpoint
 // @Description Get crawl details using its name
 // @Tags crawls
 // @Accept  json
 // @Produce  json
 // @Param name path string true "Name of crawl"
-// @Success 200 {object} harvest.Crawl
+// @Success 200 {object} harvest.Scraper
 // @Failure 400 {object} ErrorResponse
 // @Router /crawls/name/{name} [get]
-func (app *App) getCrawlByName(r *http.Request) (interface{}, error) {
+func (app *App) getScraperByName(r *http.Request) (interface{}, error) {
 	name := chi.URLParam(r, "name")
-	return app.CrawlService.CrawlByName(name)
+	return app.ScraperService.ScraperByName(name)
 }
 
-// getCrawls godoc
+// getScrapers godoc
 // @Summary Get crawl endpoint
 // @Description Get details of all crawls
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} []harvest.Crawl
+// @Success 200 {object} []harvest.Scraper
 // @Failure 400 {object} ErrorResponse
 // @Router /crawls/all [get]
-func (app *App) getCrawls(r *http.Request) (interface{}, error) {
-	return app.CrawlService.Crawls()
+func (app *App) getScrapers(r *http.Request) (interface{}, error) {
+	return app.ScraperService.Scrapers()
 }
 
-// addCrawl godoc
+// addScraper godoc
 // @Summary Add crawl endpoint
 // @Description Add a new crawl
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param request body harvest.CrawlFields true "Fields for crawl"
-// @Success 200 {object} AddCrawlResponse
+// @Param request body harvest.ScraperFields true "Fields for crawl"
+// @Success 200 {object} AddScraperResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /crawls/add [post]
-func (app *App) addCrawl(r *http.Request) (interface{}, error) {
-	var crawl harvest.CrawlFields
+func (app *App) addScraper(r *http.Request) (interface{}, error) {
+	var crawl harvest.ScraperFields
 	err := json.NewDecoder(r.Body).Decode(&crawl)
 	if err != nil {
 		return nil, err
 	}
 
-	crawlId, err := app.CrawlService.AddCrawl(crawl)
+	scraperId, err := app.ScraperService.AddScraper(crawl)
 	if err != nil {
 		return nil, err
 	}
 
-	return AddCrawlResponse{CrawlId: crawlId}, nil
+	return AddScraperResponse{ScraperId: scraperId}, nil
 }
 
-// updateCrawl godoc
+// updateScraper godoc
 // @Summary Update crawl endpoint
 // @Description Update an existing crawl
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
-// @Param request body harvest.CrawlFields true "Fields for crawl"
+// @Param scraperId path string true "Id of crawl"
+// @Param request body harvest.ScraperFields true "Fields for crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/update [post]
-func (app *App) updateCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/update [post]
+func (app *App) updateScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	var crawl harvest.CrawlFields
+	var crawl harvest.ScraperFields
 	err = json.NewDecoder(r.Body).Decode(&crawl)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.UpdateCrawl(crawlId, crawl)
+	err = app.ScraperService.UpdateScraper(scraperId, crawl)
 	if err != nil {
 		return nil, err
 	}
@@ -155,24 +155,24 @@ func (app *App) updateCrawl(r *http.Request) (interface{}, error) {
 	return SuccessResponse{Message: "Successfully updated"}, nil
 }
 
-// deleteCrawl godoc
+// deleteScraper godoc
 // @Summary Delete crawl endpoint
-// @Description Delete crawl by its crawlId
+// @Description Delete crawl by its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/delete [delete]
-func (app *App) deleteCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/delete [delete]
+func (app *App) deleteScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.DeleteCrawl(crawlId)
+	err = app.ScraperService.DeleteScraper(scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -180,24 +180,24 @@ func (app *App) deleteCrawl(r *http.Request) (interface{}, error) {
 	return SuccessResponse{Message: "Successfully deleted"}, nil
 }
 
-// stopCrawl godoc
+// stopScraper godoc
 // @Summary Stop crawl endpoint
-// @Description Stop crawl by its crawlId
+// @Description Stop crawl by its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/stop [patch]
-func (app *App) stopCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/stop [patch]
+func (app *App) stopScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.StopCrawl(crawlId)
+	err = app.ScraperService.StopScraper(scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -205,24 +205,24 @@ func (app *App) stopCrawl(r *http.Request) (interface{}, error) {
 	return SuccessResponse{Message: "Successfully stopped"}, nil
 }
 
-// startCrawl godoc
+// startScraper godoc
 // @Summary Start crawl endpoint
-// @Description Start crawl by its crawlId
+// @Description Start crawl by its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/start [patch]
-func (app *App) startCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/start [patch]
+func (app *App) startScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.StartCrawl(crawlId)
+	err = app.ScraperService.StartScraper(scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -230,24 +230,24 @@ func (app *App) startCrawl(r *http.Request) (interface{}, error) {
 	return SuccessResponse{Message: "Successfully started"}, nil
 }
 
-// pauseCrawl godoc
+// pauseScraper godoc
 // @Summary Pause crawl endpoint
-// @Description Pause crawl by its crawlId
+// @Description Pause crawl by its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/pause [patch]
-func (app *App) pauseCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/pause [patch]
+func (app *App) pauseScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.PauseCrawl(crawlId)
+	err = app.ScraperService.PauseScraper(scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -255,24 +255,24 @@ func (app *App) pauseCrawl(r *http.Request) (interface{}, error) {
 	return SuccessResponse{Message: "Successfully paused"}, nil
 }
 
-// unpauseCrawl godoc
+// unpauseScraper godoc
 // @Summary Unpause crawl endpoint
-// @Description Unpause crawl by its crawlId
+// @Description Unpause crawl by its scraperId
 // @Tags crawls
 // @Accept  json
 // @Produce  json
-// @Param crawlId path string true "Id of crawl"
+// @Param scraperId path string true "Id of crawl"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
-// @Router /crawls/{crawlId}/unpause [patch]
-func (app *App) unpauseCrawl(r *http.Request) (interface{}, error) {
-	crawlIdStr := chi.URLParam(r, "crawlId")
-	crawlId, err := strconv.Atoi(crawlIdStr)
+// @Router /crawls/{scraperId}/unpause [patch]
+func (app *App) unpauseScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
 	if err != nil {
 		return nil, err
 	}
 
-	err = app.CrawlService.UnpauseCrawl(crawlId)
+	err = app.ScraperService.UnpauseScraper(scraperId)
 	if err != nil {
 		return nil, err
 	}

@@ -1,5 +1,5 @@
 package harvest
 
 type RunnerService interface {
-	AddRunnerToCrawl(crawlId int) error
+	CreateNewRunner(runId int) error
 }

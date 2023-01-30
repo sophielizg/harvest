@@ -6,18 +6,18 @@ import (
 )
 
 type App struct {
-	CrawlId             int
-	CrawlRunId          int
-	ScrapeId            int
-	CrawlService        harvest.CrawlService
-	ScrapeService       harvest.ScrapeService
+	ScraperId           int
+	RunId               int
+	RunnerId            int
+	ScraperService      harvest.ScraperService
+	RunnerQueueService  harvest.RunnerQueueService
 	ParserService       harvest.ParserService
 	ResultService       harvest.ResultService
 	ErrorService        harvest.ErrorService
 	RequestQueueService harvest.RequestQueueService
 }
 
-func (app *App) Crawler() (*colly.Collector, error) {
+func (app *App) Scraperer() (*colly.Collector, error) {
 	err := app.Dequeue()
 	if err != nil {
 		return nil, err

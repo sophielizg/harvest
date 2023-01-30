@@ -11,8 +11,8 @@ type RequestService struct {
 	Db *sql.DB
 }
 
-func (r *RequestService) IsRequestVisited(crawlRunId int, requestId uint64) (bool, error) {
-	rows, err := r.Db.Query("CALL getRequestIsVisited(?, ?);", crawlRunId, requestId)
+func (r *RequestService) IsRequestVisited(runId int, requestId uint64) (bool, error) {
+	rows, err := r.Db.Query("CALL getRequestIsVisited(?, ?);", runId, requestId)
 	if err != nil {
 		return false, err
 	}
@@ -29,7 +29,7 @@ func (r *RequestService) IsRequestVisited(crawlRunId int, requestId uint64) (boo
 }
 
 func (r *RequestService) AddRequestIsVisited(request harvest.RequestFields) (int, error) {
-	rows, err := r.Db.Query("CALL addRequestIsVisited(?, ?, ?, ?);", request.ScrapeId,
+	rows, err := r.Db.Query("CALL addRequestIsVisited(?, ?, ?, ?);", request.RunnerId,
 		request.Id, request.Blob, request.CreatedByRequestId)
 	if err != nil {
 		return 0, err

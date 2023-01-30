@@ -3,6 +3,7 @@ package harvest
 import "time"
 
 type ResultFields struct {
+	RunId     int    `json:"runId"`
 	RequestId int    `json:"requestId"`
 	ParserId  int    `json:"parserId"`
 	Value     string `json:"value"`
@@ -14,7 +15,7 @@ type Result struct {
 }
 
 type ResultService interface {
-	// CrawlResults(crawlId int, tags []string) ([]Result, error)
+	// ScraperResults(scraperId int, tags []string) ([]Result, error)
 	// RunResults(runId int, tags []string) ([]Result, error)
-	AddResult(crawlId int, scrapeId int, result ResultFields) error
+	AddResult(runnerId int, result ResultFields) error
 }

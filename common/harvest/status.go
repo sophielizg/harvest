@@ -11,6 +11,6 @@ type Status struct {
 }
 
 type StatusService interface {
-	CrawlStatus(crawlId int) (Status, error)
 	RunStatus(runId int) (Status, error)
+	CurrentRunStatus(scraperId int) (Status, error)
 }

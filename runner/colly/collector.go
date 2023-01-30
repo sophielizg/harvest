@@ -9,7 +9,7 @@ import (
 )
 
 func (app *App) Collector() (*colly.Collector, error) {
-	crawl, err := app.CrawlService.Crawl(app.CrawlId)
+	crawl, err := app.ScraperService.Scraper(app.ScraperId)
 	if err != nil {
 		return nil, err
 	}

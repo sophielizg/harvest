@@ -55,7 +55,7 @@ func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Pars
 		Body:    newBody,
 	}
 	_, err = app.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
-		CrawlId:            app.CrawlId,
+		ScraperId:          app.ScraperId,
 		Request:            newRequest,
 		IsInitialRequest:   false,
 		CreatedByRequestId: requestId,
@@ -76,7 +76,7 @@ func (app *App) saveResult(response *colly.Response, parserId int, parsedValue s
 		Value:     parsedValue,
 	}
 
-	return app.ResultService.AddResult(app.CrawlId, app.ScrapeId, resultFields)
+	return app.ResultService.AddResult(app.ScraperId, app.RunnerId, resultFields)
 }
 
 func (app *App) saveError(response *colly.Response, parserId int, parseError error,
@@ -95,7 +95,7 @@ func (app *App) saveError(response *colly.Response, parserId int, parseError err
 		ErrorMessage:        parseError.Error(),
 	}
 
-	return app.ErrorService.AddError(app.CrawlId, app.ScrapeId, errorFields)
+	return app.ErrorService.AddError(app.ScraperId, app.RunnerId, errorFields)
 }
 
 func (app *App) saveAndEnqueue(response *colly.Response, parser harvest.Parser,
@@ -106,7 +106,7 @@ func (app *App) saveAndEnqueue(response *colly.Response, parser harvest.Parser,
 	} else {
 		app.saveResult(response, parser.ParserId, parsedValue)
 
-		if parser.EnqueueCrawlId != nil {
+		if parser.EnqueueScraperId != nil {
 			err := app.enqueueRequest(response.Request, parser, parsedValue)
 			if err != nil {
 				app.saveError(response, parser.ParserId, err, false)
@@ -166,7 +166,7 @@ func (app *App) jsonParser(collector *colly.Collector, parser harvest.Parser) er
 }
 
 func (app *App) AddParsers(collector *colly.Collector) error {
-	parsers, err := app.ParserService.Parsers(app.CrawlId)
+	parsers, err := app.ParserService.Parsers(app.ScraperId)
 	if err != nil {
 		return err
 	}
