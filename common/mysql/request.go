@@ -2,13 +2,24 @@ package mysql
 
 import (
 	"database/sql"
-	"errors"
 
 	"github.com/sophielizg/harvest/common/harvest"
 )
 
 type RequestService struct {
 	Db *sql.DB
+}
+
+func (r *RequestService) addOrUpdateRequest(runId int, requestId uint64,
+	request harvest.RequestFields) error {
+	stmt, err := r.Db.Prepare("CALL addRequestIsVisited(?, ?, ?, ?, ?);")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(runId, requestId, request.Blob, request.ParentRequestId,
+		request.OriginatorRequestId)
+	return err
 }
 
 func (r *RequestService) IsRequestVisited(runId int, requestId uint64) (bool, error) {
@@ -28,20 +39,11 @@ func (r *RequestService) IsRequestVisited(runId int, requestId uint64) (bool, er
 	return false, nil
 }
 
-func (r *RequestService) AddRequestIsVisited(request harvest.RequestFields) (int, error) {
-	rows, err := r.Db.Query("CALL addRequestIsVisited(?, ?, ?, ?);", request.RunnerId,
-		request.Id, request.Blob, request.CreatedByRequestId)
-	if err != nil {
-		return 0, err
-	}
+func (r *RequestService) AddRequestIsVisited(runId int, requestId uint64) error {
+	return r.addOrUpdateRequest(runId, requestId, harvest.RequestFields{})
+}
 
-	for rows.Next() {
-		var requestId int
-		err = rows.Scan(&requestId)
-		if err != nil {
-			return 0, err
-		}
-		return requestId, nil
-	}
-	return 0, errors.New("Request added as visited but no requestId returned")
+func (r *RequestService) UpdateRequest(runId int, requestId uint64,
+	request harvest.RequestFields) error {
+	return r.addOrUpdateRequest(runId, requestId, request)
 }

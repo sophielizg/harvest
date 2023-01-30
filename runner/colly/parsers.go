@@ -2,6 +2,7 @@ package colly
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"strconv"
 
@@ -48,54 +49,51 @@ func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Pars
 		newBody = nil
 	}
 
-	newRequest := harvest.RequestToScrape{
-		Url:     newUrl,
-		Method:  method,
-		Headers: headers,
-		Body:    newBody,
-	}
-	_, err = app.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
-		ScraperId:          app.ScraperId,
-		Request:            newRequest,
-		IsInitialRequest:   false,
-		CreatedByRequestId: requestId,
-	})
-	return err
+	// TODO: Call queue to enqueue instead
+	// newRequest := harvest.RequestToScrape{
+	// 	Url:     newUrl,
+	// 	Method:  method,
+	// 	Headers: headers,
+	// 	Body:    newBody,
+	// }
+	// _, err = app.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
+	// 	ScraperId:          app.ScraperId,
+	// 	Request:            newRequest,
+	// 	IsInitialRequest:   false,
+	// 	CreatedByRequestId: requestId,
+	// })
+	// return err
 }
 
 func (app *App) saveResult(response *colly.Response, parserId int, parsedValue string) error {
-	requestIdStr := response.Ctx.Get("requestId")
-	requestId, err := strconv.Atoi(requestIdStr)
-	if err != nil {
-		return err
-	}
-
 	resultFields := harvest.ResultFields{
-		RequestId: requestId,
+		RunId:     app.RunId,
+		RequestId: response.Request.ID,
 		ParserId:  parserId,
 		Value:     parsedValue,
 	}
 
-	return app.ResultService.AddResult(app.ScraperId, app.RunnerId, resultFields)
+	return app.ResultService.AddResult(app.RunnerId, resultFields)
 }
 
 func (app *App) saveError(response *colly.Response, parserId int, parseError error,
 	isMissingParseResult bool) error {
-	requestIdStr := response.Ctx.Get("requestId")
-	requestId, err := strconv.Atoi(requestIdStr)
+	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
 		return err
 	}
 
 	errorFields := harvest.ErrorFields{
-		RequestId:           requestId,
+		RunId:               app.RunId,
+		RequestId:           response.Request.ID,
 		ParserId:            parserId,
 		StatusCode:          response.StatusCode,
+		Response:            marshaledResponse,
 		IsMissngParseResult: isMissingParseResult,
 		ErrorMessage:        parseError.Error(),
 	}
 
-	return app.ErrorService.AddError(app.ScraperId, app.RunnerId, errorFields)
+	return app.ErrorService.AddError(app.RunnerId, errorFields)
 }
 
 func (app *App) saveAndEnqueue(response *colly.Response, parser harvest.Parser,

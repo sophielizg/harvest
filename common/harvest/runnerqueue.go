@@ -7,7 +7,8 @@ type Runner struct {
 }
 
 type RunnerQueueService interface {
-	EnqueueRunner(runId int) (int, error)
+	EnqueueRunnerForRun(runId int) (int, error)
+	EnqueueRunnerForCurrentRun(scraperId int) (int, error)
 	DequeueRunner() (*Runner, error)
 	EndRunner(runnerId int) error
 }

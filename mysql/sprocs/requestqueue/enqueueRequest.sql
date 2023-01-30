@@ -35,7 +35,9 @@ CREATE PROCEDURE enqueueRequest(
 
     SELECT LAST_INSERT_ID() AS requestQueueId;
 
-    CALL updateStatus(scraperIdIn, runnerIdIn, 1, 0, 0, 0);
+    IF (runId IS NOT NULL) THEN
+        CALL updateStatus(runId, runnerIdIn, 1, 0, 0, 0);
+    END IF;
 
     IF createTransaction THEN
         COMMIT;

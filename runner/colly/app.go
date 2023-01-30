@@ -17,7 +17,7 @@ type App struct {
 	RequestQueueService harvest.RequestQueueService
 }
 
-func (app *App) Scraperer() (*colly.Collector, error) {
+func (app *App) Scraper() (*colly.Collector, error) {
 	err := app.Dequeue()
 	if err != nil {
 		return nil, err

@@ -30,8 +30,8 @@ func (app *App) Router(port string) (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/crawls", app.ScraperRouter())
-		r.Mount("/crawls/{scraperId}/parsers", app.ParserRouter())
+		r.Mount("/scapers", app.ScraperRouter())
+		r.Mount("/parsers", app.ParserRouter())
 	})
 
 	// Create swagger UI

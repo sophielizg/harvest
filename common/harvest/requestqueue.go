@@ -3,13 +3,13 @@ package harvest
 import "time"
 
 type QueuedRequestFields struct {
-	RunId int    `json:"runId"`
-	Blob  []byte `json:"blob"`
+	RunId    int    `json:"runId"`
+	RunnerId int    `json:"runnerId"`
+	Blob     []byte `json:"blob"`
 }
 
 type QueuedRequest struct {
 	RequestQueueId   int       `json:"requestQueueId"`
-	RunnerId         int       `json:"runnerId"`
 	CreatedTimestamp time.Time `json:"createdTimestamp"`
 	IsInitialRequest bool      `json:"isInitialRequest"`
 	QueuedRequestFields

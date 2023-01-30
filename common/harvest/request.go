@@ -17,6 +17,6 @@ type Request struct {
 
 type RequestService interface {
 	IsRequestVisited(runId int, requestId uint64) (bool, error)
-	AddRequestIsVisited(runId int, requestId uint64) (int, error)
-	UpdateRequest(runId int, requestId uint64, request RequestFields) (int, error)
+	AddRequestIsVisited(runId int, requestId uint64) error
+	UpdateRequest(runId int, requestId uint64, request RequestFields) error
 }

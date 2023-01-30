@@ -9,12 +9,12 @@ import (
 )
 
 func (app *App) Collector() (*colly.Collector, error) {
-	crawl, err := app.ScraperService.Scraper(app.ScraperId)
+	scraper, err := app.ScraperService.Scraper(app.ScraperId)
 	if err != nil {
 		return nil, err
 	}
 
-	config := crawl.Config
+	config := scraper.Config
 	collector := colly.NewCollector(
 		colly.MaxDepth(config.MaxDepth),
 	)
@@ -52,9 +52,9 @@ func (app *App) Collector() (*colly.Collector, error) {
 		collector.SetRequestTimeout(time.Duration(config.RequestTimeout) * time.Second)
 	}
 
-	if config.Cookies != nil {
+	if config.GlobalCookies != nil {
 		collector.OnRequest(func(request *colly.Request) {
-			for key, values := range config.Cookies {
+			for key, values := range config.GlobalCookies {
 				for _, value := range values {
 					request.Headers.Add(key, value)
 				}
