@@ -27,7 +27,7 @@ func main() {
 	requestQueueService := &mysql.RequestQueueService{Db: db}
 
 	// Initialize runner
-	app := colly.App{
+	runner := colly.Runner{
 		ScraperService:      crawlService,
 		RunnerQueueService:  scrapeService,
 		ParserService:       parserService,
@@ -36,4 +36,8 @@ func main() {
 		RequestQueueService: requestQueueService,
 	}
 
+	err = runner.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

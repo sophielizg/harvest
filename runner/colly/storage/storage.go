@@ -1,4 +1,4 @@
-package colly
+package storage
 
 import (
 	"fmt"
@@ -6,15 +6,18 @@ import (
 	"os"
 
 	"github.com/sophielizg/harvest/common/harvest"
+	"github.com/sophielizg/harvest/runner/colly/common"
 )
 
+type StorageServices struct {
+	CookieService       *harvest.CookieService
+	VisitedService      *harvest.VisitedService
+	RequestQueueService *harvest.RequestQueueService
+}
+
 type Storage struct {
-	ScraperId           int
-	RunId               int
-	RunnerId            int
-	CookieService       harvest.CookieService
-	VisitedService      harvest.VisitedService
-	RequestQueueService harvest.RequestQueueService
+	common.RunnerIds
+	StorageServices
 }
 
 func (s *Storage) Init() error { return nil }
