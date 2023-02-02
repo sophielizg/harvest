@@ -2,15 +2,20 @@ package harvest
 
 import "time"
 
+type DomainRule struct {
+	RandomDelaySeconds float32 `json:"randomDelaySeconds"`
+	Parallelism        int     `json:"parallelism"`
+}
+
 type ScraperConfig struct {
-	AllowedDomains     []string            `json:"allowedDomains"`
-	MaxDepth           int                 `json:"maxDepth"`
-	UserAgent          string              `json:"userAgent"`
-	AllowRevisit       bool                `json:"allowRevisit"`
-	Proxies            []string            `json:"proxies"`
-	RandomDelaySeconds float32             `json:"randomDelaySeconds"`
-	RequestTimeout     float32             `json:"requestTimeout"`
-	GlobalCookies      map[string][]string `json:"globalCookies"`
+	AllowedDomains []string              `json:"allowedDomains"`
+	MaxDepth       int                   `json:"maxDepth"`
+	UserAgent      string                `json:"userAgent"`
+	AllowRevisit   bool                  `json:"allowRevisit"`
+	Proxies        []string              `json:"proxies"`
+	DomainRules    map[string]DomainRule `json:"domainRules"`
+	RequestTimeout float32               `json:"requestTimeout"`
+	GlobalCookies  map[string][]string   `json:"globalCookies"`
 }
 
 type ScraperFields struct {

@@ -3,9 +3,10 @@ package harvest
 import "time"
 
 type QueuedRequestFields struct {
-	RunId    int    `json:"runId"`
-	RunnerId int    `json:"runnerId"`
-	Blob     []byte `json:"blob"`
+	ScraperId int    `json:"scraperId"`
+	RunId     int    `json:"runId"`
+	RunnerId  int    `json:"runnerId"`
+	Blob      []byte `json:"blob"`
 }
 
 type QueuedRequest struct {
@@ -16,9 +17,10 @@ type QueuedRequest struct {
 }
 
 type RequestQueueService interface {
+	GetQueueSize(runId int) (int, error)
 	// QueuedRequests(runId int) ([]QueuedRequest, error)
 	AddStartingRequest(scraperId int, requestBlob []byte) (int, error)
 	// DeleteQueuedRequest(requestQueueId int) error
-	EnqueueRequest(scraperId int, request QueuedRequestFields) (int, error)
-	DequeueRequests(runId int, runnerId int, numToDequeue int) ([]QueuedRequest, error)
+	EnqueueRequest(request QueuedRequestFields) (int, error)
+	DequeueRequests(runId int, runnerId int, numToDequeue int) ([][]byte, error)
 }

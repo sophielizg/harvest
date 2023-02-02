@@ -2,7 +2,7 @@ USE harvest;
 
 CREATE TABLE IF NOT EXISTS Error (
     runId INT NOT NULL,
-    requestId INT UNSIGNED NOT NULL,
+    requestId INT NOT NULL,
     parserId INT NOT NULL,
     scrapedTimestamp DATETIME,
     statusCode INT,

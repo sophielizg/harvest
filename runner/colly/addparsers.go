@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/gocolly/colly"
@@ -65,7 +67,7 @@ func (app *App) enqueueRequest(parentRequest *colly.Request, parser harvest.Pars
 	// return err
 }
 
-func (app *App) saveResult(response *colly.Response, parserId int, parsedValue string) error {
+func (app *App) saveResult(response *colly.Response, parserId int, parsedValue string) {
 	resultFields := harvest.ResultFields{
 		RunId:     app.RunId,
 		RequestId: response.Request.ID,
@@ -73,14 +75,18 @@ func (app *App) saveResult(response *colly.Response, parserId int, parsedValue s
 		Value:     parsedValue,
 	}
 
-	return app.ResultService.AddResult(app.RunnerId, resultFields)
+	err := app.ResultService.AddResult(app.RunnerId, resultFields)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "AddResult error: %s", err)
+	}
 }
 
 func (app *App) saveError(response *colly.Response, parserId int, parseError error,
-	isMissingParseResult bool) error {
+	isMissingParseResult bool) {
 	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
-		return err
+		fmt.Fprintf(os.Stderr, "json.Marshal error: %s", err)
+		return
 	}
 
 	errorFields := harvest.ErrorFields{
@@ -93,14 +99,17 @@ func (app *App) saveError(response *colly.Response, parserId int, parseError err
 		ErrorMessage:        parseError.Error(),
 	}
 
-	return app.ErrorService.AddError(app.RunnerId, errorFields)
+	err = app.ErrorService.AddError(app.RunnerId, errorFields)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "AddError error: %s", err)
+	}
 }
 
 func (app *App) saveAndEnqueue(response *colly.Response, parser harvest.Parser,
 	parsedValue string) {
 	if parsedValue == "" {
-		err := errors.New("No result found from parser")
-		app.saveError(response, parser.ParserId, err, true)
+		missingResultErr := errors.New("No result found from parser")
+		app.saveError(response, parser.ParserId, missingResultErr, true)
 	} else {
 		app.saveResult(response, parser.ParserId, parsedValue)
 
@@ -152,9 +161,9 @@ func (app *App) jsonParser(collector *colly.Collector, parser harvest.Parser) er
 
 	collector.OnResponse(func(r *colly.Response) {
 		if r.Headers.Get("Content-Type") == "application/json" {
-			val, err := utils.GetFromJson(r.Body, parser.JsonPath)
-			if err != nil {
-				app.saveError(r, parser.ParserId, err, false)
+			val, jsonParseErr := utils.GetFromJson(r.Body, parser.JsonPath)
+			if jsonParseErr != nil {
+				app.saveError(r, parser.ParserId, jsonParseErr, false)
 			}
 			app.saveAndEnqueue(r, parser, val)
 		}
