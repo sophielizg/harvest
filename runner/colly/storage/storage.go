@@ -10,9 +10,9 @@ import (
 )
 
 type StorageServices struct {
-	CookieService       *harvest.CookieService
-	VisitedService      *harvest.VisitedService
-	RequestQueueService *harvest.RequestQueueService
+	CookieService       harvest.CookieService
+	VisitedService      harvest.VisitedService
+	RequestQueueService harvest.RequestQueueService
 }
 
 type Storage struct {
@@ -50,14 +50,19 @@ func (s *Storage) QueueSize() (int, error) {
 }
 
 func (s *Storage) GetRequest() ([]byte, error) {
-	return s.RequestQueueService.DequeueRequest(s.RunId, s.RunnerId, 1)
+	reqs, err := s.RequestQueueService.DequeueRequests(s.RunId, s.RunnerId, 1)
+	if err != nil {
+		return nil, err
+	}
+	return reqs[0], nil
 }
 
 func (s *Storage) AddRequest(requestBlob []byte) error {
-	return s.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
+	_, err := s.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
 		ScraperId: s.ScraperId,
 		RunId:     s.RunId,
 		RunnerId:  s.RunnerId,
 		Blob:      requestBlob,
 	})
+	return err
 }

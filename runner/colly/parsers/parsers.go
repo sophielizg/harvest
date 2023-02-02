@@ -8,9 +8,9 @@ import (
 )
 
 type ParsersServices struct {
-	ParserService *harvest.ParserService
-	ErrorService  *harvest.ErrorService
-	ResultService *harvest.ResultService
+	ParserService harvest.ParserService
+	ErrorService  harvest.ErrorService
+	ResultService harvest.ResultService
 }
 
 type Parsers struct {

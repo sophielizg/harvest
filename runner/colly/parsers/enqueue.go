@@ -5,7 +5,7 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/sophielizg/harvest/common/harvest"
-	"github.com/sophielizg/harvest/runner/utils"
+	"github.com/sophielizg/harvest/common/utils"
 )
 
 func (p *Parsers) enqueueRequest(parentRequest *colly.Request, parser harvest.Parser,

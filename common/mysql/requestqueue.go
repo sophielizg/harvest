@@ -58,12 +58,11 @@ func (q *RequestQueueService) AddStartingRequest(scraperId int,
 	return q.enqueueRequest(request, true)
 }
 
-func (q *RequestQueueService) EnqueueRequest(scraperId int,
-	request harvest.QueuedRequestFields) (int, error) {
+func (q *RequestQueueService) EnqueueRequest(request harvest.QueuedRequestFields) (int, error) {
 	return q.enqueueRequest(request, false)
 }
 
-func (q *RequestQueueService) DequeueRequest(runId int, runnerId int,
+func (q *RequestQueueService) DequeueRequests(runId int, runnerId int,
 	numToDequeue int) ([][]byte, error) {
 	rows, err := q.Db.Query("CALL dequeueRequests(?, ?, ?, 1);", runId, runnerId,
 		numToDequeue)

@@ -6,34 +6,36 @@ import (
 	"github.com/sophielizg/harvest/common/config"
 	"github.com/sophielizg/harvest/common/mysql"
 	"github.com/sophielizg/harvest/runner/colly"
+	"github.com/sophielizg/harvest/runner/colly/parsers"
+	"github.com/sophielizg/harvest/runner/colly/storage"
 )
 
 func main() {
 	// Create config service
 	configService := &config.ConfigService{}
 
-	// Connect to db
-	db, err := mysql.OpenDb(configService)
+	// Create db connected services
+	mysqlServices, err := mysql.Init(configService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer mysql.CloseDb(db)
-
-	crawlService := &mysql.ScraperService{Db: db}
-	scrapeService := &mysql.RunnerQueueService{Db: db}
-	parserService := &mysql.ParserService{Db: db}
-	resultService := &mysql.ResultService{Db: db}
-	errorService := &mysql.ErrorService{Db: db}
-	requestQueueService := &mysql.RequestQueueService{Db: db}
+	defer mysqlServices.Close()
 
 	// Initialize runner
 	runner := colly.Runner{
-		ScraperService:      crawlService,
-		RunnerQueueService:  scrapeService,
-		ParserService:       parserService,
-		ResultService:       resultService,
-		ErrorService:        errorService,
-		RequestQueueService: requestQueueService,
+		ScraperService:     mysqlServices.ScraperService,
+		RunnerQueueService: mysqlServices.RunnerQueueService,
+		RequestService:     mysqlServices.RequestService,
+		StorageServices: storage.StorageServices{
+			CookieService:       mysqlServices.CookieService,
+			VisitedService:      mysqlServices.VisitedService,
+			RequestQueueService: mysqlServices.RequestQueueService,
+		},
+		ParsersServices: parsers.ParsersServices{
+			ParserService: mysqlServices.ParserService,
+			ResultService: mysqlServices.ResultService,
+			ErrorService:  mysqlServices.ErrorService,
+		},
 	}
 
 	err = runner.Run()

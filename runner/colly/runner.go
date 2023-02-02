@@ -9,9 +9,9 @@ import (
 
 type Runner struct {
 	common.RunnerIds
-	ScraperService     *harvest.ScraperService
-	RunnerQueueService *harvest.RunnerQueueService
-	RequestService     *harvest.RequestService
+	ScraperService     harvest.ScraperService
+	RunnerQueueService harvest.RunnerQueueService
+	RequestService     harvest.RequestService
 	storage.StorageServices
 	parsers.ParsersServices
 }

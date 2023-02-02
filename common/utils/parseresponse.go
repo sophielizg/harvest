@@ -102,7 +102,7 @@ func GetFromJson(data []byte, jsonPath []string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("%v", *val), nil
+	return fmt.Sprintf("%v", val), nil
 }
 
 func incrementNum(val interface{}) (int, error) {

@@ -29,20 +29,17 @@ func main() {
 	// Create config service
 	configService := &config.ConfigService{}
 
-	// Connect to db
-	db, err := mysql.OpenDb(configService)
+	// Create db connected services
+	mysqlServices, err := mysql.Init(configService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer mysql.CloseDb(db)
-
-	crawlService := &mysql.ScraperService{Db: db}
-	parserService := &mysql.ParserService{Db: db}
+	defer mysqlServices.Close()
 
 	// Initialize server
 	app := routes.App{
-		ScraperService: crawlService,
-		ParserService:  parserService,
+		ScraperService: mysqlServices.ScraperService,
+		ParserService:  mysqlServices.ParserService,
 	}
 	router, err := app.Router(port)
 	if err != nil {
