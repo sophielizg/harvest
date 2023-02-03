@@ -41,9 +41,9 @@ BEGIN
     WHERE runnerId = dequeueRunnerId;
 
     SELECT 
-        dequeueRunnerId AS runnerId,
+        scraperId,
         dequeueRunId AS runId,
-        scraperId
+        dequeueRunnerId AS runnerId
     FROM Run
     WHERE runId = dequeueRunId;
 

@@ -7,10 +7,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type AddParserResponse struct {
-	ParserId int `json:"parserId"`
-}
-
 func (app *App) ParserRouter() *chi.Mux {
 	router := chi.NewRouter()
 

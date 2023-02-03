@@ -54,14 +54,19 @@ func (s *Storage) GetRequest() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return reqs[0], nil
+
+	if len(reqs) == 1 {
+		return reqs[0], nil
+	}
+	return nil, nil
 }
 
 func (s *Storage) AddRequest(requestBlob []byte) error {
+	runId, runnerId := s.RunId, s.RunnerId
 	_, err := s.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
 		ScraperId: s.ScraperId,
-		RunId:     s.RunId,
-		RunnerId:  s.RunnerId,
+		RunId:     &runId,
+		RunnerId:  &runnerId,
 		Blob:      requestBlob,
 	})
 	return err

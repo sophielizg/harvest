@@ -4,8 +4,8 @@ import "time"
 
 type QueuedRequestFields struct {
 	ScraperId int    `json:"scraperId"`
-	RunId     int    `json:"runId"`
-	RunnerId  int    `json:"runnerId"`
+	RunId     *int   `json:"runId"`
+	RunnerId  *int   `json:"runnerId"`
 	Blob      []byte `json:"blob"`
 }
 

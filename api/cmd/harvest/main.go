@@ -38,8 +38,11 @@ func main() {
 
 	// Initialize server
 	app := routes.App{
-		ScraperService: mysqlServices.ScraperService,
-		ParserService:  mysqlServices.ParserService,
+		ScraperService:      mysqlServices.ScraperService,
+		ParserService:       mysqlServices.ParserService,
+		RunService:          mysqlServices.RunService,
+		RunnerQueueService:  mysqlServices.RunnerQueueService,
+		RequestQueueService: mysqlServices.RequestQueueService,
 	}
 	router, err := app.Router(port)
 	if err != nil {

@@ -12,6 +12,8 @@ CREATE PROCEDURE enqueueRequest(
     IN isInitialRequestIn BOOL,
     IN createTransaction BOOL
 ) BEGIN
+    DECLARE requestQueueId INT;
+
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         IF createTransaction THEN
@@ -33,11 +35,13 @@ CREATE PROCEDURE enqueueRequest(
     VALUES
         (scraperIdIn, runIdIn, NOW(), requestBlobIn, isInitialRequestIn);
 
-    SELECT LAST_INSERT_ID() AS requestQueueId;
+    SELECT LAST_INSERT_ID() INTO requestQueueId;
 
-    IF (runId IS NOT NULL) THEN
-        CALL updateStatus(runId, runnerIdIn, 1, 0, 0, 0);
+    IF (runIdIn IS NOT NULL) THEN
+        CALL updateStatus(runIdIn, runnerIdIn, 1, 0, 0, 0);
     END IF;
+
+    SELECT requestQueueId;
 
     IF createTransaction THEN
         COMMIT;

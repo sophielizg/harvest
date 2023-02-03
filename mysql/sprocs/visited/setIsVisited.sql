@@ -6,7 +6,7 @@ DELIMITER $$
 
 CREATE PROCEDURE setIsVisited(
     IN runIdIn INT,
-    IN requestHashIn INT UNSIGNED
+    IN requestHashIn BIGINT UNSIGNED
 ) BEGIN
     INSERT INTO Visited (runId, requestHash)
     VALUES (runIdIn, requestHashIn);

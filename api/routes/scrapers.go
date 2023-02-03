@@ -9,8 +9,32 @@ import (
 	"github.com/sophielizg/harvest/common/harvest"
 )
 
+// Request bodies
+type AddRequestBody struct {
+	Url    string      `json:"url"`
+	Method string      `json:"method"`
+	Body   interface{} `json:"body"`
+}
+
+// Responses
 type AddScraperResponse struct {
 	ScraperId int `json:"scraperId"`
+}
+
+type AddParserResponse struct {
+	ParserId int `json:"parserId"`
+}
+
+type CreateRunResponse struct {
+	RunId int `json:"runId"`
+}
+
+type EnqueueRunnerResponse struct {
+	RunnerId int `json:"runnerId"`
+}
+
+type EnqueueRequestResponse struct {
+	RequestQueueId int `json:"requestQueueId"`
 }
 
 func (app *App) ScraperRouter() *chi.Mux {
@@ -23,7 +47,14 @@ func (app *App) ScraperRouter() *chi.Mux {
 	router.Delete("/{scraperId}/delete", WriteErrorResponse(app.deleteScraper))
 	router.Get("/{scraperId}/parsers/all", WriteErrorResponse(app.getParsers))
 	router.Post("/{scraperId}/parsers/add", WriteErrorResponse(app.addParser))
+
+	router.Post("/{scraperId}/runs/create", WriteErrorResponse(app.createRun))
+	router.Post("/{scraperId}/runners/current/enqueue",
+		WriteErrorResponse(app.enqueueRunnerCurrentRun))
 	// router.Post("/{scraperId}/runners/add", ...)
+
+	router.Post("/{scraperId}/requests/queue/start/add",
+		WriteErrorResponse(app.addStartingRequest))
 
 	// router.Get("/{scraperId}/status", ...)
 	// router.Get("/{scraperId}/results", ...)
@@ -38,12 +69,6 @@ func (app *App) ScraperRouter() *chi.Mux {
 	// router.Get("/{scraperId}/requests/all", ...)
 	// router.Post("/{scraperId}/requests/add", ...)
 	// router.Delete("/{scraperId}/requests/{requestQueueId}/delete", ...)
-
-	// router.Post("/{scraperId}/parsers/add", ...)
-	// router.Get("/{scraperId}/parsers/all", ...)
-	// router.Delete("/{scraperId}/parsers/{parserId}/delete", ...)
-	// router.Post("/{scraperId}/parsers/{parserId}/tags/add", ...)
-	// router.Delete("/{scraperId}/parsers/{parserId}/tags/delete", ...)
 
 	return router
 }
@@ -211,4 +236,91 @@ func (app *App) addParser(r *http.Request) (interface{}, error) {
 	}
 
 	return AddParserResponse{ParserId: parserId}, nil
+}
+
+// createRun godoc
+// @Summary Create run endpoint
+// @Description Add run to a scraper
+// @Tags runs
+// @Accept  json
+// @Produce  json
+// @Param scraperId path string true "Id of scraper"
+// @Success 200 {object} CreateRunResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /scrapers/{scraperId}/runs/create [post]
+func (app *App) createRun(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	runId, err := app.RunService.CreateRun(scraperId)
+	if err != nil {
+		return nil, err
+	}
+
+	return CreateRunResponse{RunId: runId}, nil
+}
+
+// enqueueRunnerCurrentRun godoc
+// @Summary Enqueue runner to current run endpoint
+// @Description Enqueue a runner to the current run of a scraper
+// @Tags runners
+// @Accept  json
+// @Produce  json
+// @Param scraperId path string true "Id of scraper"
+// @Success 200 {object} EnqueueRunnerResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /scrapers/{scraperId}/runners/current/enqueue [post]
+func (app *App) enqueueRunnerCurrentRun(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	runnerId, err := app.RunnerQueueService.EnqueueRunnerForCurrentRun(scraperId)
+	if err != nil {
+		return nil, err
+	}
+
+	return EnqueueRunnerResponse{RunnerId: runnerId}, nil
+}
+
+// addStartingRequest godoc
+// @Summary Add starting request to scraper
+// @Description Add a new starting request to a scraper
+// @Tags requestqueue
+// @Accept  json
+// @Produce  json
+// @Param scraperId path string true "Id of scraper"
+// @Param request body AddRequestBody true "Request to send"
+// @Success 200 {object} EnqueueRequestResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /scrapers/{scraperId}/requests/queue/start/add [post]
+func (app *App) addStartingRequest(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	var requestToSend AddRequestBody
+	err = json.NewDecoder(r.Body).Decode(&requestToSend)
+	if err != nil {
+		return nil, err
+	}
+
+	requestBlob, err := json.Marshal(requestToSend)
+	if err != nil {
+		return nil, err
+	}
+
+	requestQueueId, err := app.RequestQueueService.AddStartingRequest(scraperId, requestBlob)
+	if err != nil {
+		return nil, err
+	}
+
+	return EnqueueRequestResponse{RequestQueueId: requestQueueId}, nil
 }

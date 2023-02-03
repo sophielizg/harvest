@@ -9,7 +9,7 @@ type CookieService struct {
 }
 
 func (c *CookieService) GetCookies(runId int, host string) (string, error) {
-	rows, err := c.Db.Query("CALL addOrUpdateCookies(?, ?);", runId, host)
+	rows, err := c.Db.Query("CALL getCookiesForHost(?, ?);", runId, host)
 	if err != nil {
 		return "", err
 	}

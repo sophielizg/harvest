@@ -12,7 +12,7 @@ CREATE PROCEDURE getParsersForScraper(
         ty.name AS type,
         GROUP_CONCAT(tg.name) AS tags
     FROM Parser p
-    INNER JOIN ParserType ty ON p.typeId = ty.parserTypeId
+    INNER JOIN ParserType ty ON p.parserTypeId = ty.parserTypeId
     LEFT JOIN ParserTag tg ON p.parserId = tg.parserId
     WHERE p.scraperId = scraperIdIn
     GROUP BY p.parserId;

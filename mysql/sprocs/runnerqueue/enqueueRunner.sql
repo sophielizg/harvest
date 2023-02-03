@@ -21,10 +21,10 @@ CREATE PROCEDURE enqueueRunner(
     
     IF EXISTS (
         SELECT 1 FROM Run
-        WHERE scraperId = scraperIdIn AND r.isRunning = 1
+        WHERE scraperId = scraperIdIn AND isRunning = 1
     ) THEN
         INSERT INTO RunnerQueue (runId)
-        VALUES (runId);
+        VALUES (currentRunId);
 
         SELECT LAST_INSERT_ID() AS runnerId;
     END IF;

@@ -9,10 +9,10 @@ type Run struct {
 }
 
 type RunService interface {
-	IsRunning(runId int) (bool, error)
+	// IsRunning(runId int) (bool, error)
 	// Runs(scraperId int) ([]Run, error)
 	// DeleteRun(runId int) error
-	// CreateRun(scraperId int) (int, error)
+	CreateRun(scraperId int) (int, error)
 	// StopRun(runId int) error
 	// PauseRun(runId int) error
 	// UnpauseRun(runId int) error

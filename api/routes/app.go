@@ -12,8 +12,11 @@ import (
 )
 
 type App struct {
-	ScraperService harvest.ScraperService
-	ParserService  harvest.ParserService
+	ScraperService      harvest.ScraperService
+	ParserService       harvest.ParserService
+	RunService          harvest.RunService
+	RunnerQueueService  harvest.RunnerQueueService
+	RequestQueueService harvest.RequestQueueService
 }
 
 func (app *App) Router(port string) (*chi.Mux, error) {
@@ -30,7 +33,7 @@ func (app *App) Router(port string) (*chi.Mux, error) {
 
 	// Mount each route
 	router.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/scapers", app.ScraperRouter())
+		r.Mount("/scrapers", app.ScraperRouter())
 		r.Mount("/parsers", app.ParserRouter())
 	})
 

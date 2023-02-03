@@ -30,14 +30,3 @@ func (r *RequestService) AddRequest(request harvest.RequestFields) (int, error) 
 
 	return 0, errors.New("Request added but no requestId returned")
 }
-
-func (r *RequestService) UpdateRequest(requestId int, request harvest.RequestFields) error {
-	stmt, err := r.Db.Prepare("CALL updateRequest(?, ?, ?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(requestId, request.Blob, request.ParentRequestId,
-		request.OriginatorRequestId)
-	return err
-}

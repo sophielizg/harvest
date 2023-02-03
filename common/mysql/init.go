@@ -17,6 +17,7 @@ type MysqlServices struct {
 	RunnerQueueService  *RunnerQueueService
 	ScraperService      *ScraperService
 	VisitedService      *VisitedService
+	RunService          *RunService
 }
 
 func (m *MysqlServices) Close() {
@@ -40,5 +41,6 @@ func Init(configService harvest.ConfigService) (*MysqlServices, error) {
 		&RunnerQueueService{db},
 		&ScraperService{db},
 		&VisitedService{db},
+		&RunService{db},
 	}, nil
 }

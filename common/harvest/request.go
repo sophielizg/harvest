@@ -17,5 +17,4 @@ type Request struct {
 
 type RequestService interface {
 	AddRequest(request RequestFields) (int, error)
-	UpdateRequest(requestId int, request RequestFields) error
 }
