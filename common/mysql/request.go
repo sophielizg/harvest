@@ -12,8 +12,8 @@ type RequestService struct {
 }
 
 func (r *RequestService) AddRequest(request harvest.RequestFields) (int, error) {
-	rows, err := r.Db.Query("CALL addRequest(?, ?, ?, ?);", request.RunId, request.Blob,
-		request.ParentRequestId, request.OriginatorRequestId)
+	rows, err := r.Db.Query("CALL addRequest(?, ?, ?, ?, ?, ?);", request.RunId, request.Url,
+		request.Method, request.Blob, request.ParentRequestId, request.OriginatorRequestId)
 	if err != nil {
 		return 0, err
 	}

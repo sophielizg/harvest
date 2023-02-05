@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/sophielizg/harvest/common/harvest"
 )
@@ -10,14 +11,23 @@ type ErrorService struct {
 	Db *sql.DB
 }
 
-func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) error {
-	stmt, err := e.Db.Prepare("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, 1);")
+func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) (int, error) {
+	rows, err := e.Db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
+		runnerId, parseError.RequestId, parseError.ParserId, parseError.StatusCode,
+		parseError.Response, parseError.IsMissngParseResult, parseError.ErrorMessage)
 	if err != nil {
-		return err
+		return 0, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var errorId int
+		err = rows.Scan(&errorId)
+		if err != nil {
+			return 0, err
+		}
+		return errorId, nil
 	}
 
-	_, err = stmt.Exec(parseError.RunId, runnerId, parseError.RequestId, parseError.ParserId,
-		parseError.StatusCode, parseError.Response, parseError.IsMissngParseResult,
-		parseError.ErrorMessage)
-	return err
+	return 0, errors.New("Error added but no errorId returned")
 }

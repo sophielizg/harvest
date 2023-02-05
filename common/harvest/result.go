@@ -10,6 +10,7 @@ type ResultFields struct {
 }
 
 type Result struct {
+	ResultId         int       `json:"resultId"`
 	ScrapedTimestamp time.Time `json:"scrapedTimestamp"`
 	ResultFields
 }
@@ -17,5 +18,5 @@ type Result struct {
 type ResultService interface {
 	// ScraperResults(scraperId int, tags []string) ([]Result, error)
 	// RunResults(runId int, tags []string) ([]Result, error)
-	AddResult(runnerId int, result ResultFields) error
+	AddResult(runnerId int, result ResultFields) (int, error)
 }

@@ -13,7 +13,7 @@ import (
 func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue string) {
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getRequestId error: %s", err)
+		fmt.Fprintf(os.Stderr, "getRequestId error: %s\n", err)
 	}
 
 	resultFields := harvest.ResultFields{
@@ -23,9 +23,9 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 		Value:     parsedValue,
 	}
 
-	err = p.ResultService.AddResult(p.RunnerId, resultFields)
+	_, err = p.ResultService.AddResult(p.RunnerId, resultFields)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "AddResult error: %s", err)
+		fmt.Fprintf(os.Stderr, "AddResult error: %s\n", err)
 	}
 }
 
@@ -33,13 +33,13 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	isMissingParseResult bool) {
 	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "json.Marshal error: %s", err)
+		fmt.Fprintf(os.Stderr, "json.Marshal error: %s\n", err)
 		return
 	}
 
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getRequestId error: %s", err)
+		fmt.Fprintf(os.Stderr, "getRequestId error: %s\n", err)
 	}
 
 	errorFields := harvest.ErrorFields{
@@ -47,14 +47,14 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 		RequestId:           requestId,
 		ParserId:            parserId,
 		StatusCode:          response.StatusCode,
-		Response:            marshaledResponse,
+		Response:            string(marshaledResponse),
 		IsMissngParseResult: isMissingParseResult,
 		ErrorMessage:        parseError.Error(),
 	}
 
-	err = p.ErrorService.AddError(p.RunnerId, errorFields)
+	_, err = p.ErrorService.AddError(p.RunnerId, errorFields)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "AddError error: %s", err)
+		fmt.Fprintf(os.Stderr, "AddError error: %s\n", err)
 	}
 }
 

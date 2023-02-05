@@ -7,12 +7,13 @@ type ErrorFields struct {
 	RequestId           int    `json:"requestId"`
 	ParserId            int    `json:"parserId"`
 	StatusCode          int    `json:"statusCode"`
-	Response            []byte `json:"response"`
+	Response            string `json:"response"`
 	IsMissngParseResult bool   `json:"isMissngParseResult"`
 	ErrorMessage        string `json:"errorMessage"`
 }
 
 type Error struct {
+	ErrorId          int       `json:"errorId"`
 	ScrapedTimestamp time.Time `json:"scrapedTimestamp"`
 	ErrorFields
 }
@@ -20,5 +21,5 @@ type Error struct {
 type ErrorService interface {
 	// ScraperErrors(scraperId int, tags []string) ([]Error, error)
 	// RunErrors(runId int, tags []string) ([]Error, error)
-	AddError(runnerId int, parseError ErrorFields) error
+	AddError(runnerId int, parseError ErrorFields) (int, error)
 }

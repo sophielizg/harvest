@@ -10,11 +10,13 @@ CREATE PROCEDURE addError(
     IN requestIdIn INT,
     IN parserIdIn INT,
     IN statusCodeIn INT,
-    IN responseIn BLOB,
+    IN responseIn TEXT,
     IN isMissngParseResultIn BOOL,
     IN errorMessageIn VARCHAR(4096),
     IN createTransaction BOOL
 ) BEGIN
+    DECLARE newErrorId INT;
+
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         IF createTransaction THEN
@@ -38,10 +40,14 @@ CREATE PROCEDURE addError(
         (runIdIn, requestIdIn, parserIdIn, NOW(),
          statusCodeIn, responseIn, isMissngParseResultIn, errorMessageIn);
 
+    SELECT LAST_INSERT_ID() INTO newErrorId;
+
     CALL updateStatus(
         runIdIn, runnerIdIn, 0, 0, 
         IF(isMissngParseResultIn, 0, 1), 
         IF(isMissngParseResultIn, 1, 0));
+
+    SELECT newErrorId AS errorId;
     
     IF createTransaction THEN
         COMMIT;

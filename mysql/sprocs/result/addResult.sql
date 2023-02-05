@@ -12,6 +12,8 @@ CREATE PROCEDURE addResult(
     IN valueIn TEXT,
     IN createTransaction BOOL
 ) BEGIN
+    DECLARE newResultId INT;
+
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         IF createTransaction THEN
@@ -33,7 +35,11 @@ CREATE PROCEDURE addResult(
     VALUES
         (runIdIn, requestIdIn, parserIdIn, NOW(), valueIn);
 
+    SELECT LAST_INSERT_ID() INTO newResultId;
+
     CALL updateStatus(runIdIn, runnerIdIn, 0, 1, 0, 0);
+
+    SELECT newResultId AS resultId;
     
     IF createTransaction THEN
         COMMIT;

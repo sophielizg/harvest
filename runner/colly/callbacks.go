@@ -11,12 +11,14 @@ import (
 func (r *Runner) trackRequest(request *colly.Request) {
 	var err error
 	newRequest := harvest.RequestFields{
-		RunId: r.RunId,
+		RunId:  r.RunId,
+		Url:    request.URL.String(),
+		Method: request.Method,
 	}
 
 	newRequest.Blob, err = request.Marshal()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "request.Marshal error: %s", err)
+		fmt.Fprintf(os.Stderr, "request.Marshal error: %s\n", err)
 	}
 
 	if id, ok := request.Ctx.GetAny("parentRequestId").(int); ok {
@@ -29,7 +31,7 @@ func (r *Runner) trackRequest(request *colly.Request) {
 
 	newRequestId, err := r.RequestService.AddRequest(newRequest)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "UpdateRequest error: %s", err)
+		fmt.Fprintf(os.Stderr, "UpdateRequest error: %s\n", err)
 	}
 
 	request.Ctx.Put("requestId", newRequestId)
