@@ -22,3 +22,6 @@ server
 
 # Env values 
 *.env
+
+# Go work files
+go.work*
