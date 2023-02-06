@@ -9,7 +9,6 @@ install () {
 
 build () {
 	runner () {
-		generate
 		go build -o runner $app_location $@
 	}
 	
