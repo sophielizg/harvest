@@ -21,7 +21,7 @@ CREATE PROCEDURE enqueueRunner(
     
     IF EXISTS (
         SELECT 1 FROM Run
-        WHERE scraperId = scraperIdIn AND isRunning = 1
+        WHERE runId = currentRunId AND isRunning = 1
     ) THEN
         INSERT INTO RunnerQueue (runId)
         VALUES (currentRunId);

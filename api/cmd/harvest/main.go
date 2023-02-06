@@ -10,7 +10,7 @@ import (
 	_ "github.com/sophielizg/harvest/common/harvest"
 
 	"github.com/sophielizg/harvest/api/routes"
-	"github.com/sophielizg/harvest/common/config"
+	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
 )
 
@@ -26,11 +26,11 @@ func main() {
 		port = ":8080"
 	}
 
-	// Create config service
-	configService := &config.ConfigService{}
+	// Create local services
+	localServices := local.Init()
 
 	// Create db connected services
-	mysqlServices, err := mysql.Init(configService)
+	mysqlServices, err := mysql.Init(localServices.ConfigService)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,6 +38,7 @@ func main() {
 
 	// Initialize server
 	app := routes.App{
+		RunnerService:       localServices.RunnerService,
 		ScraperService:      mysqlServices.ScraperService,
 		ParserService:       mysqlServices.ParserService,
 		RunService:          mysqlServices.RunService,

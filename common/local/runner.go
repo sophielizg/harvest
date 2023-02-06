@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	runnerDir = "../../runner"
+	runnerDir = "../runner"
 )
 
 type RunnerService struct{}

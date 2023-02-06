@@ -1,0 +1,67 @@
+#!/bin/bash
+
+
+app_location="cmd/harvest/main.go"
+
+build () {
+	sql () {
+		all () {
+			cd ./mysql
+			./taskfile build all
+		}
+
+		file () {
+			# Use absolute path to avoid naming issues when cd'ing into dir
+			filename="$PWD/$1"
+			cd ./mysql
+			./taskfile build file $filename
+		}
+
+		$@
+	}
+
+	api () {
+		cd ./api
+		./taskfile build server
+	}
+
+	runner () {
+		cd ./runner
+		./taskfile build runner
+	}
+
+	local () {
+		sql
+		api
+		runner
+	}
+	
+	docker () {
+		cd ./api
+		./taskfile build docker
+		cd ../runner
+		./taskfile build docker
+	}
+
+	$@
+}
+
+run () {
+	api () {
+		cd ./api
+		./taskfile run
+	}
+
+	runner () {
+		cd ./runner
+		./taskfile run
+	}
+
+	$@
+}
+
+dev () {
+	reflex -s -g reflex.conf -- reflex -c reflex.conf $@
+}
+
+$@

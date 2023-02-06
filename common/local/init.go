@@ -7,7 +7,7 @@ type LocalServices struct {
 
 func Init() *LocalServices {
 	return &LocalServices{
-		ConfigService{},
-		RunnerService{},
+		&ConfigService{},
+		&RunnerService{},
 	}
 }

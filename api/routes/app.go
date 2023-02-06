@@ -12,6 +12,7 @@ import (
 )
 
 type App struct {
+	RunnerService       harvest.RunnerService
 	ScraperService      harvest.ScraperService
 	ParserService       harvest.ParserService
 	RunService          harvest.RunService
@@ -35,6 +36,7 @@ func (app *App) Router(port string) (*chi.Mux, error) {
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/scrapers", app.ScraperRouter())
 		r.Mount("/parsers", app.ParserRouter())
+		r.Mount("/runners", app.RunnerRouter())
 	})
 
 	// Create swagger UI

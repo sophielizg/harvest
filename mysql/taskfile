@@ -34,15 +34,24 @@ mysql () {
 }
 
 build () {
-	_set_config
-	_build_folder tables
-	_build_folder utils
-	_build_folder constraints
+	all () {
+		_set_config
+		_build_folder tables
+		_build_folder utils
+		_build_folder constraints
 
-	for entry in sprocs/*
-	do
-		_build_folder $entry
-	done
+		for entry in sprocs/*
+		do
+			_build_folder $entry
+		done
+	}
+
+	file () {
+		_set_config
+		_build_file $1
+	}
+
+	$@
 }
 
 $@

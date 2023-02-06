@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/sophielizg/harvest/common/config"
+	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
 	"github.com/sophielizg/harvest/runner/colly"
 	"github.com/sophielizg/harvest/runner/colly/parsers"
@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	// Create config service
-	configService := &config.ConfigService{}
+	// Create local services
+	localServices := local.Init()
 
 	// Create db connected services
-	mysqlServices, err := mysql.Init(configService)
+	mysqlServices, err := mysql.Init(localServices.ConfigService)
 	if err != nil {
 		log.Fatal(err)
 	}

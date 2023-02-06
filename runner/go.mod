@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/gocolly/colly v1.2.0
-	github.com/sophielizg/harvest/common/config v0.0.0-20230202071100-3e66946710af
 	github.com/sophielizg/harvest/common/harvest v0.0.0-20230202071100-3e66946710af
 	github.com/sophielizg/harvest/common/mysql v0.0.0-20230202071100-3e66946710af
 )
@@ -23,6 +22,7 @@ require (
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
+	github.com/sophielizg/harvest/common/local v0.0.0-20230206033005-c4d705cf1396 // indirect
 	github.com/sophielizg/harvest/common/utils v0.0.0-20230202071100-3e66946710af // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
@@ -33,10 +33,10 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
 
-replace github.com/sophielizg/harvest/common/config => ../common/config
-
 replace github.com/sophielizg/harvest/common/harvest => ../common/harvest
 
 replace github.com/sophielizg/harvest/common/mysql => ../common/mysql
 
 replace github.com/sophielizg/harvest/common/utils => ../common/utils
+
+replace github.com/sophielizg/harvest/common/local => ../common/local

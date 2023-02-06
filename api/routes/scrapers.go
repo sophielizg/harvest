@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -37,11 +38,17 @@ type EnqueueRequestResponse struct {
 	RequestQueueId int `json:"requestQueueId"`
 }
 
+type ScraperStartResponse struct {
+	RunId    int `json:"runId"`
+	RunnerId int `json:"runnerId"`
+}
+
 func (app *App) ScraperRouter() *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/{scraperId}", WriteErrorResponse(app.getScraperById))
 	router.Get("/all", WriteErrorResponse(app.getScrapers))
 	router.Post("/add", WriteErrorResponse(app.addScraper))
+	router.Post("/{scraperId}/start", WriteErrorResponse(app.startScraper))
 
 	router.Post("/{scraperId}/update", WriteErrorResponse(app.updateScraper))
 	router.Delete("/{scraperId}/delete", WriteErrorResponse(app.deleteScraper))
@@ -128,6 +135,45 @@ func (app *App) addScraper(r *http.Request) (interface{}, error) {
 	}
 
 	return AddScraperResponse{ScraperId: scraperId}, nil
+}
+
+// startScraper godoc
+// @Summary Start endpoint
+// @Description Creates a new run and runner for the scraper
+// @Tags scrapers
+// @Accept  json
+// @Produce  json
+// @Param scraperId path string true "Id of scraper"
+// @Success 200 {object} ScraperStartResponse
+// @Failure 400 {object} ErrorResponse
+// @Router /scrapers/{scraperId}/start [post]
+func (app *App) startScraper(r *http.Request) (interface{}, error) {
+	scraperIdStr := chi.URLParam(r, "scraperId")
+	scraperId, err := strconv.Atoi(scraperIdStr)
+	if err != nil {
+		return nil, err
+	}
+
+	runId, err := app.RunService.CreateRun(scraperId)
+	if err != nil {
+		return nil, err
+	}
+	log.Println(runId)
+
+	runnerId, err := app.RunnerQueueService.EnqueueRunnerForRun(runId)
+	if err != nil {
+		return nil, err
+	}
+
+	err = app.RunnerService.CreateNewRunner()
+	if err != nil {
+		return nil, err
+	}
+
+	return ScraperStartResponse{
+		RunId:    runId,
+		RunnerId: runnerId,
+	}, nil
 }
 
 // updateScraper godoc
