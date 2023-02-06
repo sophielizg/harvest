@@ -9,6 +9,7 @@ CREATE PROCEDURE addResult(
     IN runnerIdIn INT,
     IN requestIdIn INT,
     IN parserIdIn INT,
+    IN elementIndexIn INT,
     IN valueIn TEXT,
     IN createTransaction BOOL
 ) BEGIN
@@ -31,9 +32,9 @@ CREATE PROCEDURE addResult(
     END IF;
 
     INSERT INTO Result
-        (runId, requestId, parserId, scrapedTimestamp, value)
+        (runId, requestId, parserId, elementIndex, scrapedTimestamp, value)
     VALUES
-        (runIdIn, requestIdIn, parserIdIn, NOW(), valueIn);
+        (runIdIn, requestIdIn, parserIdIn, elementIndexIn, NOW(), valueIn);
 
     SELECT LAST_INSERT_ID() INTO newResultId;
 

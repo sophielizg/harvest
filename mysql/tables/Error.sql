@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS Error (
     runId INT NOT NULL,
     requestId INT NOT NULL,
     parserId INT NOT NULL,
+    elementIndex INT,
     scrapedTimestamp DATETIME,
     statusCode INT,
     response TEXT,

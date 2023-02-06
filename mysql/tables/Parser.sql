@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS Parser (
     selector VARCHAR(255),
     attr VARCHAR(255),
     xpath VARCHAR(255),
-    jsonPath VARCHAR(255),
     enqueueScraperId INT,
     autoIncrementRules JSON,
     PRIMARY KEY (parserId)

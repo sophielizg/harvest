@@ -84,20 +84,15 @@ func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
 	var parsers []harvest.Parser
 	for rows.Next() {
 		var dummy int
-		var jsonPath *string
 		var tagStr *string
 		var autoIncrementRules *ParserAutoIncrementRules
 		var parser harvest.Parser
 
 		err = rows.Scan(&parser.ParserId, &dummy, &parser.CreatedTimestamp, &dummy,
-			&parser.Selector, &parser.Attr, &parser.Xpath, &jsonPath,
+			&parser.Selector, &parser.Attr, &parser.Xpath,
 			&parser.EnqueueScraperId, &autoIncrementRules, &parser.PageType, &tagStr)
 		if err != nil {
 			return nil, err
-		}
-
-		if jsonPath != nil {
-			parser.JsonPath = strings.Split(*jsonPath, ",")
 		}
 
 		if tagStr != nil {
@@ -135,13 +130,8 @@ func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (i
 		autoIncrementRules = &convertedRules
 	}
 
-	var jsonPathStr string
-	if parser.JsonPath != nil {
-		jsonPathStr = strings.Join(parser.JsonPath, ",")
-	}
-
-	rows, err := p.Db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?, ?);",
-		scraperId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath, jsonPathStr,
+	rows, err := p.Db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?);",
+		scraperId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath,
 		parser.EnqueueScraperId, autoIncrementRules)
 	if err != nil {
 		return 0, err

@@ -3,10 +3,11 @@ package harvest
 import "time"
 
 type ResultFields struct {
-	RunId     int    `json:"runId"`
-	RequestId int    `json:"requestId"`
-	ParserId  int    `json:"parserId"`
-	Value     string `json:"value"`
+	RunId        int    `json:"runId"`
+	RequestId    int    `json:"requestId"`
+	ParserId     int    `json:"parserId"`
+	ElementIndex *int   `json:"elementIndex"`
+	Value        string `json:"value"`
 }
 
 type Result struct {

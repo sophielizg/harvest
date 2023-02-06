@@ -12,9 +12,10 @@ type ErrorService struct {
 }
 
 func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) (int, error) {
-	rows, err := e.Db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
-		runnerId, parseError.RequestId, parseError.ParserId, parseError.StatusCode,
-		parseError.Response, parseError.IsMissngParseResult, parseError.ErrorMessage)
+	rows, err := e.Db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
+		runnerId, parseError.RequestId, parseError.ParserId, parseError.ElementIndex,
+		parseError.StatusCode, parseError.Response, parseError.IsMissngParseResult,
+		parseError.ErrorMessage)
 	if err != nil {
 		return 0, err
 	}

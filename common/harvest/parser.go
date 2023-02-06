@@ -14,7 +14,6 @@ type ParserFields struct {
 	Selector           *string                   `json:"selector"`
 	Attr               *string                   `json:"attr"`
 	Xpath              *string                   `json:"xpath"`
-	JsonPath           []string                  `json:"jsonPath"`
 	EnqueueScraperId   *int                      `json:"enqueueScraperId"`
 	AutoIncrementRules *ParserAutoIncrementRules `json:"autoIncrementRules"`
 }

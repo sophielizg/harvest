@@ -9,6 +9,7 @@ CREATE PROCEDURE addError(
     IN runnerIdIn INT,
     IN requestIdIn INT,
     IN parserIdIn INT,
+    IN elementIndexIn INT,
     IN statusCodeIn INT,
     IN responseIn TEXT,
     IN isMissngParseResultIn BOOL,
@@ -34,10 +35,10 @@ CREATE PROCEDURE addError(
     END IF;
 
     INSERT INTO Error
-        (runId, requestId, parserId, scrapedTimestamp,
+        (runId, requestId, parserId, elementIndex, scrapedTimestamp,
          statusCode, response, isMissngParseResult, errorMessage)
     VALUES
-        (runIdIn, requestIdIn, parserIdIn, NOW(),
+        (runIdIn, requestIdIn, parserIdIn, elementIndexIn, NOW(),
          statusCodeIn, responseIn, isMissngParseResultIn, errorMessageIn);
 
     SELECT LAST_INSERT_ID() INTO newErrorId;

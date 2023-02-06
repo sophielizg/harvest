@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"sync"
 
 	"github.com/sophielizg/harvest/common/harvest"
 	"github.com/sophielizg/harvest/runner/colly/common"
@@ -18,6 +19,7 @@ type StorageServices struct {
 type Storage struct {
 	common.RunnerIds
 	StorageServices
+	mu sync.RWMutex // Only used for dequeue method
 }
 
 func (s *Storage) Init() error { return nil }
@@ -62,6 +64,10 @@ func (s *Storage) QueueSize() (int, error) {
 }
 
 func (s *Storage) GetRequest() ([]byte, error) {
+	// Prevent deadlock when multiple threads try to dequeue at once
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	reqs, err := s.RequestQueueService.DequeueRequests(s.RunId, s.RunnerId, 1)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "DequeueRequests error: %s\n", err)

@@ -13,17 +13,16 @@ func (r *Runner) Collector() (*colly.Collector, *queue.Queue, error) {
 	r.Configure(collector)
 	r.AddCallbacks(collector)
 
-	storage := &storage.Storage{
-		r.RunnerIds,
-		r.StorageServices,
-	}
+	var storage storage.Storage
+	storage.RunnerIds = r.RunnerIds
+	storage.StorageServices = r.StorageServices
 
-	err := collector.SetStorage(storage)
+	err := collector.SetStorage(&storage)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	requestQueue, err := queue.New(16, storage)
+	requestQueue, err := queue.New(16, &storage)
 	if err != nil {
 		return nil, nil, err
 	}

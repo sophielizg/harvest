@@ -6,6 +6,7 @@ type ErrorFields struct {
 	RunId               int    `json:"runId"`
 	RequestId           int    `json:"requestId"`
 	ParserId            int    `json:"parserId"`
+	ElementIndex        *int   `json:"elementIndex"`
 	StatusCode          int    `json:"statusCode"`
 	Response            string `json:"response"`
 	IsMissngParseResult bool   `json:"isMissngParseResult"`

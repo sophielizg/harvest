@@ -10,17 +10,16 @@ CREATE PROCEDURE addParser(
     IN selectorIn VARCHAR(255),
     IN attrIn VARCHAR(255),
     IN xpathIn VARCHAR(255),
-    IN jsonPathIn VARCHAR(255),
     IN enqueueScraperIdIn INT,
     IN autoIncrementRulesIn JSON
 ) BEGIN
     INSERT INTO Parser
         (scraperId, createdTimestamp, parserTypeId, 
-        selector, attr, xpath, jsonPath, 
+        selector, attr, xpath, 
         enqueueScraperId, autoIncrementRules)
     VALUES
         (scraperIdIn, NOW(), parserTypeIdIn, 
-        selectorIn, attrIn, xpathIn, jsonPathIn, 
+        selectorIn, attrIn, xpathIn,
         enqueueScraperIdIn, autoIncrementRulesIn);
     SELECT LAST_INSERT_ID() AS parserId;
 END $$

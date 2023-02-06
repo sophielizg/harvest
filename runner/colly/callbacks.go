@@ -32,6 +32,7 @@ func (r *Runner) trackRequest(request *colly.Request) {
 	newRequestId, err := r.RequestService.AddRequest(newRequest)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "UpdateRequest error: %s\n", err)
+		request.Abort()
 	}
 
 	request.Ctx.Put("requestId", newRequestId)

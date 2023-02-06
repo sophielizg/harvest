@@ -1,11 +1,12 @@
 USE harvest;
 
 CREATE TABLE IF NOT EXISTS Result (
-    resutlId INT AUTO_INCREMENT NOT NULL,
+    resultId INT AUTO_INCREMENT NOT NULL,
     runId INT NOT NULL,
     requestId INT NOT NULL,
     parserId INT NOT NULL,
+    elementIndex INT,
     scrapedTimestamp DATETIME,
     value TEXT,
-    PRIMARY KEY (resutlId)
+    PRIMARY KEY (resultId)
 ) ENGINE=InnoDB;

@@ -44,7 +44,7 @@ func (p *Parsers) Add(collector *colly.Collector) error {
 	// Add error handler
 	collector.OnError(func(r *colly.Response, err error) {
 		for _, parserId := range parserIds {
-			p.saveError(r, parserId, err, false)
+			p.saveError(r, parserId, err, nil, false)
 		}
 	})
 
