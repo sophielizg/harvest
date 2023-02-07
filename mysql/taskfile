@@ -28,30 +28,31 @@ _build_folder () {
 	done
 }
 
-mysql () {
+connect () {
 	_set_config
 	docker exec -it mysql mysql -p$MYSQL_ROOT_PASSWORD $@
 }
 
 build () {
-	all () {
-		_set_config
-		_build_folder tables
-		_build_folder utils
-		_build_folder constraints
-
-		for entry in sprocs/*
-		do
-			_build_folder $entry
-		done
-	}
-
 	file () {
 		_set_config
 		_build_file $1
 	}
 
-	$@
+	if [[ $(type -t $1) == function ]]; then
+		$@
+		return $?
+	fi
+
+	_set_config
+	_build_folder tables
+	_build_folder utils
+	_build_folder constraints
+
+	for entry in sprocs/*
+	do
+		_build_folder $entry
+	done
 }
 
 $@

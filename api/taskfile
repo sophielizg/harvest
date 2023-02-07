@@ -7,43 +7,18 @@ install () {
 	go mod download && go mod verify
 }
 
-generate () {
-	swag init --parseDependency -g ./$app_location $@
-}
-
 build () {
-	server () {
-		generate
-		go build -o server $app_location $@
-	}
-	
-	docker () {
-		docker build . $@
-	}
-
-	$@
+	swag init --parseDependency -g ./$app_location $@
+	go build -o server $app_location $@
 }
 
 run () {
-	generate
-	go run $app_location $@
-}
-
-dev () {
-	reflex -s -g reflex.conf -- reflex -c reflex.conf
-	reflex -c ./reflex.conf $@
+	build
+	./server
 }
 
 test () {
 	go test -v $(go list ./tests/... | grep -v /mocks) -coverpkg $(go list ./pkg/... | grep -v /app) $@
-}
-
-lint () {
-	golangci-lint run --issues-exit-code 0 $@
-}
-
-format () {
-	lint --fix $@
 }
 
 $@

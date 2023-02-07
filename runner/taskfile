@@ -8,31 +8,16 @@ install () {
 }
 
 build () {
-	runner () {
-		go build -o runner $app_location $@
-	}
-	
-	docker () {
-		docker build . $@
-	}
-
-	$@
+	go build -o runner $app_location $@
 }
 
 run () {
-	go run $app_location $@
+	build
+	./runner
 }
 
-dev () {
-	reflex -s -g reflex.conf -- reflex -c reflex.conf $@
-}
-
-lint () {
-	golangci-lint run --issues-exit-code 0 $@
-}
-
-format () {
-	lint --fix $@
+test () {
+	go test -v $(go list ./tests/... | grep -v /mocks) -coverpkg $(go list ./pkg/... | grep -v /app) $@
 }
 
 $@
