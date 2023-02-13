@@ -26,7 +26,7 @@ COPY . .
 ENV GOOS=linux 
 ENV GOARCH=amd64 
 ENV CGO_ENABLED=0
-RUN ./taskfile build runner
+RUN go build -o runner cmd/harvest/main.go
 
 
 # FINAL

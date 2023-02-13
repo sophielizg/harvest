@@ -28,7 +28,8 @@ COPY . .
 ENV GOOS=linux 
 ENV GOARCH=amd64 
 ENV CGO_ENABLED=0
-RUN ./taskfile build server
+RUN swag init --parseDependency -g ./cmd/harvest/main.go
+RUN go build -o server cmd/harvest/main.go
 
 
 # FINAL

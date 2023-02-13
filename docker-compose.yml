@@ -13,5 +13,13 @@ services:
       - 3306
     volumes:
       - mysql:/var/lib/mysql
+  api:
+    container_name: api
+    image: harvest-api:latest
+    restart: always
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
 volumes:
   mysql:

@@ -13,6 +13,17 @@ dev () {
 	reflex -s -g reflex.conf -- reflex -c reflex.conf $@
 }
 
+docker () {
+	build () {
+		'docker' build ./api -t harvest-api
+		'docker' build ./runner -t harvest-runner
+	}
+
+	run () {
+		docker compose up -d
+	}
+}
+
 lint () {
 	golangci-lint run --issues-exit-code 0 $@
 }
