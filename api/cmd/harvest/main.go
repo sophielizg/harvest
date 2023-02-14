@@ -7,9 +7,11 @@ import (
 	"os"
 
 	// Import any external types used by swag
+	"github.com/sophielizg/harvest/common/harvest"
 	_ "github.com/sophielizg/harvest/common/harvest"
 
 	"github.com/sophielizg/harvest/api/routes"
+	"github.com/sophielizg/harvest/common/docker"
 	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
 )
@@ -32,6 +34,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Create docker services
+	dockerServices, err := docker.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Create db connected services
 	mysqlServices, err := mysql.Init(localServices.ConfigService)
 	if err != nil {
@@ -39,9 +47,17 @@ func main() {
 	}
 	defer mysqlServices.Close()
 
+	var runnerService harvest.RunnerService
+	switch os.Getenv("ENV") {
+	case "docker":
+		runnerService = dockerServices.RunnerService
+	default:
+		runnerService = localServices.RunnerService
+	}
+
 	// Initialize server
 	app := routes.App{
-		RunnerService:       localServices.RunnerService,
+		RunnerService:       runnerService,
 		ScraperService:      mysqlServices.ScraperService,
 		ParserService:       mysqlServices.ParserService,
 		RunService:          mysqlServices.RunService,
