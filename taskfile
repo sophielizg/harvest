@@ -15,7 +15,7 @@ init () {
 }
 
 update () {
-	for subdirectory in "api" "runner"; do
+	for subdirectory in "api" "common" "runner"; do
 		cd ./$subdirectory
 		go get -u ./...
 		go mod tidy

@@ -7,7 +7,7 @@ import (
 
 	"github.com/antchfx/jsonquery"
 	"github.com/gocolly/colly"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 func (p *Parsers) htmlCallback(collector *colly.Collector, parser harvest.Parser) error {

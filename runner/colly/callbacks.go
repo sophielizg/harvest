@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/gocolly/colly"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 func (r *Runner) trackRequest(request *colly.Request) {

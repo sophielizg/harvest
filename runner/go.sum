@@ -33,6 +33,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d h1:hrujxIzL1woJ7AwssoOcM/tq5JjjG2yYOc8odClEiXA=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d/go.mod h1:uugorj2VCxiV1x+LzaIdVa9b4S4qGAcH6cbhh4qVxOU=
+github.com/sophielizg/harvest/common v0.0.0-20230214081216-3fab85180f6d h1:iK4lox1QCqu/m8hGEkXaevxKexy40Av4Wh9FoAHBxfc=
+github.com/sophielizg/harvest/common v0.0.0-20230214081216-3fab85180f6d/go.mod h1:NFyR0jVYdYJ3qXmr0p8rejly3GV5VA4g8rIVtsVEASM=
 github.com/sophielizg/harvest/common/harvest v0.0.0-20230214054051-2bf486c2e780 h1:QoWZxWmK/mwVbc8H82pLe+EAMSUIMlB/2XbKehppM90=
 github.com/sophielizg/harvest/common/harvest v0.0.0-20230214054051-2bf486c2e780/go.mod h1:xVnlxA5wTPq0iQPh4YxKfXzjmAmL80yMZHaxAsTo5mQ=
 github.com/sophielizg/harvest/common/local v0.0.0-20230214054051-2bf486c2e780 h1:m4koEurzniGuJAL4jH1vkhkVH+xmbJY2LfWwyvoFoRM=

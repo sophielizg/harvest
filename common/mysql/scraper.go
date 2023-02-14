@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 type ScraperService struct {

@@ -3,7 +3,7 @@ package parsers
 import (
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/queue"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/runner/colly/common"
 )
 

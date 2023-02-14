@@ -3,7 +3,7 @@ package mysql
 import (
 	"database/sql"
 
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 type MysqlServices struct {

@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/gocolly/colly"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue string,

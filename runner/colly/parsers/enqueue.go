@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/gocolly/colly"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/common/utils"
 )
 

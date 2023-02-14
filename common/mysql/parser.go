@@ -7,7 +7,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 type ParserService struct {

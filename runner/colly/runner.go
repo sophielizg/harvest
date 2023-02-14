@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/runner/colly/common"
 	"github.com/sophielizg/harvest/runner/colly/parsers"
 	"github.com/sophielizg/harvest/runner/colly/storage"

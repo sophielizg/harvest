@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	_ "github.com/sophielizg/harvest/api/docs"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 

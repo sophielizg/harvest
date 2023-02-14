@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/sophielizg/harvest/common/harvest"
+	harvest "github.com/sophielizg/harvest/common"
 )
 
 // Request bodies

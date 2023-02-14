@@ -5,10 +5,6 @@ go 1.19
 require (
 	github.com/antchfx/jsonquery v1.3.2
 	github.com/gocolly/colly v1.2.0
-	github.com/sophielizg/harvest/common/harvest v0.0.0-20230214054051-2bf486c2e780
-	github.com/sophielizg/harvest/common/local v0.0.0-20230214054051-2bf486c2e780
-	github.com/sophielizg/harvest/common/mysql v0.0.0-20230214054051-2bf486c2e780
-	github.com/sophielizg/harvest/common/utils v0.0.0-20230214054051-2bf486c2e780
 )
 
 require (
@@ -24,6 +20,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
+	github.com/sophielizg/harvest/common v0.0.0-20230214081216-3fab85180f6d // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	golang.org/x/net v0.6.0 // indirect
