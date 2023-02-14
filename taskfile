@@ -3,12 +3,8 @@
 init () {
 	go work init
 
-	for subdirectory in "api" "runner"; do
+	for subdirectory in "api" "common" "runner"; do
 		go work use ./$subdirectory
-	done
-
-	for subdirectory in "harvest" "mysql" "local" "utils"; do
-		go work edit -replace github.com/sophielizg/harvest/common/$subdirectory=./common/$subdirectory
 	done
 
 	go mod download
