@@ -3,10 +3,6 @@
 
 app_location="cmd/harvest/main.go"
 
-install () {
-	go mod download && go mod verify
-}
-
 build () {
 	swag init --parseDependency -g ./$app_location $@
 	go build -o server $app_location $@

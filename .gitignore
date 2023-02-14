@@ -28,3 +28,8 @@ runner/runner
 
 # Go work files
 go.work*
+
+# Service specific config files
+api/config
+mysql/config
+runner/config

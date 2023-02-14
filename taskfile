@@ -1,5 +1,22 @@
 #!/bin/bash
 
+init () {
+	go work init
+
+	for subdirectory in "api" "runner"; do
+		go work use ./$subdirectory
+	done
+
+	for subdirectory in "harvest" "mysql" "local" "utils"; do
+		go work edit -replace github.com/sophielizg/harvest/common/$subdirectory=./common/$subdirectory
+	done
+
+	go mod download
+
+	for subdirectory in "api" "mysql" "runner"; do
+		ln -s $PWD/config $PWD/$subdirectory
+	done
+}
 
 build () {
 	for subdirectory in "api" "mysql" "runner"; do

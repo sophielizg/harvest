@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	configDir = "../config"
+	configDir = "./config"
 )
 
 type ConfigService struct {

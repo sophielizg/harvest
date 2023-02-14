@@ -3,10 +3,6 @@
 
 app_location="cmd/harvest/main.go"
 
-install () {
-	go mod download && go mod verify
-}
-
 build () {
 	go build -o runner $app_location $@
 }
