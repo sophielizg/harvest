@@ -18,6 +18,15 @@ init () {
 	done
 }
 
+update () {
+	for subdirectory in "api" "runner"; do
+		cd ./$subdirectory
+		go get -u ./...
+		go mod tidy
+		cd ../
+	done
+}
+
 build () {
 	for subdirectory in "api" "mysql" "runner"; do
 		cd ./$subdirectory
@@ -32,13 +41,16 @@ dev () {
 
 docker () {
 	build () {
-		'docker' build ./api -t harvest-api
-		'docker' build ./runner -t harvest-runner
+		for subdirectory in "api" "runner"; do
+			command docker build -t harvest-$subdirectory -f $subdirectory/Dockerfile .
+		done
 	}
 
 	run () {
-		docker compose up -d
+		command docker compose up -d
 	}
+
+	$@
 }
 
 lint () {

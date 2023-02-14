@@ -5,10 +5,10 @@ go 1.19
 require (
 	github.com/antchfx/jsonquery v1.3.2
 	github.com/gocolly/colly v1.2.0
-	github.com/sophielizg/harvest/common/harvest v0.0.0-20230207060929-09595664108a
-	github.com/sophielizg/harvest/common/local v0.0.0-20230207060929-09595664108a
-	github.com/sophielizg/harvest/common/mysql v0.0.0-20230207060929-09595664108a
-	github.com/sophielizg/harvest/common/utils v0.0.0-20230207060929-09595664108a
+	github.com/sophielizg/harvest/common/harvest v0.0.0-20230214054051-2bf486c2e780
+	github.com/sophielizg/harvest/common/local v0.0.0-20230214054051-2bf486c2e780
+	github.com/sophielizg/harvest/common/mysql v0.0.0-20230214054051-2bf486c2e780
+	github.com/sophielizg/harvest/common/utils v0.0.0-20230214054051-2bf486c2e780
 )
 
 require (

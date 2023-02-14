@@ -17,12 +17,12 @@ RUN adduser \
 
 WORKDIR /usr/src/app
 
-COPY ./go.mod .
-COPY ./go.sum .
+COPY runner/go.mod .
+COPY runner/go.sum .
 RUN go mod download
 RUN go mod verify
 
-COPY . .
+COPY runner .
 ENV GOOS=linux 
 ENV GOARCH=amd64 
 ENV CGO_ENABLED=0
@@ -35,7 +35,8 @@ FROM scratch
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
-COPY --from=builder /usr/src/app /
+COPY --from=builder /usr/src/app/runner /runner
+COPY config /config
 
 USER app:app
 

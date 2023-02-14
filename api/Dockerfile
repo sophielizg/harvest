@@ -19,12 +19,12 @@ WORKDIR /usr/src/app
 
 RUN go install github.com/swaggo/swag/cmd/swag@v1.8.9
 
-COPY ./go.mod .
-COPY ./go.sum .
+COPY api/go.mod .
+COPY api/go.sum .
 RUN go mod download
 RUN go mod verify
 
-COPY . .
+COPY api .
 ENV GOOS=linux 
 ENV GOARCH=amd64 
 ENV CGO_ENABLED=0
@@ -38,7 +38,8 @@ FROM scratch
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
-COPY --from=builder /usr/src/app /
+COPY --from=builder /usr/src/app/server /server
+COPY config /config
 
 USER app:app
 

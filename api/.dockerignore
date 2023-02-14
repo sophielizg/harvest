@@ -19,3 +19,6 @@ server
 
 # VSCode settings
 .vscode
+
+# Symlink to config
+config
