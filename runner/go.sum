@@ -33,8 +33,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d h1:hrujxIzL1woJ7AwssoOcM/tq5JjjG2yYOc8odClEiXA=
 github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d/go.mod h1:uugorj2VCxiV1x+LzaIdVa9b4S4qGAcH6cbhh4qVxOU=
-github.com/sophielizg/harvest/common v0.0.0-20230214081949-2c9791b158f2 h1:fmHiGvWk81w6ufKmW6N9EXej+qb2D9igYWKtdmsvisU=
-github.com/sophielizg/harvest/common v0.0.0-20230214081949-2c9791b158f2/go.mod h1:NFyR0jVYdYJ3qXmr0p8rejly3GV5VA4g8rIVtsVEASM=
+github.com/sophielizg/harvest/common v0.0.0-20230214084928-4fce94be8dba h1:xExwsGxLJvJdJUXHJ9Kbu3YlCuJ//z2om5GsNiJmLcI=
+github.com/sophielizg/harvest/common v0.0.0-20230214084928-4fce94be8dba/go.mod h1:NFyR0jVYdYJ3qXmr0p8rejly3GV5VA4g8rIVtsVEASM=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=

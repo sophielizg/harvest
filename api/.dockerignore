@@ -22,3 +22,6 @@ server
 
 # Symlink to config
 config
+
+# Taskfile
+taskfile

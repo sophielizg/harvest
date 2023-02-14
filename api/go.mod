@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-chi/render v1.0.2
-	github.com/sophielizg/harvest/common v0.0.0-20230214081949-2c9791b158f2
+	github.com/sophielizg/harvest/common v0.0.0-20230214084928-4fce94be8dba
 	github.com/swaggo/http-swagger v1.3.3
 	github.com/swaggo/swag v1.8.10
 )

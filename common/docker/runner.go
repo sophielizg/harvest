@@ -35,7 +35,7 @@ func (r *RunnerService) CreateNewRunner() error {
 		Env:   []string{"ENV=docker"},
 	}, nil, &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
-			"harvest": {},
+			"harvest_default": {},
 		},
 	}, nil, "")
 	if err != nil {

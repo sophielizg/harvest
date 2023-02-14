@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/antchfx/jsonquery v1.3.2
 	github.com/gocolly/colly v1.2.0
-	github.com/sophielizg/harvest/common v0.0.0-20230214081949-2c9791b158f2
+	github.com/sophielizg/harvest/common v0.0.0-20230214084928-4fce94be8dba
 )
 
 require (
