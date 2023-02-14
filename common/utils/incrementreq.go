@@ -30,7 +30,7 @@ func IncrementBody(data []byte, jsonPath []string) ([]byte, error) {
 		return nil, err
 	}
 
-	parentVal, err := pointerFromJson(&j, jsonPath[:len(jsonPath)-1])
+	parentVal, err := PointerFromJson(&j, jsonPath[:len(jsonPath)-1])
 	if err != nil {
 		return nil, err
 	}

@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func pointerFromJson(data *interface{}, jsonPath []string) (*interface{}, error) {
+func PointerFromJson(data *interface{}, jsonPath []string) (*interface{}, error) {
 	curr := data
 	for _, key := range jsonPath {
 		if m, ok := (*curr).(map[string]interface{}); ok {

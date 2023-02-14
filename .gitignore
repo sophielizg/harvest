@@ -15,10 +15,10 @@
 docs/
 
 # Compiled server
-server
+api/server
 
 # Compiled runner
-runner
+runner/runner
 
 # VSCode settings
 .vscode

@@ -12,7 +12,10 @@ import (
 
 func main() {
 	// Create local services
-	localServices := local.Init()
+	localServices, err := local.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create db connected services
 	mysqlServices, err := mysql.Init(localServices.ConfigService)

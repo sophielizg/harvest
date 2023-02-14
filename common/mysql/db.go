@@ -25,13 +25,13 @@ func (c *MysqlConfig) DSNString() string {
 }
 
 func OpenDb(configService harvest.ConfigService) (*sql.DB, error) {
-	mysqlConfigString, err := configService.Value("mysql")
+	mysqlConfigBytes, err := configService.Value("mysql")
 	if err != nil {
 		return nil, err
 	}
 
 	mysqlConfig := MysqlConfig{}
-	err = json.Unmarshal([]byte(mysqlConfigString), &mysqlConfig)
+	err = json.Unmarshal(mysqlConfigBytes, &mysqlConfig)
 	if err != nil {
 		return nil, err
 	}
