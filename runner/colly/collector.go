@@ -14,7 +14,7 @@ func (r *Runner) Collector() (*colly.Collector, *queue.Queue, error) {
 	r.AddCallbacks(collector)
 
 	var storage storage.Storage
-	storage.RunnerIds = r.RunnerIds
+	storage.SharedFields = r.SharedFields
 	storage.StorageServices = r.StorageServices
 
 	err := collector.SetStorage(&storage)
@@ -28,9 +28,9 @@ func (r *Runner) Collector() (*colly.Collector, *queue.Queue, error) {
 	}
 
 	parsers := &parsers.Parsers{
-		r.RunnerIds,
-		requestQueue,
-		r.ParsersServices,
+		SharedFields:    r.SharedFields,
+		Queue:           requestQueue,
+		ParsersServices: r.ParsersServices,
 	}
 	err = parsers.Add(collector)
 	return collector, requestQueue, err

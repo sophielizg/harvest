@@ -3,8 +3,6 @@ package parsers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"os"
 
 	"github.com/gocolly/colly"
 	harvest "github.com/sophielizg/harvest/common"
@@ -14,7 +12,12 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 	elementIndex *int) {
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getRequestId error: %s\n", err)
+		p.Logger.WithFields(harvest.LogFields{
+			"error":   err,
+			"ids":     p.SharedIds,
+			"request": response.Request,
+		}).Warn("An error ocurred in getRequestId while saving result")
+		return
 	}
 
 	resultFields := harvest.ResultFields{
@@ -27,7 +30,11 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 
 	_, err = p.ResultService.AddResult(p.RunnerId, resultFields)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "AddResult error: %s\n", err)
+		p.Logger.WithFields(harvest.LogFields{
+			"error":        err,
+			"ids":          p.SharedIds,
+			"resultFields": resultFields,
+		}).Warn("An error ocurred in AddResult while saving result")
 	}
 }
 
@@ -35,13 +42,22 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	elementIndex *int, isMissingParseResult bool) {
 	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "json.Marshal error: %s\n", err)
+		p.Logger.WithFields(harvest.LogFields{
+			"error":    err,
+			"ids":      p.SharedIds,
+			"response": response,
+		}).Warn("An error ocurred in json.Marshal while saving error")
 		return
 	}
 
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getRequestId error: %s\n", err)
+		p.Logger.WithFields(harvest.LogFields{
+			"error":   err,
+			"ids":     p.SharedIds,
+			"request": response.Request,
+		}).Warn("An error ocurred in getRequestId while saving error")
+		return
 	}
 
 	errorFields := harvest.ErrorFields{
@@ -57,7 +73,11 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 
 	_, err = p.ErrorService.AddError(p.RunnerId, errorFields)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "AddError error: %s\n", err)
+		p.Logger.WithFields(harvest.LogFields{
+			"error":       err,
+			"ids":         p.SharedIds,
+			"errorFields": errorFields,
+		}).Warn("An error ocurred in AddError while saving error")
 	}
 }
 

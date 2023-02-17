@@ -1,31 +1,43 @@
 package main
 
 import (
-	"log"
-
+	harvest "github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
+	"github.com/sophielizg/harvest/common/zap"
 	"github.com/sophielizg/harvest/runner/colly"
+	"github.com/sophielizg/harvest/runner/colly/common"
 	"github.com/sophielizg/harvest/runner/colly/parsers"
 	"github.com/sophielizg/harvest/runner/colly/storage"
 )
 
 func main() {
+	// Create logger
+	logger := zap.Init()
+	defer logger.Close()
+
 	// Create local services
 	localServices, err := local.Init()
 	if err != nil {
-		log.Fatal(err)
+		logger.WithFields(harvest.LogFields{
+			"error": err,
+		}).Fatal("Could not create local services")
 	}
 
 	// Create db connected services
 	mysqlServices, err := mysql.Init(localServices.ConfigService)
 	if err != nil {
-		log.Fatal(err)
+		logger.WithFields(harvest.LogFields{
+			"error": err,
+		}).Fatal("Could not create mysql services")
 	}
 	defer mysqlServices.Close()
 
 	// Initialize runner
 	runner := colly.Runner{
+		SharedFields: common.SharedFields{
+			Logger: logger,
+		},
 		ScraperService:     mysqlServices.ScraperService,
 		RunnerQueueService: mysqlServices.RunnerQueueService,
 		RequestService:     mysqlServices.RequestService,
@@ -43,6 +55,8 @@ func main() {
 
 	err = runner.Run()
 	if err != nil {
-		log.Fatal(err)
+		logger.WithFields(harvest.LogFields{
+			"error": err,
+		}).Fatal("A fatal error ocurred while within the runner")
 	}
 }

@@ -1,9 +1,6 @@
 package colly
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/gocolly/colly"
 	harvest "github.com/sophielizg/harvest/common"
 )
@@ -18,7 +15,11 @@ func (r *Runner) trackRequest(request *colly.Request) {
 
 	newRequest.Blob, err = request.Marshal()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "request.Marshal error: %s\n", err)
+		r.Logger.WithFields(harvest.LogFields{
+			"error":   err,
+			"ids":     r.SharedIds,
+			"request": request,
+		}).Warn("An error ocurred in request.Marshal while making request")
 	}
 
 	if id, ok := request.Ctx.GetAny("parentRequestId").(int); ok {
@@ -31,7 +32,11 @@ func (r *Runner) trackRequest(request *colly.Request) {
 
 	newRequestId, err := r.RequestService.AddRequest(newRequest)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "UpdateRequest error: %s\n", err)
+		r.Logger.WithFields(harvest.LogFields{
+			"error":   err,
+			"ids":     r.SharedIds,
+			"request": newRequest,
+		}).Error("An error ocurred in AddRequest while making request")
 		request.Abort()
 	}
 

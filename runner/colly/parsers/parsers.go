@@ -14,7 +14,7 @@ type ParsersServices struct {
 }
 
 type Parsers struct {
-	common.RunnerIds
+	common.SharedFields
 	Queue *queue.Queue
 	ParsersServices
 }

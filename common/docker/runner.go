@@ -33,7 +33,9 @@ func (r *RunnerService) CreateNewRunner() error {
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
 		Image: runnerImageName,
 		Env:   []string{"ENV=docker"},
-	}, nil, &network.NetworkingConfig{
+	}, &container.HostConfig{
+		AutoRemove: true,
+	}, &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
 			"harvest_default": {},
 		},
