@@ -43,7 +43,7 @@ func (r *Runner) trackRequestInDb(request *colly.Request) {
 	request.Ctx.Put("requestId", newRequestId)
 }
 
-func (r *Runner) AddCallbacks(collector *colly.Collector) {
+func (r *Runner) addCallbacks(collector *colly.Collector) {
 	collector.OnRequest(r.trackRequestInDb)
 
 	collector.OnRequest(func(req *colly.Request) {
