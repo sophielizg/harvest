@@ -6,11 +6,11 @@ import (
 )
 
 type RunService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (r *RunService) CreateRun(scraperId int) (int, error) {
-	rows, err := r.Db.Query("CALL createRun(?, 1);", scraperId)
+	rows, err := r.db.Query("CALL createRun(?, 1);", scraperId)
 	if err != nil {
 		return 0, err
 	}

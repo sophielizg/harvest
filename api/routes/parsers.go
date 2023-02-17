@@ -10,9 +10,9 @@ import (
 func (app *App) ParserRouter() *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Delete("/{parserId}/delete", WriteErrorResponse(app.deleteParser))
-	router.Post("/{parserId}/tags/add/{name}", WriteErrorResponse(app.addParserTag))
-	router.Delete("/{parserId}/tags/delete/{name}", WriteErrorResponse(app.deleteParserTag))
+	router.Delete("/{parserId}/delete", writeErrorResponse(app.deleteParser))
+	router.Post("/{parserId}/tags/add/{name}", writeErrorResponse(app.addParserTag))
+	router.Delete("/{parserId}/tags/delete/{name}", writeErrorResponse(app.deleteParserTag))
 
 	return router
 }

@@ -5,11 +5,11 @@ import (
 )
 
 type VisitedService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (v *VisitedService) GetIsVisited(runId int, requestHash uint64) (bool, error) {
-	rows, err := v.Db.Query("CALL getIsVisited(?, ?);", runId, requestHash)
+	rows, err := v.db.Query("CALL getIsVisited(?, ?);", runId, requestHash)
 	if err != nil {
 		return false, err
 	}
@@ -27,6 +27,6 @@ func (v *VisitedService) GetIsVisited(runId int, requestHash uint64) (bool, erro
 }
 
 func (v *VisitedService) SetIsVisited(runId int, requestHash uint64) error {
-	_, err := v.Db.Exec("CALL setIsVisited(?, ?);", runId, requestHash)
+	_, err := v.db.Exec("CALL setIsVisited(?, ?);", runId, requestHash)
 	return err
 }

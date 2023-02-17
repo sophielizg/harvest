@@ -16,7 +16,7 @@ type Runner struct {
 	parsers.ParsersServices
 }
 
-func (r *Runner) Dequeue() error {
+func (r *Runner) dequeue() error {
 	runner, err := r.RunnerQueueService.DequeueRunner()
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func (r *Runner) Dequeue() error {
 	return nil
 }
 
-func (r *Runner) End() {
+func (r *Runner) end() {
 	err := r.RunnerQueueService.EndRunner(r.RunnerId)
 	if err != nil {
 		r.Logger.WithFields(harvest.LogFields{
@@ -39,13 +39,13 @@ func (r *Runner) End() {
 }
 
 func (r *Runner) Run() error {
-	err := r.Dequeue()
+	err := r.dequeue()
 	if err != nil {
 		return err
 	}
-	defer r.End()
+	defer r.end()
 
-	collector, queue, err := r.Collector()
+	collector, queue, err := r.collector()
 	if err != nil {
 		return err
 	}

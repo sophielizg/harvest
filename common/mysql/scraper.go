@@ -10,7 +10,7 @@ import (
 )
 
 type ScraperService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 type ScraperConfig harvest.ScraperConfig
@@ -55,7 +55,7 @@ func scanScraper(rows *sql.Rows) (*harvest.Scraper, error) {
 }
 
 func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
-	rows, err := c.Db.Query("CALL getScraperById(?);", scraperId)
+	rows, err := c.db.Query("CALL getScraperById(?);", scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
 }
 
 func (c *ScraperService) Scrapers() ([]harvest.Scraper, error) {
-	rows, err := c.Db.Query("CALL getAllScrapers();")
+	rows, err := c.db.Query("CALL getAllScrapers();")
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (c *ScraperService) AddScraper(scraper harvest.ScraperFields) (int, error) 
 		scraperConfig = &convertedConfig
 	}
 
-	rows, err := c.Db.Query("CALL addScraper(?, ?);", scraper.Name, &scraperConfig)
+	rows, err := c.db.Query("CALL addScraper(?, ?);", scraper.Name, &scraperConfig)
 	if err != nil {
 		return 0, err
 	}
@@ -127,11 +127,11 @@ func (c *ScraperService) UpdateScraper(scraperId int, scraper harvest.ScraperFie
 		scraperConfig = &convertedConfig
 	}
 
-	_, err := c.Db.Exec("CALL updateScraper(?, ?, ?);", scraperId, scraper.Name, &scraperConfig)
+	_, err := c.db.Exec("CALL updateScraper(?, ?, ?);", scraperId, scraper.Name, &scraperConfig)
 	return err
 }
 
 func (c *ScraperService) DeleteScraper(scraperId int) error {
-	_, err := c.Db.Exec("CALL deleteScraper(?, 1);", scraperId)
+	_, err := c.db.Exec("CALL deleteScraper(?, 1);", scraperId)
 	return err
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/gocolly/colly/proxy"
 )
 
-func (r *Runner) Configure(collector *colly.Collector) error {
+func (r *Runner) configure(collector *colly.Collector) error {
 	scraper, err := r.ScraperService.Scraper(r.ScraperId)
 	if err != nil {
 		return err

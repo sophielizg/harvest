@@ -8,12 +8,12 @@ import (
 )
 
 type RequestQueueService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (q *RequestQueueService) enqueueRequest(request harvest.QueuedRequestFields,
 	isInitialRequest bool) (int, error) {
-	rows, err := q.Db.Query("CALL enqueueRequest(?, ?, ?, ?, ?, 1);", request.ScraperId,
+	rows, err := q.db.Query("CALL enqueueRequest(?, ?, ?, ?, ?, 1);", request.ScraperId,
 		request.RunId, request.RunnerId, request.Blob, isInitialRequest)
 	if err != nil {
 		return 0, err
@@ -37,7 +37,7 @@ func (q *RequestQueueService) enqueueRequest(request harvest.QueuedRequestFields
 }
 
 func (q *RequestQueueService) GetQueueSize(runId int) (int, error) {
-	rows, err := q.Db.Query("CALL getQueueSize(?);", runId)
+	rows, err := q.db.Query("CALL getQueueSize(?);", runId)
 	if err != nil {
 		return 0, err
 	}
@@ -74,7 +74,7 @@ func (q *RequestQueueService) EnqueueRequest(request harvest.QueuedRequestFields
 
 func (q *RequestQueueService) DequeueRequests(runId int, runnerId int,
 	numToDequeue int) ([][]byte, error) {
-	rows, err := q.Db.Query("CALL dequeueRequests(?, ?, ?, 1);", runId, runnerId,
+	rows, err := q.db.Query("CALL dequeueRequests(?, ?, ?, 1);", runId, runnerId,
 		numToDequeue)
 	if err != nil {
 		return nil, err

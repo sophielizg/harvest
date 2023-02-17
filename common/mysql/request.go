@@ -8,11 +8,11 @@ import (
 )
 
 type RequestService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (r *RequestService) AddRequest(request harvest.RequestFields) (int, error) {
-	rows, err := r.Db.Query("CALL addRequest(?, ?, ?, ?, ?, ?);", request.RunId, request.Url,
+	rows, err := r.db.Query("CALL addRequest(?, ?, ?, ?, ?, ?);", request.RunId, request.Url,
 		request.Method, request.Blob, request.ParentRequestId, request.OriginatorRequestId)
 	if err != nil {
 		return 0, err

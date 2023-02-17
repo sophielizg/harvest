@@ -7,7 +7,7 @@ import (
 )
 
 type MysqlServices struct {
-	Db                  *sql.DB
+	db                  *sql.DB
 	CookieService       *CookieService
 	ErrorService        *ErrorService
 	ParserService       *ParserService
@@ -21,7 +21,7 @@ type MysqlServices struct {
 }
 
 func (m *MysqlServices) Close() {
-	CloseDb(m.Db)
+	CloseDb(m.db)
 }
 
 func Init(configService harvest.ConfigService) (*MysqlServices, error) {

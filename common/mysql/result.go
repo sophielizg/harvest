@@ -8,11 +8,11 @@ import (
 )
 
 type ResultService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (r *ResultService) AddResult(runnerId int, result harvest.ResultFields) (int, error) {
-	rows, err := r.Db.Query("CALL addResult(?, ?, ?, ?, ?, ?, 1);", result.RunId,
+	rows, err := r.db.Query("CALL addResult(?, ?, ?, ?, ?, ?, 1);", result.RunId,
 		runnerId, result.RequestId, result.ParserId, result.ElementIndex, result.Value)
 	if err != nil {
 		return 0, err

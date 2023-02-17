@@ -44,23 +44,23 @@ type ScraperStartResponse struct {
 
 func (app *App) ScraperRouter() *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/{scraperId}", WriteErrorResponse(app.getScraperById))
-	router.Get("/all", WriteErrorResponse(app.getScrapers))
-	router.Post("/add", WriteErrorResponse(app.addScraper))
-	router.Post("/{scraperId}/start", WriteErrorResponse(app.startScraper))
+	router.Get("/{scraperId}", writeErrorResponse(app.getScraperById))
+	router.Get("/all", writeErrorResponse(app.getScrapers))
+	router.Post("/add", writeErrorResponse(app.addScraper))
+	router.Post("/{scraperId}/start", writeErrorResponse(app.startScraper))
 
-	router.Post("/{scraperId}/update", WriteErrorResponse(app.updateScraper))
-	router.Delete("/{scraperId}/delete", WriteErrorResponse(app.deleteScraper))
-	router.Get("/{scraperId}/parsers/all", WriteErrorResponse(app.getParsers))
-	router.Post("/{scraperId}/parsers/add", WriteErrorResponse(app.addParser))
+	router.Post("/{scraperId}/update", writeErrorResponse(app.updateScraper))
+	router.Delete("/{scraperId}/delete", writeErrorResponse(app.deleteScraper))
+	router.Get("/{scraperId}/parsers/all", writeErrorResponse(app.getParsers))
+	router.Post("/{scraperId}/parsers/add", writeErrorResponse(app.addParser))
 
-	router.Post("/{scraperId}/runs/create", WriteErrorResponse(app.createRun))
+	router.Post("/{scraperId}/runs/create", writeErrorResponse(app.createRun))
 	router.Post("/{scraperId}/runners/current/enqueue",
-		WriteErrorResponse(app.enqueueRunnerCurrentRun))
+		writeErrorResponse(app.enqueueRunnerCurrentRun))
 	// router.Post("/{scraperId}/runners/add", ...)
 
 	router.Post("/{scraperId}/requests/queue/start/add",
-		WriteErrorResponse(app.addStartingRequest))
+		writeErrorResponse(app.addStartingRequest))
 
 	// router.Get("/{scraperId}/status", ...)
 	// router.Get("/{scraperId}/results", ...)

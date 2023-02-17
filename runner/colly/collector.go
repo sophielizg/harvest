@@ -7,11 +7,11 @@ import (
 	"github.com/sophielizg/harvest/runner/colly/storage"
 )
 
-func (r *Runner) Collector() (*colly.Collector, *queue.Queue, error) {
+func (r *Runner) collector() (*colly.Collector, *queue.Queue, error) {
 	collector := colly.NewCollector()
 
-	r.Configure(collector)
-	r.AddCallbacks(collector)
+	r.configure(collector)
+	r.addCallbacks(collector)
 
 	var storage storage.Storage
 	storage.SharedFields = r.SharedFields

@@ -8,11 +8,11 @@ import (
 )
 
 type RunnerQueueService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (q *RunnerQueueService) enqueueRunner(scraperId *int, runId *int) (int, error) {
-	rows, err := q.Db.Query("CALL enqueueRunner(?, ?);", scraperId, runId)
+	rows, err := q.db.Query("CALL enqueueRunner(?, ?);", scraperId, runId)
 	if err != nil {
 		return 0, err
 	}
@@ -43,7 +43,7 @@ func (q *RunnerQueueService) EnqueueRunnerForCurrentRun(scraperId int) (int, err
 }
 
 func (q *RunnerQueueService) DequeueRunner() (*harvest.Runner, error) {
-	rows, err := q.Db.Query("CALL dequeueRunner(1);")
+	rows, err := q.db.Query("CALL dequeueRunner(1);")
 	if err != nil {
 		return nil, err
 	}
@@ -66,6 +66,6 @@ func (q *RunnerQueueService) DequeueRunner() (*harvest.Runner, error) {
 }
 
 func (q *RunnerQueueService) EndRunner(runnerId int) error {
-	_, err := q.Db.Exec("CALL endRunner(?);", runnerId)
+	_, err := q.db.Exec("CALL endRunner(?);", runnerId)
 	return err
 }

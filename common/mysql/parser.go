@@ -11,7 +11,7 @@ import (
 )
 
 type ParserService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 type ParserAutoIncrementRules harvest.ParserAutoIncrementRules
@@ -41,7 +41,7 @@ func (autoIncrementRules *ParserAutoIncrementRules) Value() (driver.Value, error
 }
 
 func (p *ParserService) getParserTypes() (map[string]int, error) {
-	rows, err := p.Db.Query("CALL getParserTypes();")
+	rows, err := p.db.Query("CALL getParserTypes();")
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (p *ParserService) ParserTypes() ([]string, error) {
 }
 
 func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
-	rows, err := p.Db.Query("CALL getParsersForScraper(?);", scraperId)
+	rows, err := p.db.Query("CALL getParsersForScraper(?);", scraperId)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (i
 		autoIncrementRules = &convertedRules
 	}
 
-	rows, err := p.Db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?);",
+	rows, err := p.db.Query("CALL addParser(?, ?, ?, ?, ?, ?, ?);",
 		scraperId, parserTypeId, parser.Selector, parser.Attr, parser.Xpath,
 		parser.EnqueueScraperId, autoIncrementRules)
 	if err != nil {
@@ -155,16 +155,16 @@ func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (i
 }
 
 func (p *ParserService) DeleteParser(parserId int) error {
-	_, err := p.Db.Exec("CALL deleteParser(?);", parserId)
+	_, err := p.db.Exec("CALL deleteParser(?);", parserId)
 	return err
 }
 
 func (p *ParserService) AddParserTag(parserId int, tag string) error {
-	_, err := p.Db.Exec("CALL addParserTag(?, ?);", parserId, tag)
+	_, err := p.db.Exec("CALL addParserTag(?, ?);", parserId, tag)
 	return err
 }
 
 func (p *ParserService) DeleteParserTag(parserId int, tag string) error {
-	_, err := p.Db.Exec("CALL deleteParserTag(?, ?);", parserId, tag)
+	_, err := p.db.Exec("CALL deleteParserTag(?, ?);", parserId, tag)
 	return err
 }

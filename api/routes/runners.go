@@ -9,7 +9,7 @@ import (
 func (app *App) RunnerRouter() *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Post("/create", WriteErrorResponse(app.createRunner))
+	router.Post("/create", writeErrorResponse(app.createRunner))
 
 	return router
 }

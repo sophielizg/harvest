@@ -8,11 +8,11 @@ import (
 )
 
 type ErrorService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) (int, error) {
-	rows, err := e.Db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
+	rows, err := e.db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
 		runnerId, parseError.RequestId, parseError.ParserId, parseError.ElementIndex,
 		parseError.StatusCode, parseError.Response, parseError.IsMissngParseResult,
 		parseError.ErrorMessage)

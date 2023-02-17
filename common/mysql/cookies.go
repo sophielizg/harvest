@@ -5,11 +5,11 @@ import (
 )
 
 type CookieService struct {
-	Db *sql.DB
+	db *sql.DB
 }
 
 func (c *CookieService) GetCookies(runId int, host string) (string, error) {
-	rows, err := c.Db.Query("CALL getCookiesForHost(?, ?);", runId, host)
+	rows, err := c.db.Query("CALL getCookiesForHost(?, ?);", runId, host)
 	if err != nil {
 		return "", err
 	}
@@ -28,6 +28,6 @@ func (c *CookieService) GetCookies(runId int, host string) (string, error) {
 }
 
 func (c *CookieService) SetCookies(runId int, host string, value string) error {
-	_, err := c.Db.Exec("CALL addOrUpdateCookies(?, ?, ?);", runId, host, value)
+	_, err := c.db.Exec("CALL addOrUpdateCookies(?, ?, ?);", runId, host, value)
 	return err
 }
