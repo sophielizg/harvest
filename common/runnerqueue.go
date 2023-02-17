@@ -1,4 +1,4 @@
-package harvest
+package common
 
 type Runner struct {
 	ScraperId int `json:"scraperId"`

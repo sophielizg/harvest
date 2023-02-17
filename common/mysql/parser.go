@@ -7,14 +7,14 @@ import (
 	"errors"
 	"strings"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type ParserService struct {
 	db *sql.DB
 }
 
-type ParserAutoIncrementRules harvest.ParserAutoIncrementRules
+type ParserAutoIncrementRules common.ParserAutoIncrementRules
 
 func (autoIncrementRules *ParserAutoIncrementRules) Scan(value interface{}) error {
 	if value == nil {
@@ -74,19 +74,19 @@ func (p *ParserService) ParserTypes() ([]string, error) {
 	return parserTypeNames, nil
 }
 
-func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
+func (p *ParserService) Parsers(scraperId int) ([]common.Parser, error) {
 	rows, err := p.db.Query("CALL getParsersForScraper(?);", scraperId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var parsers []harvest.Parser
+	var parsers []common.Parser
 	for rows.Next() {
 		var dummy int
 		var tagStr *string
 		var autoIncrementRules *ParserAutoIncrementRules
-		var parser harvest.Parser
+		var parser common.Parser
 
 		err = rows.Scan(&parser.ParserId, &dummy, &parser.CreatedTimestamp, &dummy,
 			&parser.Selector, &parser.Attr, &parser.Xpath,
@@ -100,7 +100,7 @@ func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
 		}
 
 		if autoIncrementRules != nil {
-			convertedRules := harvest.ParserAutoIncrementRules(*autoIncrementRules)
+			convertedRules := common.ParserAutoIncrementRules(*autoIncrementRules)
 			parser.AutoIncrementRules = &convertedRules
 		}
 
@@ -109,7 +109,7 @@ func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
 	return parsers, rows.Err()
 }
 
-func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (int, error) {
+func (p *ParserService) AddParser(scraperId int, parser common.ParserFields) (int, error) {
 	if parser.PageType == nil {
 		return 0, errors.New("No parser type provided")
 	}

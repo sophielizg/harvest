@@ -1,4 +1,4 @@
-package harvest
+package common
 
 type VisitedService interface {
 	GetIsVisited(runId int, requestHash uint64) (bool, error)

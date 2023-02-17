@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"errors"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type ResultService struct {
 	db *sql.DB
 }
 
-func (r *ResultService) AddResult(runnerId int, result harvest.ResultFields) (int, error) {
+func (r *ResultService) AddResult(runnerId int, result common.ResultFields) (int, error) {
 	rows, err := r.db.Query("CALL addResult(?, ?, ?, ?, ?, ?, 1);", result.RunId,
 		runnerId, result.RequestId, result.ParserId, result.ElementIndex, result.Value)
 	if err != nil {

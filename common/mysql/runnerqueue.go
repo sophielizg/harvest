@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type RunnerQueueService struct {
@@ -42,7 +42,7 @@ func (q *RunnerQueueService) EnqueueRunnerForCurrentRun(scraperId int) (int, err
 	return q.enqueueRunner(&scraperId, nil)
 }
 
-func (q *RunnerQueueService) DequeueRunner() (*harvest.Runner, error) {
+func (q *RunnerQueueService) DequeueRunner() (*common.Runner, error) {
 	rows, err := q.db.Query("CALL dequeueRunner(1);")
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (q *RunnerQueueService) DequeueRunner() (*harvest.Runner, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var runner harvest.Runner
+		var runner common.Runner
 		err = rows.Scan(&runner.ScraperId, &runner.RunId, &runner.RunnerId)
 		if err != nil {
 			return nil, err

@@ -3,7 +3,7 @@ package mysql
 import (
 	"database/sql"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type MysqlServices struct {
@@ -24,7 +24,7 @@ func (m *MysqlServices) Close() {
 	CloseDb(m.db)
 }
 
-func Init(configService harvest.ConfigService) (*MysqlServices, error) {
+func Init(configService common.ConfigService) (*MysqlServices, error) {
 	db, err := OpenDb(configService)
 	if err != nil {
 		return nil, err

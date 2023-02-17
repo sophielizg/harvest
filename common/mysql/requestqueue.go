@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"errors"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type RequestQueueService struct {
 	db *sql.DB
 }
 
-func (q *RequestQueueService) enqueueRequest(request harvest.QueuedRequestFields,
+func (q *RequestQueueService) enqueueRequest(request common.QueuedRequestFields,
 	isInitialRequest bool) (int, error) {
 	rows, err := q.db.Query("CALL enqueueRequest(?, ?, ?, ?, ?, 1);", request.ScraperId,
 		request.RunId, request.RunnerId, request.Blob, isInitialRequest)
@@ -61,14 +61,14 @@ func (q *RequestQueueService) GetQueueSize(runId int) (int, error) {
 
 func (q *RequestQueueService) AddStartingRequest(scraperId int,
 	requestBlob []byte) (int, error) {
-	request := harvest.QueuedRequestFields{
+	request := common.QueuedRequestFields{
 		ScraperId: scraperId,
 		Blob:      requestBlob,
 	}
 	return q.enqueueRequest(request, true)
 }
 
-func (q *RequestQueueService) EnqueueRequest(request harvest.QueuedRequestFields) (int, error) {
+func (q *RequestQueueService) EnqueueRequest(request common.QueuedRequestFields) (int, error) {
 	return q.enqueueRequest(request, false)
 }
 

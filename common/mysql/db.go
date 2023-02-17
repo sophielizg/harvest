@@ -7,7 +7,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type MysqlConfig struct {
@@ -24,7 +24,7 @@ func (c *MysqlConfig) DSNString() string {
 		c.User, c.Password, c.Protocol, c.Host, c.Port, c.Dbname)
 }
 
-func OpenDb(configService harvest.ConfigService) (*sql.DB, error) {
+func OpenDb(configService common.ConfigService) (*sql.DB, error) {
 	mysqlConfigBytes, err := configService.Value("mysql")
 	if err != nil {
 		return nil, err

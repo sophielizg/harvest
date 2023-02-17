@@ -3,18 +3,18 @@ package parsers
 import (
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/queue"
-	harvest "github.com/sophielizg/harvest/common"
-	"github.com/sophielizg/harvest/runner/colly/common"
+	"github.com/sophielizg/harvest/common"
+	collyCommon "github.com/sophielizg/harvest/runner/colly/common"
 )
 
 type ParsersServices struct {
-	ParserService harvest.ParserService
-	ErrorService  harvest.ErrorService
-	ResultService harvest.ResultService
+	ParserService common.ParserService
+	ErrorService  common.ErrorService
+	ResultService common.ResultService
 }
 
 type Parsers struct {
-	common.SharedFields
+	collyCommon.SharedFields
 	Queue *queue.Queue
 	ParsersServices
 }
@@ -25,7 +25,7 @@ func (p *Parsers) Add(collector *colly.Collector) error {
 		return err
 	}
 
-	callbackByType := map[string]func(*colly.Collector, harvest.Parser) error{
+	callbackByType := map[string]func(*colly.Collector, common.Parser) error{
 		"html": p.htmlCallback,
 		"xml":  p.xmlCallback,
 		"json": p.jsonCallback,

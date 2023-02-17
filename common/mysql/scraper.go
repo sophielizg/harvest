@@ -6,14 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type ScraperService struct {
 	db *sql.DB
 }
 
-type ScraperConfig harvest.ScraperConfig
+type ScraperConfig common.ScraperConfig
 
 func (scraperConfig *ScraperConfig) Scan(value interface{}) error {
 	if value == nil {
@@ -39,22 +39,22 @@ func (scraperConfig *ScraperConfig) Value() (driver.Value, error) {
 	return string(b), nil
 }
 
-func scanScraper(rows *sql.Rows) (*harvest.Scraper, error) {
+func scanScraper(rows *sql.Rows) (*common.Scraper, error) {
 	var scraperConfig *ScraperConfig
-	var scraper harvest.Scraper
+	var scraper common.Scraper
 
 	err := rows.Scan(&scraper.ScraperId, &scraper.Name, &scraper.CreatedTimestamp,
 		&scraperConfig)
 
 	if scraperConfig != nil {
-		convertedConfig := harvest.ScraperConfig(*scraperConfig)
+		convertedConfig := common.ScraperConfig(*scraperConfig)
 		scraper.Config = &convertedConfig
 	}
 
 	return &scraper, err
 }
 
-func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
+func (c *ScraperService) Scraper(scraperId int) (*common.Scraper, error) {
 	rows, err := c.db.Query("CALL getScraperById(?);", scraperId)
 	if err != nil {
 		return nil, err
@@ -72,14 +72,14 @@ func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
 	return nil, errors.New("No scrapers with specified scraperId found")
 }
 
-func (c *ScraperService) Scrapers() ([]harvest.Scraper, error) {
+func (c *ScraperService) Scrapers() ([]common.Scraper, error) {
 	rows, err := c.db.Query("CALL getAllScrapers();")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var scrapers []harvest.Scraper
+	var scrapers []common.Scraper
 	for rows.Next() {
 		scraper, err := scanScraper(rows)
 		if err != nil {
@@ -91,7 +91,7 @@ func (c *ScraperService) Scrapers() ([]harvest.Scraper, error) {
 	return scrapers, rows.Err()
 }
 
-func (c *ScraperService) AddScraper(scraper harvest.ScraperFields) (int, error) {
+func (c *ScraperService) AddScraper(scraper common.ScraperFields) (int, error) {
 	var scraperConfig *ScraperConfig
 	if scraper.Config != nil {
 		convertedConfig := ScraperConfig(*scraper.Config)
@@ -120,7 +120,7 @@ func (c *ScraperService) AddScraper(scraper harvest.ScraperFields) (int, error) 
 	return 0, errors.New("Record created but no scraperId returned")
 }
 
-func (c *ScraperService) UpdateScraper(scraperId int, scraper harvest.ScraperFields) error {
+func (c *ScraperService) UpdateScraper(scraperId int, scraper common.ScraperFields) error {
 	var scraperConfig *ScraperConfig
 	if scraper.Config != nil {
 		convertedConfig := ScraperConfig(*scraper.Config)

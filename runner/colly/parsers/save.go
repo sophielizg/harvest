@@ -5,14 +5,14 @@ import (
 	"errors"
 
 	"github.com/gocolly/colly"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue string,
 	elementIndex *int) {
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		p.Logger.WithFields(harvest.LogFields{
+		p.Logger.WithFields(common.LogFields{
 			"error":   err,
 			"ids":     p.SharedIds,
 			"request": response.Request,
@@ -20,7 +20,7 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 		return
 	}
 
-	resultFields := harvest.ResultFields{
+	resultFields := common.ResultFields{
 		RunId:        p.RunId,
 		RequestId:    requestId,
 		ParserId:     parserId,
@@ -30,7 +30,7 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 
 	_, err = p.ResultService.AddResult(p.RunnerId, resultFields)
 	if err != nil {
-		p.Logger.WithFields(harvest.LogFields{
+		p.Logger.WithFields(common.LogFields{
 			"error":        err,
 			"ids":          p.SharedIds,
 			"resultFields": resultFields,
@@ -42,7 +42,7 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	elementIndex *int, isMissingParseResult bool) {
 	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
-		p.Logger.WithFields(harvest.LogFields{
+		p.Logger.WithFields(common.LogFields{
 			"error":    err,
 			"ids":      p.SharedIds,
 			"response": response,
@@ -52,7 +52,7 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
-		p.Logger.WithFields(harvest.LogFields{
+		p.Logger.WithFields(common.LogFields{
 			"error":   err,
 			"ids":     p.SharedIds,
 			"request": response.Request,
@@ -60,7 +60,7 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 		return
 	}
 
-	errorFields := harvest.ErrorFields{
+	errorFields := common.ErrorFields{
 		RunId:               p.RunId,
 		RequestId:           requestId,
 		ParserId:            parserId,
@@ -73,7 +73,7 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 
 	_, err = p.ErrorService.AddError(p.RunnerId, errorFields)
 	if err != nil {
-		p.Logger.WithFields(harvest.LogFields{
+		p.Logger.WithFields(common.LogFields{
 			"error":       err,
 			"ids":         p.SharedIds,
 			"errorFields": errorFields,
@@ -81,7 +81,7 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	}
 }
 
-func (p *Parsers) saveAndEnqueue(response *colly.Response, parser harvest.Parser,
+func (p *Parsers) saveAndEnqueue(response *colly.Response, parser common.Parser,
 	parsedValue string, elementIndex *int) {
 	if parsedValue == "" {
 		missingResultErr := errors.New("No result found from parser")

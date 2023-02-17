@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/exec"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 var (
@@ -12,7 +12,7 @@ var (
 )
 
 type RunnerService struct {
-	logger harvest.Logger
+	logger common.Logger
 }
 
 func (r *RunnerService) CreateNewRunner() error {
@@ -24,7 +24,7 @@ func (r *RunnerService) CreateNewRunner() error {
 		err := cmd.Run()
 
 		if err != nil {
-			r.logger.WithFields(harvest.LogFields{
+			r.logger.WithFields(common.LogFields{
 				"error": err,
 			}).Error("An error ocurred inside the runner")
 		}

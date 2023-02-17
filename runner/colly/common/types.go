@@ -1,6 +1,6 @@
 package common
 
-import harvest "github.com/sophielizg/harvest/common"
+import "github.com/sophielizg/harvest/common"
 
 type SharedIds struct {
 	ScraperId int
@@ -10,5 +10,5 @@ type SharedIds struct {
 
 type SharedFields struct {
 	SharedIds
-	Logger harvest.Logger
+	Logger common.Logger
 }

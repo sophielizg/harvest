@@ -4,11 +4,11 @@ import (
 	"bytes"
 
 	"github.com/gocolly/colly"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/common/utils"
 )
 
-func (p *Parsers) enqueueRequest(parentRequest *colly.Request, parser harvest.Parser,
+func (p *Parsers) enqueueRequest(parentRequest *colly.Request, parser common.Parser,
 	parsedValue string) error {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(parentRequest.Body)
@@ -46,7 +46,7 @@ func (p *Parsers) enqueueRequest(parentRequest *colly.Request, parser harvest.Pa
 		return err
 	}
 
-	p.Logger.WithFields(harvest.LogFields{
+	p.Logger.WithFields(common.LogFields{
 		"ids": p.SharedIds,
 		"url": newUrl,
 	}).Debug("Adding new request to queue")

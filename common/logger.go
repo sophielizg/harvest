@@ -1,4 +1,4 @@
-package harvest
+package common
 
 type LogFields map[string]interface{}
 

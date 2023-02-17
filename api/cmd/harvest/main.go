@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/sophielizg/harvest/api/routes"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/common/docker"
 	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
@@ -49,7 +49,7 @@ func main() {
 	}
 	defer mysqlServices.Close()
 
-	var runnerService harvest.RunnerService
+	var runnerService common.RunnerService
 	switch os.Getenv("ENV") {
 	case "docker":
 		runnerService = dockerServices.RunnerService

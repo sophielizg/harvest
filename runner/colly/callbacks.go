@@ -2,12 +2,12 @@ package colly
 
 import (
 	"github.com/gocolly/colly"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 func (r *Runner) trackRequestInDb(request *colly.Request) {
 	var err error
-	newRequest := harvest.RequestFields{
+	newRequest := common.RequestFields{
 		RunId:  r.RunId,
 		Url:    request.URL.String(),
 		Method: request.Method,
@@ -15,7 +15,7 @@ func (r *Runner) trackRequestInDb(request *colly.Request) {
 
 	newRequest.Blob, err = request.Marshal()
 	if err != nil {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"error":   err,
 			"ids":     r.SharedIds,
 			"request": request,
@@ -32,7 +32,7 @@ func (r *Runner) trackRequestInDb(request *colly.Request) {
 
 	newRequestId, err := r.RequestService.AddRequest(newRequest)
 	if err != nil {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"error":   err,
 			"ids":     r.SharedIds,
 			"request": newRequest,
@@ -47,14 +47,14 @@ func (r *Runner) addCallbacks(collector *colly.Collector) {
 	collector.OnRequest(r.trackRequestInDb)
 
 	collector.OnRequest(func(req *colly.Request) {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"ids": r.SharedIds,
 			"url": req.URL.String(),
 		}).Debug("Making a new request")
 	})
 
 	collector.OnError(func(res *colly.Response, err error) {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"ids":   r.SharedIds,
 			"url":   res.Request.URL.String(),
 			"error": err,
@@ -62,14 +62,14 @@ func (r *Runner) addCallbacks(collector *colly.Collector) {
 	})
 
 	collector.OnResponse(func(res *colly.Response) {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"ids": r.SharedIds,
 			"url": res.Request.URL.String(),
 		}).Debug("Request returned successfully")
 	})
 
 	collector.OnScraped(func(res *colly.Response) {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"ids": r.SharedIds,
 			"url": res.Request.URL.String(),
 		}).Debug("Finished scraping response")

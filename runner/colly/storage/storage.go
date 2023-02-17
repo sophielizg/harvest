@@ -4,18 +4,18 @@ import (
 	"net/url"
 	"sync"
 
-	harvest "github.com/sophielizg/harvest/common"
-	"github.com/sophielizg/harvest/runner/colly/common"
+	"github.com/sophielizg/harvest/common"
+	collyCommon "github.com/sophielizg/harvest/runner/colly/common"
 )
 
 type StorageServices struct {
-	CookieService       harvest.CookieService
-	VisitedService      harvest.VisitedService
-	RequestQueueService harvest.RequestQueueService
+	CookieService       common.CookieService
+	VisitedService      common.VisitedService
+	RequestQueueService common.RequestQueueService
 }
 
 type Storage struct {
-	common.SharedFields
+	collyCommon.SharedFields
 	StorageServices
 	mu sync.RWMutex // Only used for dequeue method
 }
@@ -25,7 +25,7 @@ func (s *Storage) Init() error { return nil }
 func (s *Storage) Visited(requestId uint64) error {
 	err := s.VisitedService.SetIsVisited(s.RunId, requestId)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error":     err,
 			"requestId": requestId,
 			"ids":       s.SharedIds,
@@ -37,7 +37,7 @@ func (s *Storage) Visited(requestId uint64) error {
 func (s *Storage) IsVisited(requestId uint64) (bool, error) {
 	isVisited, err := s.VisitedService.GetIsVisited(s.RunId, requestId)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error":     err,
 			"requestId": requestId,
 			"ids":       s.SharedIds,
@@ -49,7 +49,7 @@ func (s *Storage) IsVisited(requestId uint64) (bool, error) {
 func (s *Storage) Cookies(u *url.URL) string {
 	cookies, err := s.CookieService.GetCookies(s.RunId, u.Host)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error": err,
 			"url":   u,
 			"ids":   s.SharedIds,
@@ -61,7 +61,7 @@ func (s *Storage) Cookies(u *url.URL) string {
 func (s *Storage) SetCookies(u *url.URL, cookies string) {
 	err := s.CookieService.SetCookies(s.RunId, u.Host, cookies)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error": err,
 			"url":   u,
 			"ids":   s.SharedIds,
@@ -72,7 +72,7 @@ func (s *Storage) SetCookies(u *url.URL, cookies string) {
 func (s *Storage) QueueSize() (int, error) {
 	size, err := s.RequestQueueService.GetQueueSize(s.RunId)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error": err,
 			"ids":   s.SharedIds,
 		}).Warn("An error ocurred within GetQueueSize while getting queue size")
@@ -87,7 +87,7 @@ func (s *Storage) GetRequest() ([]byte, error) {
 
 	reqs, err := s.RequestQueueService.DequeueRequests(s.RunId, s.RunnerId, 1)
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error": err,
 			"ids":   s.SharedIds,
 		}).Error("An error ocurred within DequeueRequests while getting a new request")
@@ -102,14 +102,14 @@ func (s *Storage) GetRequest() ([]byte, error) {
 
 func (s *Storage) AddRequest(requestBlob []byte) error {
 	runId, runnerId := s.RunId, s.RunnerId
-	_, err := s.RequestQueueService.EnqueueRequest(harvest.QueuedRequestFields{
+	_, err := s.RequestQueueService.EnqueueRequest(common.QueuedRequestFields{
 		ScraperId: s.ScraperId,
 		RunId:     &runId,
 		RunnerId:  &runnerId,
 		Blob:      requestBlob,
 	})
 	if err != nil {
-		s.Logger.WithFields(harvest.LogFields{
+		s.Logger.WithFields(common.LogFields{
 			"error": err,
 			"ids":   s.SharedIds,
 		}).Error("An error ocurred within EnqueueRequest while adding a new request")

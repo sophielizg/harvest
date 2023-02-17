@@ -1,7 +1,7 @@
 package zap
 
 import (
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 	"go.uber.org/zap"
 )
 
@@ -9,7 +9,7 @@ type Logger struct {
 	sugar *zap.SugaredLogger
 }
 
-func (l *Logger) WithFields(fields harvest.LogFields) harvest.Logger {
+func (l *Logger) WithFields(fields common.LogFields) common.Logger {
 	mergedFields := make([]interface{}, len(fields)*2)
 	i := 0
 	for key, value := range fields {

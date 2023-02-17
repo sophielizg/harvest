@@ -1,4 +1,4 @@
-package harvest
+package common
 
 type CookieService interface {
 	SetCookies(runId int, host string, value string) error

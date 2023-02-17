@@ -1,17 +1,17 @@
 package colly
 
 import (
-	harvest "github.com/sophielizg/harvest/common"
-	"github.com/sophielizg/harvest/runner/colly/common"
+	"github.com/sophielizg/harvest/common"
+	collyCommon "github.com/sophielizg/harvest/runner/colly/common"
 	"github.com/sophielizg/harvest/runner/colly/parsers"
 	"github.com/sophielizg/harvest/runner/colly/storage"
 )
 
 type Runner struct {
-	common.SharedFields
-	ScraperService     harvest.ScraperService
-	RunnerQueueService harvest.RunnerQueueService
-	RequestService     harvest.RequestService
+	collyCommon.SharedFields
+	ScraperService     common.ScraperService
+	RunnerQueueService common.RunnerQueueService
+	RequestService     common.RequestService
 	storage.StorageServices
 	parsers.ParsersServices
 }
@@ -31,7 +31,7 @@ func (r *Runner) dequeue() error {
 func (r *Runner) end() {
 	err := r.RunnerQueueService.EndRunner(r.RunnerId)
 	if err != nil {
-		r.Logger.WithFields(harvest.LogFields{
+		r.Logger.WithFields(common.LogFields{
 			"error": err,
 			"ids":   r.SharedIds,
 		}).Warn("An error ocurred in EndRunner while ending the runner")

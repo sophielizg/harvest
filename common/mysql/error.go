@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"errors"
 
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 type ErrorService struct {
 	db *sql.DB
 }
 
-func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) (int, error) {
+func (e *ErrorService) AddError(runnerId int, parseError common.ErrorFields) (int, error) {
 	rows, err := e.db.Query("CALL addError(?, ?, ?, ?, ?, ?, ?, ?, ?, 1);", parseError.RunId,
 		runnerId, parseError.RequestId, parseError.ParserId, parseError.ElementIndex,
 		parseError.StatusCode, parseError.Response, parseError.IsMissngParseResult,

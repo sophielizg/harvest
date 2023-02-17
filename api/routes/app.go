@@ -7,17 +7,17 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	_ "github.com/sophielizg/harvest/api/docs"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type App struct {
-	RunnerService       harvest.RunnerService
-	ScraperService      harvest.ScraperService
-	ParserService       harvest.ParserService
-	RunService          harvest.RunService
-	RunnerQueueService  harvest.RunnerQueueService
-	RequestQueueService harvest.RequestQueueService
+	RunnerService       common.RunnerService
+	ScraperService      common.ScraperService
+	ParserService       common.ParserService
+	RunService          common.RunService
+	RunnerQueueService  common.RunnerQueueService
+	RequestQueueService common.RequestQueueService
 }
 
 func (app *App) Router(port string) (*chi.Mux, error) {

@@ -1,12 +1,12 @@
 package main
 
 import (
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
 	"github.com/sophielizg/harvest/common/zap"
 	"github.com/sophielizg/harvest/runner/colly"
-	"github.com/sophielizg/harvest/runner/colly/common"
+	collyCommon "github.com/sophielizg/harvest/runner/colly/common"
 	"github.com/sophielizg/harvest/runner/colly/parsers"
 	"github.com/sophielizg/harvest/runner/colly/storage"
 )
@@ -19,7 +19,7 @@ func main() {
 	// Create local services
 	localServices, err := local.Init(logger)
 	if err != nil {
-		logger.WithFields(harvest.LogFields{
+		logger.WithFields(common.LogFields{
 			"error": err,
 		}).Fatal("Could not create local services")
 	}
@@ -27,7 +27,7 @@ func main() {
 	// Create db connected services
 	mysqlServices, err := mysql.Init(localServices.ConfigService)
 	if err != nil {
-		logger.WithFields(harvest.LogFields{
+		logger.WithFields(common.LogFields{
 			"error": err,
 		}).Fatal("Could not create mysql services")
 	}
@@ -35,7 +35,7 @@ func main() {
 
 	// Initialize runner
 	runner := colly.Runner{
-		SharedFields: common.SharedFields{
+		SharedFields: collyCommon.SharedFields{
 			Logger: logger,
 		},
 		ScraperService:     mysqlServices.ScraperService,
@@ -55,7 +55,7 @@ func main() {
 
 	err = runner.Run()
 	if err != nil {
-		logger.WithFields(harvest.LogFields{
+		logger.WithFields(common.LogFields{
 			"error": err,
 		}).Fatal("A fatal error ocurred while within the runner")
 	}

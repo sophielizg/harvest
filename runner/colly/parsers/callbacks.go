@@ -7,10 +7,10 @@ import (
 
 	"github.com/antchfx/jsonquery"
 	"github.com/gocolly/colly"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
-func (p *Parsers) htmlCallback(collector *colly.Collector, parser harvest.Parser) error {
+func (p *Parsers) htmlCallback(collector *colly.Collector, parser common.Parser) error {
 	if parser.Selector == nil {
 		return errors.New("The parser.Selector field is required for type html")
 	}
@@ -29,7 +29,7 @@ func (p *Parsers) htmlCallback(collector *colly.Collector, parser harvest.Parser
 	return nil
 }
 
-func (p *Parsers) xmlCallback(collector *colly.Collector, parser harvest.Parser) error {
+func (p *Parsers) xmlCallback(collector *colly.Collector, parser common.Parser) error {
 	if parser.Xpath == nil {
 		return errors.New("The parser.Xpath field is required for type xml")
 	}
@@ -42,7 +42,7 @@ func (p *Parsers) xmlCallback(collector *colly.Collector, parser harvest.Parser)
 	return nil
 }
 
-func (p *Parsers) jsonCallback(collector *colly.Collector, parser harvest.Parser) error {
+func (p *Parsers) jsonCallback(collector *colly.Collector, parser common.Parser) error {
 	if parser.Xpath == nil {
 		return errors.New("The parser.Xpath field is required for type json")
 	}

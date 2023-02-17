@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	harvest "github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/common"
 )
 
 // Request bodies
@@ -86,7 +86,7 @@ func (app *App) ScraperRouter() *chi.Mux {
 // @Accept  json
 // @Produce  json
 // @Param scraperId path string true "Id of scraper"
-// @Success 200 {object} harvest.Scraper
+// @Success 200 {object} common.Scraper
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/{scraperId} [get]
 func (app *App) getScraperById(r *http.Request) (interface{}, error) {
@@ -104,7 +104,7 @@ func (app *App) getScraperById(r *http.Request) (interface{}, error) {
 // @Tags scrapers
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} []harvest.Scraper
+// @Success 200 {object} []common.Scraper
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/all [get]
 func (app *App) getScrapers(r *http.Request) (interface{}, error) {
@@ -117,12 +117,12 @@ func (app *App) getScrapers(r *http.Request) (interface{}, error) {
 // @Tags scrapers
 // @Accept  json
 // @Produce  json
-// @Param request body harvest.ScraperFields true "Fields for scraper"
+// @Param request body common.ScraperFields true "Fields for scraper"
 // @Success 200 {object} AddScraperResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/add [post]
 func (app *App) addScraper(r *http.Request) (interface{}, error) {
-	var scraper harvest.ScraperFields
+	var scraper common.ScraperFields
 	err := json.NewDecoder(r.Body).Decode(&scraper)
 	if err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (app *App) startScraper(r *http.Request) (interface{}, error) {
 // @Accept  json
 // @Produce  json
 // @Param scraperId path string true "Id of scraper"
-// @Param request body harvest.ScraperFields true "Fields for scraper"
+// @Param request body common.ScraperFields true "Fields for scraper"
 // @Success 200 {object} SuccessResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/{scraperId}/update [post]
@@ -192,7 +192,7 @@ func (app *App) updateScraper(r *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	var scraper harvest.ScraperFields
+	var scraper common.ScraperFields
 	err = json.NewDecoder(r.Body).Decode(&scraper)
 	if err != nil {
 		return nil, err
@@ -238,7 +238,7 @@ func (app *App) deleteScraper(r *http.Request) (interface{}, error) {
 // @Accept  json
 // @Produce  json
 // @Param scraperId path string true "Id of scraper"
-// @Success 200 {object} []harvest.Parser
+// @Success 200 {object} []common.Parser
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/{scraperId}/parsers/all [get]
 func (app *App) getParsers(r *http.Request) (interface{}, error) {
@@ -257,7 +257,7 @@ func (app *App) getParsers(r *http.Request) (interface{}, error) {
 // @Accept  json
 // @Produce  json
 // @Param scraperId path string true "Id of scraper"
-// @Param request body harvest.ParserFields true "Fields for parser"
+// @Param request body common.ParserFields true "Fields for parser"
 // @Success 200 {object} AddParserResponse
 // @Failure 400 {object} ErrorResponse
 // @Router /scrapers/{scraperId}/parsers/add [post]
@@ -268,7 +268,7 @@ func (app *App) addParser(r *http.Request) (interface{}, error) {
 		return nil, err
 	}
 
-	var parser harvest.ParserFields
+	var parser common.ParserFields
 	err = json.NewDecoder(r.Body).Decode(&parser)
 	if err != nil {
 		return nil, err
