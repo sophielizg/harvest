@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -158,7 +157,6 @@ func (app *App) startScraper(r *http.Request) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println(runId)
 
 	runnerId, err := app.RunnerQueueService.EnqueueRunnerForRun(runId)
 	if err != nil {

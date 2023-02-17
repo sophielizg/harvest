@@ -1,11 +1,13 @@
 package local
 
+import harvest "github.com/sophielizg/harvest/common"
+
 type LocalServices struct {
 	ConfigService *ConfigService
 	RunnerService *RunnerService
 }
 
-func Init() (*LocalServices, error) {
+func Init(logger harvest.Logger) (*LocalServices, error) {
 	configService := &ConfigService{}
 	if err := configService.Init(); err != nil {
 		return nil, err
@@ -13,6 +15,8 @@ func Init() (*LocalServices, error) {
 
 	return &LocalServices{
 		configService,
-		&RunnerService{},
+		&RunnerService{
+			logger,
+		},
 	}, nil
 }

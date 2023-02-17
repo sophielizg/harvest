@@ -17,7 +17,7 @@ func main() {
 	defer logger.Close()
 
 	// Create local services
-	localServices, err := local.Init()
+	localServices, err := local.Init(logger)
 	if err != nil {
 		logger.WithFields(harvest.LogFields{
 			"error": err,

@@ -11,6 +11,7 @@ import (
 	"github.com/sophielizg/harvest/common/docker"
 	"github.com/sophielizg/harvest/common/local"
 	"github.com/sophielizg/harvest/common/mysql"
+	"github.com/sophielizg/harvest/common/zap"
 )
 
 // @title harvest
@@ -25,8 +26,12 @@ func main() {
 		port = ":8080"
 	}
 
+	// Create logger
+	logger := zap.Init()
+	defer logger.Close()
+
 	// Create local services
-	localServices, err := local.Init()
+	localServices, err := local.Init(logger)
 	if err != nil {
 		log.Fatal(err)
 	}
