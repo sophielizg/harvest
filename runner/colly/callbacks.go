@@ -5,7 +5,7 @@ import (
 	harvest "github.com/sophielizg/harvest/common"
 )
 
-func (r *Runner) trackRequest(request *colly.Request) {
+func (r *Runner) trackRequestInDb(request *colly.Request) {
 	var err error
 	newRequest := harvest.RequestFields{
 		RunId:  r.RunId,
@@ -44,5 +44,34 @@ func (r *Runner) trackRequest(request *colly.Request) {
 }
 
 func (r *Runner) AddCallbacks(collector *colly.Collector) {
-	collector.OnRequest(r.trackRequest)
+	collector.OnRequest(r.trackRequestInDb)
+
+	collector.OnRequest(func(req *colly.Request) {
+		r.Logger.WithFields(harvest.LogFields{
+			"ids": r.SharedIds,
+			"url": req.URL.String(),
+		}).Debug("Making a new request")
+	})
+
+	collector.OnError(func(res *colly.Response, err error) {
+		r.Logger.WithFields(harvest.LogFields{
+			"ids":   r.SharedIds,
+			"url":   res.Request.URL.String(),
+			"error": err,
+		}).Debug("Request returned with error")
+	})
+
+	collector.OnResponse(func(res *colly.Response) {
+		r.Logger.WithFields(harvest.LogFields{
+			"ids": r.SharedIds,
+			"url": res.Request.URL.String(),
+		}).Debug("Request returned successfully")
+	})
+
+	collector.OnScraped(func(res *colly.Response) {
+		r.Logger.WithFields(harvest.LogFields{
+			"ids": r.SharedIds,
+			"url": res.Request.URL.String(),
+		}).Debug("Finished scraping response")
+	})
 }

@@ -57,7 +57,7 @@ func (p *ParserService) getParserTypes() (map[string]int, error) {
 		}
 		parserTypes[typeName] = parserTypeId
 	}
-	return parserTypes, nil
+	return parserTypes, rows.Err()
 }
 
 func (p *ParserService) ParserTypes() ([]string, error) {
@@ -106,7 +106,7 @@ func (p *ParserService) Parsers(scraperId int) ([]harvest.Parser, error) {
 
 		parsers = append(parsers, parser)
 	}
-	return parsers, nil
+	return parsers, rows.Err()
 }
 
 func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (int, error) {
@@ -146,35 +146,25 @@ func (p *ParserService) AddParser(scraperId int, parser harvest.ParserFields) (i
 		}
 		return parserId, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Record created but no parserId returned")
 }
 
 func (p *ParserService) DeleteParser(parserId int) error {
-	stmt, err := p.Db.Prepare("CALL deleteParser(?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(parserId)
+	_, err := p.Db.Exec("CALL deleteParser(?);", parserId)
 	return err
 }
 
 func (p *ParserService) AddParserTag(parserId int, tag string) error {
-	stmt, err := p.Db.Prepare("CALL addParserTag(?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(parserId, tag)
+	_, err := p.Db.Exec("CALL addParserTag(?, ?);", parserId, tag)
 	return err
 }
 
 func (p *ParserService) DeleteParserTag(parserId int, tag string) error {
-	stmt, err := p.Db.Prepare("CALL deleteParserTag(?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(parserId, tag)
+	_, err := p.Db.Exec("CALL deleteParserTag(?, ?);", parserId, tag)
 	return err
 }

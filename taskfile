@@ -71,7 +71,8 @@ case "$@" in
 	"build mysql"*|\
 	"build runner"*|\
 	"run api"*|\
-	"run runner"*)
+	"run runner"*|\
+	"connect mysql"*)
 		cd ./$2
 		./taskfile $1 ${@:3}
 		exit $?

@@ -30,5 +30,9 @@ func (e *ErrorService) AddError(runnerId int, parseError harvest.ErrorFields) (i
 		return errorId, nil
 	}
 
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Error added but no errorId returned")
 }

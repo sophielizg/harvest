@@ -24,5 +24,10 @@ func (r *RunService) CreateRun(scraperId int) (int, error) {
 		}
 		return runId, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Record created but no runId returned")
 }

@@ -26,6 +26,11 @@ func (q *RunnerQueueService) enqueueRunner(scraperId *int, runId *int) (int, err
 		}
 		return runnerId, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Record created but no runnerId returned")
 }
 
@@ -52,15 +57,15 @@ func (q *RunnerQueueService) DequeueRunner() (*harvest.Runner, error) {
 		}
 		return &runner, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return nil, errors.New("No runners found to dequeue")
 }
 
 func (q *RunnerQueueService) EndRunner(runnerId int) error {
-	stmt, err := q.Db.Prepare("CALL endRunner(?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(runnerId)
+	_, err := q.Db.Exec("CALL endRunner(?);", runnerId)
 	return err
 }

@@ -28,5 +28,9 @@ func (r *ResultService) AddResult(runnerId int, result harvest.ResultFields) (in
 		return resultId, nil
 	}
 
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Result added but no resultId returned")
 }

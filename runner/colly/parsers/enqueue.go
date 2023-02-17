@@ -46,5 +46,9 @@ func (p *Parsers) enqueueRequest(parentRequest *colly.Request, parser harvest.Pa
 		return err
 	}
 
+	p.Logger.WithFields(harvest.LogFields{
+		"ids": p.SharedIds,
+		"url": newUrl,
+	}).Debug("Adding new request to queue")
 	return p.Queue.AddRequest(newRequest)
 }

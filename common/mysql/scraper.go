@@ -64,6 +64,11 @@ func (c *ScraperService) Scraper(scraperId int) (*harvest.Scraper, error) {
 	for rows.Next() {
 		return scanScraper(rows)
 	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return nil, errors.New("No scrapers with specified scraperId found")
 }
 
@@ -83,7 +88,7 @@ func (c *ScraperService) Scrapers() ([]harvest.Scraper, error) {
 		scrapers = append(scrapers, *scraper)
 	}
 
-	return scrapers, nil
+	return scrapers, rows.Err()
 }
 
 func (c *ScraperService) AddScraper(scraper harvest.ScraperFields) (int, error) {
@@ -107,6 +112,11 @@ func (c *ScraperService) AddScraper(scraper harvest.ScraperFields) (int, error) 
 		}
 		return scraperId, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Record created but no scraperId returned")
 }
 
@@ -117,21 +127,11 @@ func (c *ScraperService) UpdateScraper(scraperId int, scraper harvest.ScraperFie
 		scraperConfig = &convertedConfig
 	}
 
-	stmt, err := c.Db.Prepare("CALL updateScraper(?, ?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(scraperId, scraper.Name, &scraperConfig)
+	_, err := c.Db.Exec("CALL updateScraper(?, ?, ?);", scraperId, scraper.Name, &scraperConfig)
 	return err
 }
 
 func (c *ScraperService) DeleteScraper(scraperId int) error {
-	stmt, err := c.Db.Prepare("CALL deleteScraper(?, 1);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(scraperId)
+	_, err := c.Db.Exec("CALL deleteScraper(?, 1);", scraperId)
 	return err
 }

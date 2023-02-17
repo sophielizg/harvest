@@ -13,6 +13,7 @@ func (v *VisitedService) GetIsVisited(runId int, requestHash uint64) (bool, erro
 	if err != nil {
 		return false, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var isVisited bool
@@ -22,15 +23,10 @@ func (v *VisitedService) GetIsVisited(runId int, requestHash uint64) (bool, erro
 		}
 		return isVisited, nil
 	}
-	return false, nil
+	return false, rows.Err()
 }
 
 func (v *VisitedService) SetIsVisited(runId int, requestHash uint64) error {
-	stmt, err := v.Db.Prepare("CALL setIsVisited(?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(runId, requestHash)
+	_, err := v.Db.Exec("CALL setIsVisited(?, ?);", runId, requestHash)
 	return err
 }

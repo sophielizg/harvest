@@ -13,6 +13,7 @@ func (c *CookieService) GetCookies(runId int, host string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var value string
@@ -23,15 +24,10 @@ func (c *CookieService) GetCookies(runId int, host string) (string, error) {
 		return value, nil
 	}
 
-	return "", nil
+	return "", rows.Err()
 }
 
 func (c *CookieService) SetCookies(runId int, host string, value string) error {
-	stmt, err := c.Db.Prepare("CALL addOrUpdateCookies(?, ?, ?);")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(runId, host, value)
+	_, err := c.Db.Exec("CALL addOrUpdateCookies(?, ?, ?);", runId, host, value)
 	return err
 }

@@ -28,6 +28,11 @@ func (q *RequestQueueService) enqueueRequest(request harvest.QueuedRequestFields
 		}
 		return requestQueueId, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("Record created but no requestQueueId returned")
 }
 
@@ -46,6 +51,11 @@ func (q *RequestQueueService) GetQueueSize(runId int) (int, error) {
 		}
 		return queueSize, nil
 	}
+
+	if err = rows.Err(); err != nil {
+		return 0, err
+	}
+
 	return 0, errors.New("No rows returned for queue size for runId")
 }
 
@@ -80,5 +90,5 @@ func (q *RequestQueueService) DequeueRequests(runId int, runnerId int,
 		}
 		requests = append(requests, requestBlob)
 	}
-	return requests, nil
+	return requests, rows.Err()
 }
