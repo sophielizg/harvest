@@ -4,7 +4,13 @@
         "port": 3306,
         "protocol": "tcp",
         "dbname": "harvest",
-        "user": "harvest",
-        "password": "changeme"
+        "app": {
+            "user": "harvest_app",
+            "password": "changeme"
+        },
+        "builder": {
+            "user": "harvest_builder",
+            "password": "changeme"
+        }
     }
 }

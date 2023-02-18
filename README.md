@@ -36,6 +36,12 @@ alias task=./taskfile
 task install
 ```
 
+DB builder needs the following permissions
+ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, DROP, INDEX, REFERENCES, (all app user permissions)
+
+DB app user needs the following permissions
+EXECUTE, INSERT, SELECT, UPDATE, DELETE
+
 ## Development
 
 To run this project in development mode use the below command.

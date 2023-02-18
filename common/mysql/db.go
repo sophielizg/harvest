@@ -10,18 +10,22 @@ import (
 	"github.com/sophielizg/harvest/common"
 )
 
-type MysqlConfig struct {
+type MysqlUser struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
-	Protocol string `json:"protocol"`
-	Host     string `json:"host"`
-	Port     int    `json:"port"`
-	Dbname   string `json:"dbname"`
+}
+
+type MysqlConfig struct {
+	App      MysqlUser `json:"app"`
+	Protocol string    `json:"protocol"`
+	Host     string    `json:"host"`
+	Port     int       `json:"port"`
+	Dbname   string    `json:"dbname"`
 }
 
 func (c *MysqlConfig) DSNString() string {
 	return fmt.Sprintf("%s:%s@%s(%s:%d)/%s?parseTime=true",
-		c.User, c.Password, c.Protocol, c.Host, c.Port, c.Dbname)
+		c.App.User, c.App.Password, c.Protocol, c.Host, c.Port, c.Dbname)
 }
 
 func OpenDb(configService common.ConfigService) (*sql.DB, error) {
