@@ -33,3 +33,6 @@ go.work*
 api/config
 mysql/config
 runner/config
+
+# Combined sql init files
+initdb

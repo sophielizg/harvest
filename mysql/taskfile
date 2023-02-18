@@ -32,7 +32,7 @@ env () {
 	}
 
 	_load () {
-		export $(grep -v '^#' env/current.env | xargs -0)
+		export $(grep -v '^#' env/$1.env | xargs -0)
 	}
 
 	if [[ $(type -t $1) == function ]]; then
@@ -49,34 +49,29 @@ _connect_for_user () {
 }
 
 connect () {
-	env _load
+	env _load current
 	_connect_for_user $MYSQL_APP_USER $MYSQL_APP_PASSWORD
-}
-
-_build_file () {
-	env _load
-	echo "Building $1..."
-	cat $1 | _connect_for_user $MYSQL_BUILDER_USER $MYSQL_BUILDER_PASSWORD && echo -e
-
-	if [ $? -ne 0 ]
-	then
-		echo -e "Build $1: ${RED}FAILURE${NC}"
-		exit 1
-	fi
-
-	echo -e "Build $1: ${GREEN}SUCCESS${NC}"
-}
-
-_build_folder () {
-	for entry in $1/*.sql
-	do
-		_build_file $entry
-	done
 }
 
 build () {
 	file () {
-		_build_file $1
+		env _load current
+		echo "Building $1..."
+		cat $1 | _connect_for_user $MYSQL_BUILDER_USER $MYSQL_BUILDER_PASSWORD && echo -e
+
+		if [ $? -ne 0 ]
+		then
+			echo -e "Build $1: ${RED}FAILURE${NC}"
+			exit 1
+		fi
+
+		echo -e "Build $1: ${GREEN}SUCCESS${NC}"
+	}
+
+	_folder () {
+		for entry in $1/*.sql; do
+			build file $entry
+		done
 	}
 
 	if [[ $(type -t $1) == function ]]; then
@@ -84,13 +79,38 @@ build () {
 		return $?
 	fi
 
-	_build_folder tables
-	_build_folder utils
-	_build_folder constraints
+	for subdirectory in "tables" "utils" "constraints"; do
+		build _folder $subdirectory
+	done
 
-	for entry in sprocs/*
-	do
-		_build_folder $entry
+	for entry in sprocs/*; do
+		build _folder $entry
+	done
+}
+
+generate_initdb () {
+	env configure docker
+	env _load docker
+
+	mkdir -p initdb
+	rm -f initdb/script.sql
+
+	for entry in admin/*; do
+		envsubst < $entry >> initdb/script.sql
+	done
+
+	for subdirectory in "tables" "utils" "constraints"; do
+		_add_to_initdb $subdirectory
+	done
+
+	for entry in sprocs/*; do
+		_add_to_initdb $entry
+	done
+}
+
+_add_to_initdb () {
+	for entry in $1/*.sql; do
+		awk 1 $entry >> initdb/script.sql
 	done
 }
 

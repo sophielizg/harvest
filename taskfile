@@ -37,13 +37,22 @@ dev () {
 
 docker () {
 	build () {
-		for subdirectory in "api" "runner"; do
+		# Generate startup script for mysql docker image
+		cd ./mysql
+		./taskfile generate_initdb
+		cd ../
+
+		for subdirectory in "api" "mysql" "runner"; do
 			command docker build -t harvest-$subdirectory -f $subdirectory/Dockerfile .
 		done
 	}
 
 	run () {
 		command docker compose up -d
+	}
+
+	stop () {
+		command docker compose down
 	}
 
 	$@

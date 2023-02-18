@@ -3,10 +3,11 @@ version: '3.8'
 services:
   mysql:
     container_name: mysql
-    image: mysql:8
+    image: harvest-mysql:latest
     restart: always
     env_file:
-      - ./mysql/dev.env
+      # A value for MYSQL_ROOT_PASSWORD must be supplied
+      - ./mysql/env/docker-root.env
     ports:
       - 3306:3306
     expose:
