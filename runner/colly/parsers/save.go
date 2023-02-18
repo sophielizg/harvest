@@ -13,9 +13,9 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
 		p.Logger.WithFields(common.LogFields{
-			"error":   err,
-			"ids":     p.SharedIds,
-			"request": response.Request,
+			"error": err,
+			"ids":   p.SharedIds,
+			"url":   response.Request.URL.String(),
 		}).Warn("An error ocurred in getRequestId while saving result")
 		return
 	}
@@ -33,7 +33,9 @@ func (p *Parsers) saveResult(response *colly.Response, parserId int, parsedValue
 		p.Logger.WithFields(common.LogFields{
 			"error":        err,
 			"ids":          p.SharedIds,
-			"resultFields": resultFields,
+			"url":          response.Request.URL.String(),
+			"value":        resultFields.Value,
+			"elementIndex": resultFields.ElementIndex,
 		}).Warn("An error ocurred in AddResult while saving result")
 	}
 }
@@ -43,9 +45,9 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	marshaledResponse, err := json.Marshal(response)
 	if err != nil {
 		p.Logger.WithFields(common.LogFields{
-			"error":    err,
-			"ids":      p.SharedIds,
-			"response": response,
+			"error": err,
+			"ids":   p.SharedIds,
+			"url":   response.Request.URL.String(),
 		}).Warn("An error ocurred in json.Marshal while saving error")
 		return
 	}
@@ -53,9 +55,9 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	requestId, err := getRequestId(response.Request)
 	if err != nil {
 		p.Logger.WithFields(common.LogFields{
-			"error":   err,
-			"ids":     p.SharedIds,
-			"request": response.Request,
+			"error": err,
+			"ids":   p.SharedIds,
+			"url":   response.Request.URL.String(),
 		}).Warn("An error ocurred in getRequestId while saving error")
 		return
 	}
@@ -74,9 +76,11 @@ func (p *Parsers) saveError(response *colly.Response, parserId int, parseError e
 	_, err = p.ErrorService.AddError(p.RunnerId, errorFields)
 	if err != nil {
 		p.Logger.WithFields(common.LogFields{
-			"error":       err,
-			"ids":         p.SharedIds,
-			"errorFields": errorFields,
+			"error":        err,
+			"ids":          p.SharedIds,
+			"url":          response.Request.URL.String(),
+			"parseError":   errorFields.ErrorMessage,
+			"elementIndex": errorFields.ElementIndex,
 		}).Warn("An error ocurred in AddError while saving error")
 	}
 }

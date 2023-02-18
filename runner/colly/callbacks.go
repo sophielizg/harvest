@@ -16,9 +16,9 @@ func (r *Runner) trackRequestInDb(request *colly.Request) {
 	newRequest.Blob, err = request.Marshal()
 	if err != nil {
 		r.Logger.WithFields(common.LogFields{
-			"error":   err,
-			"ids":     r.SharedIds,
-			"request": request,
+			"error": err,
+			"ids":   r.SharedIds,
+			"url":   request.URL.String(),
 		}).Warn("An error ocurred in request.Marshal while making request")
 	}
 
@@ -33,9 +33,9 @@ func (r *Runner) trackRequestInDb(request *colly.Request) {
 	newRequestId, err := r.RequestService.AddRequest(newRequest)
 	if err != nil {
 		r.Logger.WithFields(common.LogFields{
-			"error":   err,
-			"ids":     r.SharedIds,
-			"request": newRequest,
+			"error": err,
+			"ids":   r.SharedIds,
+			"url":   newRequest.Url,
 		}).Error("An error ocurred in AddRequest while making request")
 		request.Abort()
 	}
