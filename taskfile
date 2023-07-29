@@ -1,96 +1,45 @@
 #!/bin/bash
 
-init () {
-	go work init
 
-	for subdirectory in "api" "common" "runner"; do
-		go work use ./$subdirectory
-	done
+app_location="cmd/harvest/main.go"
 
-	go mod download
-
-	for subdirectory in "api" "mysql" "runner"; do
-		ln -s $PWD/config $PWD/$subdirectory
-	done
+install () {
+	go mod download && go mod verify
 }
 
-update () {
-	for subdirectory in "api" "common" "runner"; do
-		cd ./$subdirectory
-		go get -u ./...
-		go mod tidy
-		cd ../
-	done
+generate () {
+	swag init -g ./$app_location $@
 }
 
 build () {
-	for subdirectory in "api" "mysql" "runner"; do
-		cd ./$subdirectory
-		./taskfile build
-		cd ../
-	done
+	generate
+	go build -o server $app_location $@
+}
+
+run () {
+	generate
+	go run $app_location $@
 }
 
 dev () {
-	reflex -s -g reflex.conf -- reflex -c reflex.conf $@
+	reflex -c ./reflex.conf $@
 }
 
-docker () {
-	build () {
-		# Generate startup script for mysql docker image
-		cd ./mysql
-		./taskfile generate_initdb
-		cd ../
+prod () {
+	build
+	./server
+}
 
-		for subdirectory in "api" "mysql" "runner"; do
-			command docker build -t harvest-$subdirectory -f $subdirectory/Dockerfile .
-		done
-	}
-
-	run () {
-		command docker compose up -d
-	}
-
-	stop () {
-		command docker compose down
-	}
-
-	$@
+test () {
+	go test -v $(go list ./tests/... | grep -v /mocks) -coverpkg $(go list ./pkg/... | grep -v /utils) $@
 }
 
 lint () {
-	golangci-lint run --issues-exit-code 0 $@
+	golangci-lint run --issues-exit-code 0 --enable-all $@
 }
 
 format () {
 	lint --fix $@
 }
 
-case "$@" in
-	"build mysql file"*)
-		# Remove mysql prefix to avoid naming issues when cd'ing into dir
-		filename="${4#"mysql/"}"
-		cd ./mysql
-		./taskfile build file $filename ${@:5}
-		exit $?
-		;;
-	"install api"*|\
-	"install runner"*|\
-	"build api"*|\
-	"build mysql"*|\
-	"build runner"*|\
-	"run api"*|\
-	"run runner"*|\
-	"connect mysql"*|\
-	"env mysql"*)
-		cd ./$2
-		./taskfile $1 ${@:3}
-		exit $?
-		;;
-esac
-
-if [[ $(type -t $1) == function ]]; then
-	$@
-else
-	echo "Command \"$@\" not found"
-fi
+$@
