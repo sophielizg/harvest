@@ -1,65 +1,34 @@
 package harvest
 
-import "context"
+import (
+	"context"
+	"time"
+
+	"github.com/sophielizg/harvest/common"
+	"github.com/sophielizg/harvest/connections"
+	"github.com/sophielizg/harvest/request"
+)
 
 type Scraper struct {
-	conn    *Connections
-	CacheId string
+	conn            *connections.Connections
+	delayCache      *request.DelayCache
+	CacheId         string
+	RequestSettings *request.RequestSettings
 }
 
-func (s *Scraper) SendRequests(ctx context.Context, reqs ...*Request) error {
-	reqs, err := s.filterVisited(reqs)
-	if err != nil {
-		return err
-	}
-
-	return s.sendRequestsWithoutValidation(ctx, reqs)
+func (s *Scraper) setContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, common.CacheIdKey, s.CacheId)
 }
 
-func (s *Scraper) sendRequestsWithoutValidation(ctx context.Context, reqs []*Request) error {
-	reqsToSend := make([]struct {
-		context.Context
-		*Request
-	}, len(reqs))
-
-	for i, req := range reqs {
-		reqsToSend[i] = struct {
-			context.Context
-			*Request
-		}{ctx, req}
-	}
-
-	return s.conn.requestQueue.SendMessages(reqsToSend)
-}
-
-func (s *Scraper) filterVisited(reqs []*Request) ([]*Request, error) {
-	filtered := reqs[:0]
-
+func (s *Scraper) SendRequests(ctx context.Context, reqs ...*request.Request) error {
 	for _, req := range reqs {
-		if req.VisitSettings == nil || req.VisitSettings.AllowRevisit {
-			filtered = append(filtered, req)
-			continue
-		}
-
-		visitedCacheKey := "" // TODO: generate actual key
-		isVisited, err := s.conn.visitedCache.Exists(visitedCacheKey)
-		if err != nil {
-			return nil, err
-		}
-		if !isVisited {
-			filtered = append(filtered, req)
-		}
+		req.FillInNulls(s.RequestSettings)
 	}
 
-	// make sure discarded items can be garbage collected
-	for i := len(filtered); i < len(reqs); i++ {
-		reqs[i] = nil
-	}
-
-	return filtered, nil
+	return request.SendRequests(s.setContext(ctx), s.conn, s.delayCache, reqs...)
 }
 
-func NewScraper(conn *Connections, options ...func(*Scraper)) *Scraper {
+func NewScraper(conn *connections.Connections, options ...func(*Scraper)) *Scraper {
 	s := &Scraper{
 		conn: conn,
 	}
@@ -74,5 +43,17 @@ func NewScraper(conn *Connections, options ...func(*Scraper)) *Scraper {
 func WithCacheId(id string) func(*Scraper) {
 	return func(s *Scraper) {
 		s.CacheId = id
+	}
+}
+
+func WithDelayedRequestPollingInterval(interval time.Duration) func(*Scraper) {
+	return func(s *Scraper) {
+		s.delayCache = request.NewDelayCache(s.conn.RequestQueue, interval)
+	}
+}
+
+func WithRequestSetting(setting func(*request.RequestSettings)) func(*Scraper) {
+	return func(s *Scraper) {
+		setting(s.RequestSettings)
 	}
 }

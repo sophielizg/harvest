@@ -1,4 +1,4 @@
-package harvest
+package connections
 
 import (
 	"github.com/sophielizg/harvest/cache"
@@ -6,11 +6,11 @@ import (
 )
 
 type Connections struct {
-	visitedCache cache.Cache
-	cookiesCache cache.Cache
-	requestQueue queue.Queue
-	resultQueue  queue.Queue
-	errorQueue   queue.Queue
+	VisitedCache cache.Cache
+	CookiesCache cache.Cache
+	RequestQueue queue.Queue
+	ResultQueue  queue.Queue
+	ErrorQueue   queue.Queue
 }
 
 func NewConnections(options ...func(*Connections)) *Connections {
@@ -25,30 +25,30 @@ func NewConnections(options ...func(*Connections)) *Connections {
 
 func WithVisitedCache(visitedCache cache.Cache) func(*Connections) {
 	return func(c *Connections) {
-		c.visitedCache = visitedCache
+		c.VisitedCache = visitedCache
 	}
 }
 
 func WithCookiesCache(cookiesCache cache.Cache) func(*Connections) {
 	return func(c *Connections) {
-		c.cookiesCache = cookiesCache
+		c.CookiesCache = cookiesCache
 	}
 }
 
 func WithRequestQueue(requestQueue queue.Queue) func(*Connections) {
 	return func(c *Connections) {
-		c.requestQueue = requestQueue
+		c.RequestQueue = requestQueue
 	}
 }
 
 func WithResultQueue(resultQueue queue.Queue) func(*Connections) {
 	return func(c *Connections) {
-		c.resultQueue = resultQueue
+		c.ResultQueue = resultQueue
 	}
 }
 
 func WithErrorQueue(errorQueue queue.Queue) func(*Connections) {
 	return func(c *Connections) {
-		c.errorQueue = errorQueue
+		c.ErrorQueue = errorQueue
 	}
 }
