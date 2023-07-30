@@ -6,7 +6,7 @@ import (
 	"github.com/sophielizg/harvest/connections"
 )
 
-func DoRequest(conn *connections.Connections, cacheId string, req *Request) (*http.Response, error) {
+func DoRequest(conn *connections.Connections, cacheId string, req *Request) (SelectorsResult, error) {
 	var client *http.Client
 	if req.CookiesSettings != nil && req.CookiesSettings.EnableCookies {
 		// TODO: add check for null conn
@@ -20,5 +20,15 @@ func DoRequest(conn *connections.Connections, cacheId string, req *Request) (*ht
 		client = http.DefaultClient
 	}
 
-	return client.Do(req.Request)
+	resp, err := client.Do(req.Request)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		return nil, BadStatusCodeError
+	}
+
+	return applySelectors(resp, req.Selectors)
 }

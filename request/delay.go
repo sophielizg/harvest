@@ -118,6 +118,8 @@ func sendReadyMessages(cache *DelayCache) error {
 		if len(cache.messages) > 0 && cache.messages[0].sendAfter.Before(time.Now()) {
 			delayMessage := heap.Pop(&cache.messages).(delayedMessage)
 			readyMessages = append(readyMessages, delayMessage.message)
+		} else {
+			break
 		}
 	}
 

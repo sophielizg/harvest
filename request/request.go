@@ -19,6 +19,7 @@ const (
 type Selector struct {
 	PageType PageType
 	Xpath    string
+	Name     string
 }
 
 type VisitSettings struct {
